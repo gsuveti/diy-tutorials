@@ -9,7 +9,7 @@
  */
 
 // Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit;
 }
 
@@ -27,20 +27,20 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @uses {wp-editor} for WP editor styles.
  * @since 1.0.0
  */
-function quiz_block_cgb_block_assets() { // phpcs:ignore
+function quiz_block_cgb_block_assets(){ // phpcs:ignore
 	// Register block styles for both frontend + backend.
 	wp_register_style(
 		'quiz_block-cgb-style-css', // Handle.
-		plugins_url( 'dist/blocks.style.build.css', dirname( __FILE__ ) ), // Block style CSS.
-		array( 'wp-editor' ), // Dependency to include the CSS after it.
+		plugins_url('dist/blocks.style.build.css', dirname(__FILE__)), // Block style CSS.
+		array('wp-editor'), // Dependency to include the CSS after it.
 		null // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.style.build.css' ) // Version: File modification time.
 	);
 
 	// Register block editor script for backend.
 	wp_register_script(
 		'quiz_block-cgb-block-js', // Handle.
-		plugins_url( '/dist/blocks.build.js', dirname( __FILE__ ) ), // Block.build.js: We register the block here. Built with Webpack.
-		array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor' ), // Dependencies, defined above.
+		plugins_url('/dist/blocks.build.js', dirname(__FILE__)), // Block.build.js: We register the block here. Built with Webpack.
+		array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-components'), // Dependencies, defined above.
 		null, // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
 		true // Enqueue the script in the footer.
 	);
@@ -48,10 +48,20 @@ function quiz_block_cgb_block_assets() { // phpcs:ignore
 	// Register block editor styles for backend.
 	wp_register_style(
 		'quiz_block-cgb-block-editor-css', // Handle.
-		plugins_url( 'dist/blocks.editor.build.css', dirname( __FILE__ ) ), // Block editor CSS.
-		array( 'wp-edit-blocks' ), // Dependency to include the CSS after it.
+		plugins_url('dist/blocks.editor.build.css', dirname(__FILE__)), // Block editor CSS.
+		array('wp-edit-blocks'), // Dependency to include the CSS after it.
 		null // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.editor.build.css' ) // Version: File modification time.
 	);
+
+
+	register_post_meta('post', 'myguten_meta_block_field', array(
+		'show_in_rest' => true,
+		'single' => true,
+		'type' => 'string',
+		'auth_callback' => function () {
+			return current_user_can('edit_posts');
+		}
+	));
 
 	/**
 	 * Register Gutenberg block on server-side.
@@ -66,14 +76,18 @@ function quiz_block_cgb_block_assets() { // phpcs:ignore
 	register_block_type(
 		'cgb/block-quiz-block', array(
 			// Enqueue blocks.style.build.css on both frontend & backend.
-			'style'         => 'quiz_block-cgb-style-css',
+			'style' => 'quiz_block-cgb-style-css',
 			// Enqueue blocks.build.js in the editor only.
-			'editor_script' => 'quiz_block-cgb-block-js',
+			'script' => 'quiz_block-cgb-block-js',
 			// Enqueue blocks.editor.build.css in the editor only.
-			'editor_style'  => 'quiz_block-cgb-block-editor-css',
+			'editor_style' => 'quiz_block-cgb-block-editor-css',
 		)
 	);
+
+
+
+
 }
 
 // Hook: Block assets.
-add_action( 'init', 'quiz_block_cgb_block_assets' );
+add_action('init', 'quiz_block_cgb_block_assets');
