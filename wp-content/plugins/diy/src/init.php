@@ -29,29 +29,28 @@ if (!defined('ABSPATH')) {
  */
 function diy_block_assets()
 { // phpcs:ignore
+    // Register block styles for both frontend + backend.
+    wp_register_style(
+        'diy-block-css', // Handle.
+        plugins_url('/build/static/css/main.css', dirname(__FILE__)), // Block style CSS.
+        array('wp-editor'), // Dependency to include the CSS after it.
+        null // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.style.build.css' ) // Version: File modification time.
+    );
+
 
     // Register block editor script for backend.
     wp_register_script(
         'diy-block-runtime-js', // Handle.
-        plugins_url('/build/static/js/runtime~main.a8a9905a.js', dirname(__FILE__)), // Block.build.js: We register the block here. Built with Webpack.
+        plugins_url('/build/static/js/bundle.js', dirname(__FILE__)), // Block.build.js: We register the block here. Built with Webpack.
         array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-components'), // Dependencies, defined above.
         null, // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
         true // Enqueue the script in the footer.
     );
-//
-//    // Register block editor script for backend.
-//    wp_register_script(
-//        'diy-block-vendor-js', // Handle.
-//        plugins_url('/build/static/js/2.c606ce97.chunk.js', dirname(__FILE__)), // Block.build.js: We register the block here. Built with Webpack.
-//        array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-components'), // Dependencies, defined above.
-//        null, // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
-//        true // Enqueue the script in the footer.
-//    );
 
     // Register block editor script for backend.
     wp_register_script(
         'diy-block-js', // Handle.
-        plugins_url('/build/static/js/main.8b62003f.chunk.js', dirname(__FILE__)), // Block.build.js: We register the block here. Built with Webpack.
+        plugins_url('/build/static/js/main.js', dirname(__FILE__)), // Block.build.js: We register the block here. Built with Webpack.
         array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-components'), // Dependencies, defined above.
         null, // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
         true // Enqueue the script in the footer.
@@ -69,7 +68,8 @@ function diy_block_assets()
      */
     register_block_type(
         'irian/diy-block', array(
-            'script' => array('diy-block-runtime-js','diy-block-js')
+            'script' => array('diy-block-runtime-js', 'diy-block-js'),
+            'style' => 'diy-block-css'
         )
     );
 
