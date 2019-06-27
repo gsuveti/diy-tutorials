@@ -2,12 +2,11 @@ import React from 'react';
 
 import './app.scss';
 
-
 export const App = () => {
   return (
     <div>
-      <header style={{textAlign: 'center'}}>
-        <h1>Welcome to diy-tutorials!</h1>
+      <header style={{ textAlign: 'center' }}>
+        <h1>Welcome to diy-tutorials-frontend!</h1>
         <img
           width="450"
           src="https://raw.githubusercontent.com/nrwl/nx/master/nx-logo.png"

@@ -12,7 +12,7 @@
         "build": {
           "builder": "@nrwl/web:build",
           "options": {
-            "outputPath": "wp-content/plugins/diy-tutorials/dist",
+            "outputPath": "dist/apps/diy-tutorials",
             "index": "apps/diy-tutorials/src/index.html",
             "main": "apps/diy-tutorials/src/main.tsx",
             "polyfills": "apps/diy-tutorials/src/polyfills.ts",
@@ -101,6 +101,235 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": "apps/diy-tutorials-e2e/tsconfig.e2e.json"
+          }
+        }
+      }
+    },
+    "diy-tutorials-frontend": {
+      "root": "apps/diy-tutorials-frontend",
+      "sourceRoot": "apps/diy-tutorials-frontend/src",
+      "projectType": "application",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/web:build",
+          "options": {
+            "outputPath": "wp-content/plugins/diy-tutorials/dist/diy-tutorials-frontend",
+            "index": "apps/diy-tutorials-frontend/src/index.html",
+            "main": "apps/diy-tutorials-frontend/src/main.tsx",
+            "polyfills": "apps/diy-tutorials-frontend/src/polyfills.ts",
+            "tsConfig": "apps/diy-tutorials-frontend/tsconfig.app.json",
+            "assets": [
+              "apps/diy-tutorials-frontend/src/favicon.ico",
+              "apps/diy-tutorials-frontend/src/assets"
+            ],
+            "styles": ["apps/diy-tutorials-frontend/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/diy-tutorials-frontend/src/environments/environment.ts",
+                  "with": "apps/diy-tutorials-frontend/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/web:dev-server",
+          "options": {
+            "buildTarget": "diy-tutorials-frontend:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "diy-tutorials-frontend:build:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/diy-tutorials-frontend/tsconfig.app.json",
+              "apps/diy-tutorials-frontend/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/diy-tutorials-frontend/jest.config.js",
+            "tsConfig": "apps/diy-tutorials-frontend/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "diy-tutorials-frontend-e2e": {
+      "root": "apps/diy-tutorials-frontend-e2e",
+      "sourceRoot": "apps/diy-tutorials-frontend-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/diy-tutorials-frontend-e2e/cypress.json",
+            "tsConfig": "apps/diy-tutorials-frontend-e2e/tsconfig.e2e.json",
+            "devServerTarget": "diy-tutorials-frontend:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "diy-tutorials-frontend:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "apps/diy-tutorials-frontend-e2e/tsconfig.e2e.json"
+          }
+        }
+      }
+    },
+    "diy-tutorials-backend": {
+      "root": "apps/diy-tutorials-backend",
+      "sourceRoot": "apps/diy-tutorials-backend/src",
+      "projectType": "application",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/web:build",
+          "options": {
+            "outputPath": "wp-content/plugins/diy-tutorials/dist/diy-tutorials-backend",
+            "index": "apps/diy-tutorials-backend/src/index.html",
+            "main": "apps/diy-tutorials-backend/src/main.tsx",
+            "polyfills": "apps/diy-tutorials-backend/src/polyfills.ts",
+            "tsConfig": "apps/diy-tutorials-backend/tsconfig.app.json",
+            "assets": [
+              "apps/diy-tutorials-backend/src/favicon.ico",
+              "apps/diy-tutorials-backend/src/assets"
+            ],
+            "styles": ["apps/diy-tutorials-backend/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/diy-tutorials-backend/src/environments/environment.ts",
+                  "with": "apps/diy-tutorials-backend/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/web:dev-server",
+          "options": {
+            "buildTarget": "diy-tutorials-backend:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "diy-tutorials-backend:build:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/diy-tutorials-backend/tsconfig.app.json",
+              "apps/diy-tutorials-backend/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/diy-tutorials-backend/jest.config.js",
+            "tsConfig": "apps/diy-tutorials-backend/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "diy-tutorials-backend-e2e": {
+      "root": "apps/diy-tutorials-backend-e2e",
+      "sourceRoot": "apps/diy-tutorials-backend-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/diy-tutorials-backend-e2e/cypress.json",
+            "tsConfig": "apps/diy-tutorials-backend-e2e/tsconfig.e2e.json",
+            "devServerTarget": "diy-tutorials-backend:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "diy-tutorials-backend:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "apps/diy-tutorials-backend-e2e/tsconfig.e2e.json"
+          }
+        }
+      }
+    },
+    "diy-tutorials-common": {
+      "root": "libs/diy-tutorials-common",
+      "sourceRoot": "libs/diy-tutorials-common/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/diy-tutorials-common/tsconfig.lib.json",
+              "libs/diy-tutorials-common/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/diy-tutorials-common/jest.config.js",
+            "tsConfig": "libs/diy-tutorials-common/tsconfig.spec.json"
           }
         }
       }

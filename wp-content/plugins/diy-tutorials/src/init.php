@@ -33,7 +33,7 @@ function diy_tutorials_block_assets()
   // Register block editor script for backend.
   wp_register_script(
     'diy_tutorials_block_main_js', // Handle.
-    plugins_url('/dist/main-es5.js', dirname(__FILE__)),
+    plugins_url('/dist/diy-tutorials-backend/main-es5.js', dirname(__FILE__)),
     array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-components'),
     null,
     true
@@ -42,7 +42,7 @@ function diy_tutorials_block_assets()
   // Register block editor script for backend.
   wp_register_script(
     'diy_tutorials_block_polyfills_js', // Handle.
-    plugins_url('/dist/polyfills-es5.js', dirname(__FILE__)),
+    plugins_url('/dist/diy-tutorials-backend/polyfills-es5.js', dirname(__FILE__)),
     array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-components'),
     null,
     true
@@ -51,7 +51,7 @@ function diy_tutorials_block_assets()
   // Register block editor script for backend.
   wp_register_script(
     'diy_tutorials_block_runtime_js', // Handle.
-    plugins_url('/dist/runtime-es5.js', dirname(__FILE__)),
+    plugins_url('/dist/diy-tutorials-backend/runtime-es5.js', dirname(__FILE__)),
     array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-components'),
     null,
     true
@@ -60,7 +60,7 @@ function diy_tutorials_block_assets()
   // Register block editor script for backend.
   wp_register_script(
     'diy_tutorials_block_styles_js', // Handle.
-    plugins_url('/dist/styles-es5.js', dirname(__FILE__)),
+    plugins_url('/dist/diy-tutorials-backend/styles-es5.js', dirname(__FILE__)),
     array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-components'),
     null,
     true
@@ -69,12 +69,11 @@ function diy_tutorials_block_assets()
   // Register block editor script for backend.
   wp_register_script(
     'diy_tutorials_block_vendor_js', // Handle.
-    plugins_url('/dist/vendor-es5.js', dirname(__FILE__)),
+    plugins_url('/dist/diy-tutorials-backend/vendor-es5.js', dirname(__FILE__)),
     array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-components'),
     null,
     true
   );
-
 
   /**
    * Register Gutenberg block on server-side.
@@ -86,19 +85,29 @@ function diy_tutorials_block_assets()
    * @link https://wordpress.org/gutenberg/handbook/blocks/writing-your-first-block-type#enqueuing-block-scripts
    * @since 1.16.0
    */
+
   register_block_type(
     'irian/diy-block', array(
-      'script' => array(
+      'editor_script' => array(
         'diy_tutorials_block_runtime_js',
         'diy_tutorials_block_polyfills_js',
         'diy_tutorials_block_styles_js',
         'diy_tutorials_block_main_js',
-        'diy_tutorials_block_vendor_js')
+        'diy_tutorials_block_vendor_js'
+      )
     )
   );
+}
 
-
+function frontend_enqueue_scripts()
+{
+  wp_enqueue_script('frontend_runtime', plugins_url('/dist/diy-tutorials-frontend/runtime-es5.js', dirname(__FILE__)), array(), null, true);
+  wp_enqueue_script('frontend_polyfills', plugins_url('/dist/diy-tutorials-frontend/polyfills-es5.js', dirname(__FILE__)), array(), null, true);
+  wp_enqueue_script('frontend_styles', plugins_url('/dist/diy-tutorials-frontend/styles-es5.js', dirname(__FILE__)), array(), null, true);
+  wp_enqueue_script('frontend_main', plugins_url('/dist/diy-tutorials-frontend/main-es5.js', dirname(__FILE__)), array(), null, true);
+  wp_enqueue_script('frontend_vendor', plugins_url('/dist/diy-tutorials-frontend/vendor-es5.js', dirname(__FILE__)), array(), null, true);
 }
 
 // Hook: Block assets.
 add_action('init', 'diy_tutorials_block_assets');
+add_action('wp_enqueue_scripts', 'frontend_enqueue_scripts');
