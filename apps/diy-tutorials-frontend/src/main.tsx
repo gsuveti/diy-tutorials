@@ -1,11 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {App, ROOT_ID} from '@diy-tutorials/diy-tutorials-common';
+import {ROOT_ID, Tutorial} from '@diy-tutorials/diy-tutorials-common';
 
 
-console.log("hydrating root element");
-ReactDOM.hydrate(
-  <App></App>,
-  document.getElementById(ROOT_ID)
-);
+const rootElement = document.getElementById(ROOT_ID);
+if (rootElement) {
+  console.log("hydrating root element");
+
+  ReactDOM.hydrate(
+    <Tutorial></Tutorial>,
+    rootElement
+  );
+}
 

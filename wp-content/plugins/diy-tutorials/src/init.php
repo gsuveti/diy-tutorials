@@ -86,8 +86,11 @@ function diy_tutorials_block_assets()
    * @since 1.16.0
    */
 
+  register_block_type('irian/diy-section');
+  register_block_type('irian/diy-question');
+
   register_block_type(
-    'irian/diy-block', array(
+    'irian/diy-tutorial', array(
       'editor_script' => array(
         'diy_tutorials_block_runtime_js',
         'diy_tutorials_block_polyfills_js',
@@ -97,6 +100,7 @@ function diy_tutorials_block_assets()
       )
     )
   );
+
 }
 
 function frontend_enqueue_scripts()

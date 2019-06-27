@@ -1,3 +1,4 @@
-export * from './lib/diy-tutorials-common/diy-tutorials-common';
-export * from './lib/app/app';
+export * from './lib/tutorial/tutorial';
+export * from './lib/question/question';
+export * from './lib/section/section';
 export * from './lib/constants';
