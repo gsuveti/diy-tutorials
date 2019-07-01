@@ -1,9 +1,13 @@
 import React from 'react';
+import {Section} from '@diy-tutorials/diy-tutorials-common';
+import {appendRawHtmlToCoreBlocks, serializeBlocksData} from './utils';
 
+// @ts-ignore
+const {TextControl} = wp.components;
 // @ts-ignore
 const {registerBlockType} = window.wp.blocks;
 // @ts-ignore
-const {BlockControls, InspectorControls, AlignmentToolbar} = window.wp.editor;
+const {BlockControls, InspectorControls, InnerBlocks} = window.wp.editor;
 
 console.log("registerBlockType section");
 /**
@@ -26,11 +30,9 @@ registerBlockType('irian/diy-section', {
   category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
   keywords: [],
   attributes: {
-    blockTitle: {type: 'string'},
-    alignment: {
-      type: 'string',
-      default: 'none',
-    },
+    displayCondition: {
+      type: 'string'
+    }
   },
 
   /**
@@ -42,26 +44,35 @@ registerBlockType('irian/diy-section', {
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
   edit: function (props: any) {
-    const {blockTitle, alignment} = props.attributes;
+    const {displayCondition} = props.attributes;
 
-    function onChangeAlignment(newAlignment) {
-      props.setAttributes({alignment: newAlignment === undefined ? 'none' : newAlignment});
-    }
 
-    function onTitleChange(value) {
-      console.log(value);
-      props.setAttributes({blockTitle: value})
-    }
+    const BLOCKS_TEMPLATE = [
+      // ['irian/diy-content'],
+      // ['irian/diy-question'],
+    ];
+    const ALLOWED_BLOCKS = ['irian/diy-content', 'irian/diy-question'];
+
 
     return ([
         <BlockControls key='controls'>
-          <AlignmentToolbar value={alignment} onChange={onChangeAlignment}></AlignmentToolbar>
+
         </BlockControls>,
         <InspectorControls key='inspector'>
-          <AlignmentToolbar value={alignment} onChange={onChangeAlignment}></AlignmentToolbar>
+          <TextControl label="Conditie de afisare"
+                       value={displayCondition}
+                       onChange={(value) => {
+                         props.setAttributes({displayCondition: value});
+                       }}/>
+
         </InspectorControls>,
         <div className={props.className} key='content'>
-          <p>Section</p>
+          <Section>
+            <InnerBlocks
+              template={BLOCKS_TEMPLATE} templateLock={false}
+              allowedBlocks={ALLOWED_BLOCKS}
+            />
+          </Section>
         </div>
       ]
     );
@@ -77,12 +88,15 @@ registerBlockType('irian/diy-section', {
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
   save: function (props: any) {
-    console.log(props);
 
+    const innerBlocks = appendRawHtmlToCoreBlocks(props.innerBlocks);
+    const innerBlocksData = serializeBlocksData(props.innerBlocks);
 
     return (
       <div className={props.className} key='content'>
-        <p>Section</p>
+        <Section>
+          <InnerBlocks.Content></InnerBlocks.Content>
+        </Section>
       </div>
     );
   },

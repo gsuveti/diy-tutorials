@@ -1,8 +1,8 @@
 import React from 'react';
-import {Tutorial, ROOT_ID} from '@diy-tutorials/diy-tutorials-common';
+import {ROOT_ID, Tutorial} from '@diy-tutorials/diy-tutorials-common';
 
 // @ts-ignore
-const {registerBlockType} = window.wp.blocks;
+const {registerBlockType, serialize} = window.wp.blocks;
 // @ts-ignore
 const {BlockControls, InspectorControls, AlignmentToolbar, InnerBlocks} = window.wp.editor;
 
@@ -45,23 +45,20 @@ registerBlockType('irian/diy-tutorial', {
    */
   edit: function (props: any) {
     const {blockTitle, alignment} = props.attributes;
+    console.log("edit tutorial");
 
     function onChangeAlignment(newAlignment) {
       props.setAttributes({alignment: newAlignment === undefined ? 'none' : newAlignment});
     }
 
     function onTitleChange(value) {
-      console.log(value);
       props.setAttributes({blockTitle: value})
     }
 
     const BLOCKS_TEMPLATE = [
-      ['core/heading', {placeholder: 'Header'}],
-      ['core/image', {}],
-      ['core/paragraph', {placeholder: 'Lorem ipsum'}],
       ['irian/diy-section', {}]
     ];
-    const ALLOWED_BLOCKS = ['core/image', 'core/paragraph', 'irian/diy-section'];
+    const ALLOWED_BLOCKS = ['irian/diy-section'];
 
 
     return ([
@@ -83,7 +80,6 @@ registerBlockType('irian/diy-tutorial', {
     );
   },
 
-
   /**
    * The save function defines the way in which the different attributes should be combined
    * into the final markup, which is then serialized by Gutenberg into post_content.
@@ -95,13 +91,12 @@ registerBlockType('irian/diy-tutorial', {
   save: function (props: any) {
     console.log(props);
 
-    return ([
-        <div id={ROOT_ID} className={props.className} key='content'>
-          <Tutorial>
-            <InnerBlocks.Content></InnerBlocks.Content>
-          </Tutorial>
-        </div>
-      ]
+    return (
+      <div id={ROOT_ID} className={props.className} key='content'>
+        <Tutorial>
+          <InnerBlocks.Content></InnerBlocks.Content>
+        </Tutorial>
+      </div>
     );
   },
 });

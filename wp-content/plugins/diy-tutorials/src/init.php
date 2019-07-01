@@ -34,7 +34,7 @@ function diy_tutorials_block_assets()
   wp_register_script(
     'diy_tutorials_block_main_js', // Handle.
     plugins_url('/dist/diy-tutorials-backend/main-es5.js', dirname(__FILE__)),
-    array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-components'),
+    array('wp-blocks', 'wp-element', 'wp-editor'),
     null,
     true
   );
@@ -43,7 +43,7 @@ function diy_tutorials_block_assets()
   wp_register_script(
     'diy_tutorials_block_polyfills_js', // Handle.
     plugins_url('/dist/diy-tutorials-backend/polyfills-es5.js', dirname(__FILE__)),
-    array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-components'),
+    array('wp-blocks', 'wp-element', 'wp-editor'),
     null,
     true
   );
@@ -52,7 +52,7 @@ function diy_tutorials_block_assets()
   wp_register_script(
     'diy_tutorials_block_runtime_js', // Handle.
     plugins_url('/dist/diy-tutorials-backend/runtime-es5.js', dirname(__FILE__)),
-    array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-components'),
+    array('wp-blocks', 'wp-element', 'wp-editor'),
     null,
     true
   );
@@ -61,7 +61,7 @@ function diy_tutorials_block_assets()
   wp_register_script(
     'diy_tutorials_block_styles_js', // Handle.
     plugins_url('/dist/diy-tutorials-backend/styles-es5.js', dirname(__FILE__)),
-    array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-components'),
+    array('wp-blocks', 'wp-element', 'wp-editor'),
     null,
     true
   );
@@ -70,7 +70,7 @@ function diy_tutorials_block_assets()
   wp_register_script(
     'diy_tutorials_block_vendor_js', // Handle.
     plugins_url('/dist/diy-tutorials-backend/vendor-es5.js', dirname(__FILE__)),
-    array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-components'),
+    array('wp-blocks', 'wp-element', 'wp-editor'),
     null,
     true
   );
@@ -86,8 +86,9 @@ function diy_tutorials_block_assets()
    * @since 1.16.0
    */
 
-  register_block_type('irian/diy-section');
+  register_block_type('irian/diy-content');
   register_block_type('irian/diy-question');
+  register_block_type('irian/diy-section');
 
   register_block_type(
     'irian/diy-tutorial', array(
@@ -115,3 +116,6 @@ function frontend_enqueue_scripts()
 // Hook: Block assets.
 add_action('init', 'diy_tutorials_block_assets');
 add_action('wp_enqueue_scripts', 'frontend_enqueue_scripts');
+
+define('WP_DEBUG', true);
+define('DEBUG_SCRIPTS', true);
