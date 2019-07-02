@@ -119,3 +119,8 @@ add_action('wp_enqueue_scripts', 'frontend_enqueue_scripts');
 
 define('WP_DEBUG', true);
 define('DEBUG_SCRIPTS', true);
+
+function my_deregister_scripts(){
+  wp_deregister_script( 'wp-embed' );
+}
+add_action( 'wp_footer', 'my_deregister_scripts' );

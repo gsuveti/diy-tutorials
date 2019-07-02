@@ -1,0 +1,19 @@
+.wp-block-irian-diy-tutorial {
+  $margin: -14px;
+  padding: $margin 0;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: $margin;
+    left: $margin;
+    right: $margin;
+    bottom: $margin;
+    border: 1px dashed gray;
+  }
+}
+
+.font-size-small {
+  font-size: 14px;
+}
+

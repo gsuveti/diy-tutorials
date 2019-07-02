@@ -11,7 +11,7 @@ export const RawHTML = (props: RawHTMLProps) => {
 
   if (props.html) {
     return (
-      <div dangerouslySetInnerHTML={{__html: props.html.replace("\\n", "")}}>
+      <div dangerouslySetInnerHTML={{__html: props.html.replace(/(\r\n|\n|\r)/gm, "")}}>
       </div>
     );
   }

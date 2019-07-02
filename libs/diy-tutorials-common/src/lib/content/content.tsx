@@ -5,19 +5,26 @@ import {RawHTML} from '../raw-html/raw-html';
 
 /* tslint:disable:no-empty-interface */
 export interface ContentProps {
+  className?: string;
+  clientId?: string;
   children?: any;
-  innerHTML?: any;
+  html?: any;
 }
 
 export const Content = (props: ContentProps) => {
-  if (props.innerHTML) {
-    return <RawHTML html={props.innerHTML}/>;
-  }
+  const {className, clientId, html, children} = props;
+  const content = children ?
+    <div>
+      {children}
+    </div>
+    :
+    <RawHTML html={html}/>;
 
   return (
-    <div>
-      <p>Content</p>
-      {props.children}
+    <div className={className}
+         data-client_id={clientId}
+    >
+      {content}
     </div>
   );
 };

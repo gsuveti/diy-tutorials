@@ -1,0 +1,13 @@
+.wp-block-irian-diy-section {
+  $margin: -14px;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: $margin;
+    left: $margin;
+    right: $margin;
+    bottom: $margin;
+    border: 1px dashed cadetblue;
+  }
+}
