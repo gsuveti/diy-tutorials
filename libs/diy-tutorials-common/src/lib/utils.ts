@@ -1,7 +1,11 @@
 const uuidv4 = require('uuid/v4')
 
 export function serializeAttributes(attributes = {}) {
-  return btoa(JSON.stringify(attributes));
+  const orderedAttributes = {};
+  Object.keys(attributes).sort().forEach(function (key) {
+    orderedAttributes[key] = attributes[key];
+  });
+  return btoa(JSON.stringify(orderedAttributes));
 }
 
 

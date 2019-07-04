@@ -47,9 +47,9 @@ registerBlockType('irian/diy-content', {
 
 
     const BLOCKS_TEMPLATE = [
-      ['core/heading', {placeholder: 'Content header', level: 4}],
-      ['core/image', {}],
-      ['core/paragraph', {placeholder: 'Content paragraph'}]
+      ['core/heading', {placeholder: 'Content header', level: 4, content: "This is a section"}],
+      // ['core/image', {}],
+      ['core/paragraph', {placeholder: 'Content paragraph', content: "Lorem ipsum"}]
     ];
     const ALLOWED_BLOCKS = ['core/heading', 'core/image', 'core/paragraph'];
 
@@ -66,14 +66,12 @@ registerBlockType('irian/diy-content', {
                        }}/>
 
         </InspectorControls>,
-        <div className={props.className} key='content'>
-          <Content>
-            <InnerBlocks
-              template={BLOCKS_TEMPLATE} templateLock={false}
-              allowedBlocks={ALLOWED_BLOCKS}
-            />
-          </Content>
-        </div>
+        <Content className={props.className} key='content'>
+          <InnerBlocks
+            template={BLOCKS_TEMPLATE} templateLock={false}
+            allowedBlocks={ALLOWED_BLOCKS}
+          />
+        </Content>
       ]
     );
   },
@@ -89,11 +87,9 @@ registerBlockType('irian/diy-content', {
    */
   save: function (props: any) {
     return (
-      <div className={props.className} key='content'>
-        <Content>
-          <InnerBlocks.Content></InnerBlocks.Content>
-        </Content>
-      </div>
+      <Content className={props.className} key='content'>
+        <InnerBlocks.Content></InnerBlocks.Content>
+      </Content>
     );
   },
 });

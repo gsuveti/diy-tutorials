@@ -1,6 +1,6 @@
 import React from 'react';
 import {Section} from '@diy-tutorials/diy-tutorials-common';
-import {appendRawHtmlToCoreBlocks, serializeBlocksData} from './utils';
+import {TutorialWpContext} from './tutorial-wp-context';
 
 // @ts-ignore
 const {TextControl} = wp.components;
@@ -26,13 +26,12 @@ console.log("registerBlockType section");
 registerBlockType('irian/diy-section', {
   // Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
   title: 'diy-section', // Block title.
-  icon: 'slides', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
+  icon: 'layout', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
   category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
   keywords: [],
   attributes: {
-    displayCondition: {
-      type: 'string'
-    }
+    displayCondition: {type: 'string'},
+    uuid: {type: 'string'}
   },
 
   /**
@@ -44,12 +43,12 @@ registerBlockType('irian/diy-section', {
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
   edit: function (props: any) {
-    const {displayCondition} = props.attributes;
-
+    const {attributes, clientId} = props;
+    const {displayCondition} = attributes;
 
     const BLOCKS_TEMPLATE = [
-      // ['irian/diy-content'],
-      // ['irian/diy-question'],
+      ['irian/diy-content'],
+      ['irian/diy-question']
     ];
     const ALLOWED_BLOCKS = ['irian/diy-content', 'irian/diy-question'];
 
@@ -64,16 +63,25 @@ registerBlockType('irian/diy-section', {
                        onChange={(value) => {
                          props.setAttributes({displayCondition: value});
                        }}/>
-
         </InspectorControls>,
-        <div className={props.className} key='content'>
-          <Section>
-            <InnerBlocks
-              template={BLOCKS_TEMPLATE} templateLock={false}
-              allowedBlocks={ALLOWED_BLOCKS}
-            />
-          </Section>
-        </div>
+        <Section
+          key='content'
+          isServer={true}
+          className={props.className}
+          clientId={clientId}
+          attributes={attributes}
+        >
+          <TutorialWpContext.Consumer key={'sda'}>
+            {({sections = {}}: { sections: any }) => (
+              <p key='index'>Section: {sections[clientId] + 1}</p>
+            )}
+          </TutorialWpContext.Consumer>
+          <InnerBlocks
+            template={BLOCKS_TEMPLATE} templateLock={false}
+            allowedBlocks={ALLOWED_BLOCKS}
+          />
+        </Section>
+
       ]
     );
   },
@@ -88,16 +96,17 @@ registerBlockType('irian/diy-section', {
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
   save: function (props: any) {
-
-    const innerBlocks = appendRawHtmlToCoreBlocks(props.innerBlocks);
-    const innerBlocksData = serializeBlocksData(props.innerBlocks);
+    const {attributes, clientId} = props;
 
     return (
-      <div className={props.className} key='content'>
-        <Section>
-          <InnerBlocks.Content></InnerBlocks.Content>
-        </Section>
-      </div>
+      <Section
+        key='content'
+        isServer={true}
+        className={props.className}
+        clientId={clientId}
+        attributes={attributes}>
+        <InnerBlocks.Content></InnerBlocks.Content>
+      </Section>
     );
   },
 });

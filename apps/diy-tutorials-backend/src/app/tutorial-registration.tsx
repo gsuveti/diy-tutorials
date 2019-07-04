@@ -1,13 +1,68 @@
 import React from 'react';
-import {ROOT_ID, Tutorial} from '@diy-tutorials/diy-tutorials-common';
+import {generateUUID, ROOT_ID, Tutorial} from '@diy-tutorials/diy-tutorials-common';
+import {TutorialWpContext} from './tutorial-wp-context';
 
 // @ts-ignore
-const {registerBlockType, serialize} = window.wp.blocks;
+const {registerBlockType} = window.wp.blocks;
+// @ts-ignore
+const {Component} = window.wp.element;
 // @ts-ignore
 const {BlockControls, InspectorControls, AlignmentToolbar, InnerBlocks} = window.wp.editor;
+// @ts-ignore
+const {withSelect} = window.wp.data;
 
 
 console.log("registerBlockType tutorial");
+
+export const tutorialEdit = (props) => {
+  const {attributes, className, innerBlocks} = props;
+  const {uuid} = attributes;
+
+  const sections = innerBlocks.reduce((acc, block, index) => {
+    return {
+      [block.clientId]: index,
+      ...acc
+    }
+  }, {});
+
+  if (!uuid) {
+    props.setAttributes({uuid: generateUUID()})
+  }
+
+  const BLOCKS_TEMPLATE = [
+    ['irian/diy-section', {uuid: 'asd'}]
+  ];
+  const ALLOWED_BLOCKS = ['irian/diy-section'];
+
+
+  return ([
+      <BlockControls key='controls'>
+
+      </BlockControls>,
+      <InspectorControls key='inspector'>
+
+      </InspectorControls>,
+      <TutorialWpContext.Provider value={
+        {
+          sections: sections
+        }
+      }>
+        <Tutorial
+          id={ROOT_ID}
+          attributes={attributes}
+          className={className} key='content'>
+          <p>{uuid}</p>
+          <InnerBlocks
+            template={BLOCKS_TEMPLATE}
+            templateLock={false}
+            allowedBlocks={ALLOWED_BLOCKS}
+          />
+        </Tutorial>
+      </TutorialWpContext.Provider>
+    ]
+  );
+};
+
 /**
  * Register: aa Gutenberg Block.
  *
@@ -24,15 +79,11 @@ console.log("registerBlockType tutorial");
 registerBlockType('irian/diy-tutorial', {
   // Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
   title: 'diy-tutorial', // Block title.
-  icon: 'layout', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
+  icon: 'info', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
   category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
   keywords: [],
   attributes: {
-    blockTitle: {type: 'string'},
-    alignment: {
-      type: 'string',
-      default: 'none',
-    },
+    uuid: {type: 'string'}
   },
 
   /**
@@ -43,42 +94,15 @@ registerBlockType('irian/diy-tutorial', {
    *
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
-  edit: function (props: any) {
-    const {blockTitle, alignment} = props.attributes;
-    console.log("edit tutorial");
+  edit: withSelect((select, ownProps) => {
+    const {getCurrentPostId, getGlobalBlockCount, getBlocks} = select("core/editor");
 
-    function onChangeAlignment(newAlignment) {
-      props.setAttributes({alignment: newAlignment === undefined ? 'none' : newAlignment});
-    }
-
-    function onTitleChange(value) {
-      props.setAttributes({blockTitle: value})
-    }
-
-    const BLOCKS_TEMPLATE = [
-      ['irian/diy-section', {}]
-    ];
-    const ALLOWED_BLOCKS = ['irian/diy-section'];
-
-
-    return ([
-        <BlockControls key='controls'>
-          <AlignmentToolbar value={alignment} onChange={onChangeAlignment}></AlignmentToolbar>
-        </BlockControls>,
-        <InspectorControls key='inspector'>
-          <AlignmentToolbar value={alignment} onChange={onChangeAlignment}></AlignmentToolbar>
-        </InspectorControls>,
-        <div id={ROOT_ID} className={props.className} key='content'>
-          <Tutorial>
-            <InnerBlocks
-              template={BLOCKS_TEMPLATE} templateLock={false}
-              allowedBlocks={ALLOWED_BLOCKS}
-            />
-          </Tutorial>
-        </div>
-      ]
-    );
-  },
+    return {
+      post_id: getCurrentPostId(),
+      block_count: getGlobalBlockCount(),
+      innerBlocks: getBlocks(ownProps.clientId)
+    };
+  })(tutorialEdit),
 
   /**
    * The save function defines the way in which the different attributes should be combined
@@ -89,14 +113,18 @@ registerBlockType('irian/diy-tutorial', {
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
   save: function (props: any) {
+    const {attributes} = props;
     console.log(props);
 
     return (
-      <div id={ROOT_ID} className={props.className} key='content'>
-        <Tutorial>
-          <InnerBlocks.Content></InnerBlocks.Content>
-        </Tutorial>
-      </div>
+      <Tutorial
+        id={ROOT_ID}
+        className={props.className}
+        attributes={attributes}
+        key='content'
+      >
+        <InnerBlocks.Content></InnerBlocks.Content>
+      </Tutorial>
     );
   },
 });

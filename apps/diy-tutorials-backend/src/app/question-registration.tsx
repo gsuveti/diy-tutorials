@@ -1,8 +1,8 @@
 import React from 'react';
-import {Question} from '@diy-tutorials/diy-tutorials-common';
+import {generateUUID, Question} from '@diy-tutorials/diy-tutorials-common';
 
 // @ts-ignore
-const {TextControl} = wp.components;
+const {TextControl, RadioControl, SelectControl, TextareaControl, CheckboxControl} = wp.components;
 // @ts-ignore
 const {registerBlockType} = window.wp.blocks;
 // @ts-ignore
@@ -25,13 +25,16 @@ console.log("registerBlockType question");
 registerBlockType('irian/diy-question', {
   // Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
   title: 'diy-question', // Block title.
-  icon: 'slides', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
+  icon: 'forms', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
   category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
   keywords: [],
   attributes: {
-    displayCondition: {
-      type: 'string'
-    }
+    uuid: {type: 'string'},
+    type: {type: 'string', default: 'selectOne'},
+    displayCondition: {type: 'string'},
+    text: {type: 'string'},
+    required: {type: 'string', default: false},
+    options: {type: 'string'}
   },
 
   /**
@@ -43,8 +46,12 @@ registerBlockType('irian/diy-question', {
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
   edit: function (props: any) {
-    const {displayCondition} = props.attributes;
+    const {isSelected, attributes, className, setAttributes} = props;
+    const {uuid, displayCondition, text, type, required, options} = attributes;
 
+    if (!uuid) {
+      setAttributes({uuid: generateUUID()})
+    }
 
     return ([
         <BlockControls key='controls'>
@@ -56,12 +63,87 @@ registerBlockType('irian/diy-question', {
                        onChange={(value) => {
                          props.setAttributes({displayCondition: value});
                        }}/>
-
         </InspectorControls>,
-        <div className={props.className} key='content'>
-          <Question>
-          </Question>
-        </div>
+        <Question className={className}
+                  attributes={attributes}
+                  key='content'
+                  isServer={true}>
+          {isSelected ?
+            <div>
+              <TextControl
+                label="Intrebare"
+                key={"question"}
+                value={text}
+                onChange={(value) => {
+                  props.setAttributes({text: value});
+                }}/>
+
+              <div>
+                <SelectControl
+                  key={"type"}
+                  label="Tip raspuns"
+                  value={type}
+                  options={[
+                    {label: 'Un raspuns', value: 'selectOne'},
+                    {label: 'Raspuns multiplu', value: 'selectMany'},
+                    {label: 'Text', value: 'text'},
+                    {label: 'Numeric', value: 'numeric'},
+                  ]}
+                  onChange={(value) => {
+                    props.setAttributes({type: value});
+                  }}
+                />
+                <CheckboxControl
+                  label="Raspuns obligatoriu"
+                  checked={required}
+                  onChange={(isChecked) => {
+                    props.setAttributes({required: isChecked});
+                  }}
+                />
+              </div>
+
+              {type.startsWith("select") ?
+                <TextControl
+                  key={"options"}
+                  label="Optiuni"
+                  value={options}
+                  onChange={(value) => {
+                    props.setAttributes({options: value});
+                  }}/> : null
+              }
+
+
+              <TextControl
+                label="Id"
+                key={"id"}
+                value={uuid}
+                onChange={(value) => {
+                  props.setAttributes({uuid: value});
+                }}/>
+
+
+              <TextareaControl
+                key={"displayCondition"}
+                label="Conditie de afisare"
+                value={displayCondition}
+                onChange={(value) => {
+                  props.setAttributes({displayCondition: value});
+                }}/>
+
+
+            </div>
+            :
+            <div>
+              <TextControl
+                label="Intrebare"
+                key={"question"}
+                value={text}
+                onChange={(value) => {
+                  props.setAttributes({text: value});
+                }}/>
+            </div>
+          }
+        </Question>
       ]
     );
   },
@@ -76,12 +158,14 @@ registerBlockType('irian/diy-question', {
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
   save: function (props: any) {
-    return (
-      <div className={props.className} key='content'>
-        <Question>
+    const {attributes} = props;
 
-        </Question>
-      </div>
+    return (
+      <Question
+        className={props.className}
+        attributes={attributes} key='content'
+        isServer={true}
+      />
     );
   },
 });

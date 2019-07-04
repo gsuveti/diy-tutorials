@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {FormEvent} from 'react';
 
 import './question.scss';
 import {serializeAttributes} from '../utils';
-import {TutorialContext} from '../context';
-
+import Select, {Option} from '@material/react-select';
+import TextField, {Input} from '@material/react-text-field';
+import MaterialIcon from '@material/react-material-icon';
 
 /* tslint:disable:no-empty-interface */
 export interface QuestionProps {
@@ -17,111 +18,110 @@ export interface QuestionProps {
     uuid?: string;
   };
   children?: any;
-
+  answer?: any;
+  isServer?: boolean;
+  addFilter?: (filer: any) => void;
 }
 
-export const Question = (props: QuestionProps) => {
-  const {className, children, attributes} = props;
-  const {text} = attributes;
 
-
-  return (
-    <div className={className}
-         data-attributes={serializeAttributes(attributes)}>
-
-      {children ? children :
-        <div>
-          <p>{text}</p>
-          <TutorialContext.Consumer>
-            {({addFilter}) => (<QuestionForm {...attributes} addFilter={addFilter}/>)}
-          </TutorialContext.Consumer>
-        </div>
-      }
-    </div>
-  );
-};
-
-export default Question;
-
-
-export interface QuestionFormProps {
-  className?: string,
-  type: string,
-  text?: string;
-  required?: boolean;
-  options?: string;
-  uuid?: string;
-  addFilter?: any;
-}
-
-export interface QuestionFormState {
-  value?: any
-}
-
-export class QuestionForm extends React.Component<QuestionFormProps, QuestionFormState> {
-
+export class Question extends React.Component<QuestionProps> {
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
     this.renderTextQuestion = this.renderTextQuestion.bind(this);
     this.renderSelectOneQuestion = this.renderSelectOneQuestion.bind(this);
-    this.state = {value: ''};
   }
 
-  handleChange(e) {
-    this.setState({value: e.target.value});
+  submitAnswer(value: any) {
+    const {addFilter, attributes} = this.props;
+    const {uuid, text} = attributes;
+
+    addFilter({
+      key: uuid,
+      value: {
+        value: value,
+        text: text
+      }
+    })
   }
 
   renderTextQuestion() {
+    const {answer = {}} = this.props;
+    const {value} = answer;
+
     return (
       <div>
-        <input onChange={this.handleChange}/>
+        <TextField
+          className={"form-control"}
+          onTrailingIconSelect={() => this.submitAnswer("")}
+          trailingIcon={<MaterialIcon role="button" icon="delete"/>}
+        ><Input
+          value={value}
+          onChange={(event: FormEvent<HTMLInputElement>) => {
+            this.submitAnswer(event.currentTarget.value)
+          }}/>
+        </TextField>
       </div>
     );
   };
 
   renderSelectOneQuestion() {
-    const {options} = this.props;
-    return (
-      <div>
-        <select onChange={this.handleChange}>
+    const {answer = {}, attributes} = this.props;
+    const {value} = answer;
+    const {options} = attributes;
+
+    if (options) {
+      return (
+        <Select
+          className={"form-control"}
+          enhanced
+          value={value}
+          onChange={(event) => this.submitAnswer(event.currentTarget.value)}
+          onEnhancedChange={(index, item) => this.submitAnswer(item.getAttribute('data-value'))}
+        >
+
           {options.split(",").map(value => (
-            <option key={value} value={value}>{value}</option>
-          ))}
-        </select>
-      </div>
-    );
+              <Option key={value} value={value}>{value}</Option>
+            )
+          )}
+        </Select>
+      );
+    }
+    return null;
   };
 
 
   render(): React.ReactNode {
-    const {type, className, addFilter, uuid} = this.props;
-    const {value} = this.state;
+    const {className, children, attributes, isServer} = this.props;
+    const {text, type} = attributes;
 
-    let renderQuestion = null;
-
-    switch (type) {
-      case "text": {
-        renderQuestion = this.renderTextQuestion();
-        break;
-      }
-      case "selectOne": {
-        renderQuestion = this.renderSelectOneQuestion();
-        break;
-      }
-    }
 
     return (
-      <div className={className}>
-        {renderQuestion}
-        <button className={"button color1"} onClick={() => addFilter({
-          key: uuid,
-          value
-        })}>Submit
-        </button>
-      </div>
+      <div className={className}
+           data-attributes={serializeAttributes(attributes)}>
+        {children}
 
+        {isServer ?
+          null :
+
+          <div className={"pt-md"}>
+            {text ?
+              <div>
+                <p>{text}</p>
+                < div className="d-flex align-items-baseline">
+                  {type === 'text' ?
+                    this.renderTextQuestion() : null
+                  }
+
+                  {type === 'selectOne' ?
+                    this.renderSelectOneQuestion() : null
+                  }
+                </div>
+              </div>
+              : null
+            }
+          </div>
+        }
+      </div>
     );
   }
-};
-
+}

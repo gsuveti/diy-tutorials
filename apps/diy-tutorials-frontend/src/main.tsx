@@ -1,17 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {ROOT_ID, Tutorial} from '@diy-tutorials/diy-tutorials-common';
+import {deserializeAttributes, ROOT_ID, Tutorial} from '@diy-tutorials/diy-tutorials-common';
 import {serialize} from '@wordpress/blocks';
-
 
 const rootElement = document.getElementById(ROOT_ID);
 
 function getSectionsInTutorial(element: HTMLElement) {
   const sections = [];
-  (element.firstChild as HTMLElement).childNodes.forEach((node, key) => {
-    const sectionElement = node as HTMLElement;
-    if (sectionElement.classList && sectionElement.classList.contains("wp-block-irian-diy-section")) {
-      sections.push(getSection(sectionElement, key));
+  element.childNodes.forEach((node, key) => {
+    const childElement = node as HTMLElement;
+    if (childElement.classList && childElement.classList.contains("wp-block-irian-diy-section")) {
+      sections.push(getSection(childElement, key));
     }
   });
   return sections;
@@ -19,27 +18,36 @@ function getSectionsInTutorial(element: HTMLElement) {
 
 function getSection(element: HTMLElement, key: number) {
   const blocks = [];
-  (element.firstChild as HTMLElement).childNodes.forEach((node, key) => {
-    const blockElement = node as HTMLElement;
-    if (blockElement.classList && blockElement.classList.contains("wp-block-irian-diy-content")) {
+  element.childNodes.forEach((node, key) => {
+    const childElement = node as HTMLElement;
+    let name = "";
+    if (childElement.classList && childElement.classList.contains("wp-block-irian-diy-content")) {
+      name = "content";
+    } else if (childElement.classList && childElement.classList.contains("wp-block-irian-diy-question")) {
+      name = "question";
+    }
+
+    const {uuid = ""} = childElement.dataset || {};
+
+    if (name) {
       blocks.push({
+        name: name,
         key: key,
-        name: 'content',
-        html: (blockElement.firstChild as HTMLElement).innerHTML
-      });
-    } else if (blockElement.classList && blockElement.classList.contains("wp-block-irian-diy-question")) {
-      blocks.push({
-        name: 'question',
-        key: key,
-        html: (blockElement.firstChild as HTMLElement).innerHTML
+        uuid: uuid,
+        attributes: deserializeAttributes(childElement.dataset.attributes),
+        html: childElement.innerHTML
       });
     }
   });
 
+  const uuid = element.dataset.uuid;
+
   return {
     name: 'section',
     key: key,
-    blocks: blocks
+    uuid: uuid,
+    innerBlocks: blocks,
+    attributes: deserializeAttributes(element.dataset.attributes),
   };
 }
 
@@ -50,8 +58,8 @@ if (rootElement) {
 
   ReactDOM.render(
     <Tutorial
-      sections={sections}
-      innerHTML={(rootElement.firstChild as HTMLElement).innerHTML}>
+      attributes={deserializeAttributes(rootElement.dataset.attributes)}
+      sections={sections}>
     </Tutorial>,
     rootElement
   );
