@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import {deserializeAttributes, ROOT_ID, Tutorial} from '@diy-tutorials/diy-tutorials-common';
 import {serialize} from '@wordpress/blocks';
 
-const rootElement = document.getElementById(ROOT_ID);
 
 function getSectionsInTutorial(element: HTMLElement) {
   const sections = [];
@@ -51,10 +50,11 @@ function getSection(element: HTMLElement, key: number) {
   };
 }
 
-const sections = getSectionsInTutorial(rootElement);
-
+const rootElement = document.getElementById(ROOT_ID);
 if (rootElement) {
   console.log("hydrating root element");
+
+  const sections = getSectionsInTutorial(rootElement);
 
   ReactDOM.render(
     <Tutorial

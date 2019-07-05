@@ -14,7 +14,7 @@ export interface QuestionProps {
     displayCondition?: string;
     text?: string;
     required?: boolean;
-    options?: string;
+    optionsJSON?: string;
     uuid?: string;
   };
   children?: any;
@@ -67,7 +67,8 @@ export class Question extends React.Component<QuestionProps> {
   renderSelectOneQuestion() {
     const {answer = {}, attributes} = this.props;
     const {value} = answer;
-    const {options} = attributes;
+    const {optionsJSON} = attributes;
+    const options: any[] = JSON.parse(optionsJSON);
 
     if (options) {
       return (
@@ -79,7 +80,7 @@ export class Question extends React.Component<QuestionProps> {
           onEnhancedChange={(index, item) => this.submitAnswer(item.getAttribute('data-value'))}
         >
 
-          {options.split(",").map(value => (
+          {options.map(({value, section}) => (
               <Option key={value} value={value}>{value}</Option>
             )
           )}

@@ -3,7 +3,7 @@ import {Section} from '@diy-tutorials/diy-tutorials-common';
 import {TutorialWpContext} from './tutorial-wp-context';
 
 // @ts-ignore
-const {TextControl} = wp.components;
+const {TextControl, CheckboxControl, Toolbar, DropdownMenu} = wp.components;
 // @ts-ignore
 const {registerBlockType} = window.wp.blocks;
 // @ts-ignore
@@ -30,7 +30,8 @@ registerBlockType('irian/diy-section', {
   category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
   keywords: [],
   attributes: {
-    displayCondition: {type: 'string'},
+    nextSection: {type: 'string'},
+    submitForm: {type: 'boolean', default: false},
     uuid: {type: 'string'}
   },
 
@@ -43,8 +44,8 @@ registerBlockType('irian/diy-section', {
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
   edit: function (props: any) {
-    const {attributes, clientId} = props;
-    const {displayCondition} = attributes;
+    const {attributes, clientId, setAttributes} = props;
+    const {submitForm} = attributes;
 
     const BLOCKS_TEMPLATE = [
       ['irian/diy-content'],
@@ -52,17 +53,27 @@ registerBlockType('irian/diy-section', {
     ];
     const ALLOWED_BLOCKS = ['irian/diy-content', 'irian/diy-question'];
 
+    const controls = [
+      {
+        icon: `arrow-right-alt`,
+        title: `Go next`,
+        isActive: !submitForm,
+        onClick: () => setAttributes({submitForm: false}),
+      }, {
+        icon: `external`,
+        title: `Submit form`,
+        isActive: submitForm,
+        onClick: () => setAttributes({submitForm: true}),
+      }
+    ];
+
 
     return ([
         <BlockControls key='controls'>
-
+          <Toolbar controls={controls}>
+          </Toolbar>
         </BlockControls>,
         <InspectorControls key='inspector'>
-          <TextControl label="Conditie de afisare"
-                       value={displayCondition}
-                       onChange={(value) => {
-                         props.setAttributes({displayCondition: value});
-                       }}/>
         </InspectorControls>,
         <Section
           key='content'
@@ -71,9 +82,9 @@ registerBlockType('irian/diy-section', {
           clientId={clientId}
           attributes={attributes}
         >
-          <TutorialWpContext.Consumer key={'sda'}>
+          <TutorialWpContext.Consumer key={'index'}>
             {({sections = {}}: { sections: any }) => (
-              <p key='index'>Section: {sections[clientId] + 1}</p>
+              <p>Section: {sections.indexOf(clientId) + 1} {submitForm ? "(Submit)" : null}</p>
             )}
           </TutorialWpContext.Consumer>
           <InnerBlocks

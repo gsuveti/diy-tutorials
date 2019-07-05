@@ -1,8 +1,10 @@
 import React from 'react';
 import {generateUUID, Question} from '@diy-tutorials/diy-tutorials-common';
+import {List} from 'immutable';
+import {TutorialWpContext} from './tutorial-wp-context';
 
 // @ts-ignore
-const {TextControl, RadioControl, SelectControl, TextareaControl, CheckboxControl} = wp.components;
+const {TextControl, Button, SelectControl, TextareaControl, CheckboxControl, IconButton} = wp.components;
 // @ts-ignore
 const {registerBlockType} = window.wp.blocks;
 // @ts-ignore
@@ -33,8 +35,8 @@ registerBlockType('irian/diy-question', {
     type: {type: 'string', default: 'selectOne'},
     displayCondition: {type: 'string'},
     text: {type: 'string'},
-    required: {type: 'string', default: false},
-    options: {type: 'string'}
+    required: {type: 'boolean', default: false},
+    optionsJSON: {type: 'string', default: "[{},{}]"}
   },
 
   /**
@@ -47,91 +49,151 @@ registerBlockType('irian/diy-question', {
    */
   edit: function (props: any) {
     const {isSelected, attributes, className, setAttributes} = props;
-    const {uuid, displayCondition, text, type, required, options} = attributes;
+    const {uuid, displayCondition, text, type, required, optionsJSON, optionsNo} = attributes;
 
     if (!uuid) {
       setAttributes({uuid: generateUUID()})
     }
+
+    const options = List(JSON.parse(optionsJSON));
+
+
+    function updateOptions(index: number, attribute: string, value: string) {
+      const newOptions = options.setIn([index, attribute], value);
+      setAttributes({optionsJSON: JSON.stringify(newOptions.toJSON())});
+    }
+
+
+    function deleteOption(index: number) {
+      if (options.size > 1) {
+        const newOptions = options.delete(index);
+        setAttributes({optionsJSON: JSON.stringify(newOptions.toJSON())});
+      }
+    }
+
+    function addOption() {
+      const newOptions = options.setIn([options.size], {});
+      setAttributes({optionsJSON: JSON.stringify(newOptions.toJSON())});
+    }
+
 
     return ([
         <BlockControls key='controls'>
 
         </BlockControls>,
         <InspectorControls key='inspector'>
-          <TextControl label="Conditie de afisare"
-                       value={displayCondition}
-                       onChange={(value) => {
-                         props.setAttributes({displayCondition: value});
-                       }}/>
+
         </InspectorControls>,
         <Question className={className}
                   attributes={attributes}
                   key='content'
                   isServer={true}>
           {isSelected ?
-            <div>
-              <TextControl
-                label="Intrebare"
-                key={"question"}
-                value={text}
-                onChange={(value) => {
-                  props.setAttributes({text: value});
-                }}/>
+            <TutorialWpContext.Consumer>
+              {({sections = {}}: { sections: any }) => (
+                <div>
+                  <TextControl
+                    label="Intrebare"
+                    key={"question"}
+                    value={text}
+                    onChange={(value) => {
+                      props.setAttributes({text: value});
+                    }}/>
 
-              <div>
-                <SelectControl
-                  key={"type"}
-                  label="Tip raspuns"
-                  value={type}
-                  options={[
-                    {label: 'Un raspuns', value: 'selectOne'},
-                    {label: 'Raspuns multiplu', value: 'selectMany'},
-                    {label: 'Text', value: 'text'},
-                    {label: 'Numeric', value: 'numeric'},
-                  ]}
-                  onChange={(value) => {
-                    props.setAttributes({type: value});
-                  }}
-                />
-                <CheckboxControl
-                  label="Raspuns obligatoriu"
-                  checked={required}
-                  onChange={(isChecked) => {
-                    props.setAttributes({required: isChecked});
-                  }}
-                />
-              </div>
+                  <div>
+                    <SelectControl
+                      key={"type"}
+                      label="Tip raspuns"
+                      value={type}
+                      options={[
+                        {label: 'Un raspuns', value: 'selectOne'},
+                        {label: 'Raspuns multiplu', value: 'selectMany'},
+                        {label: 'Text', value: 'text'},
+                        {label: 'Numeric', value: 'numeric'},
+                      ]}
+                      onChange={(value) => {
+                        props.setAttributes({type: value});
+                      }}
+                    />
+                    <CheckboxControl
+                      label="Raspuns obligatoriu"
+                      checked={required}
+                      onChange={(isChecked) => {
+                        props.setAttributes({required: isChecked});
+                      }}
+                    />
+                  </div>
 
-              {type.startsWith("select") ?
-                <TextControl
-                  key={"options"}
-                  label="Optiuni"
-                  value={options}
-                  onChange={(value) => {
-                    props.setAttributes({options: value});
-                  }}/> : null
-              }
+                  {type.startsWith("select") ?
+                    <div key={'select'}>
+
+                      {options.map(({value = "", section = ""}, index) => (
+                        <div className={"d-flex flex-row"}>
+                          <TextControl
+                            placeholder={`Option ${index + 1}`}
+                            className={"pr-sm m-0"}
+                            key={"option"}
+                            value={value}
+                            onChange={(newValue) => {
+                              updateOptions(index, "value", newValue);
+                            }}/>
+
+                          <SelectControl
+                            className={"pr-sm m-0"}
+                            key="section_select"
+                            value={section}
+                            options={[{value: "", label: "Next section"}].concat(
+                              sections.map((section, index) => {
+                                return {
+                                  label: `Section ${index + 1}`,
+                                  value: `${index}`
+                                }
+                              }))
+                            }
+                            onChange={(section) => {
+                              updateOptions(index, "section", section);
+                            }}
+                          />
+                          <IconButton
+                            className={"py-0 mb-sm"}
+                            key="delete"
+                            icon="trash"
+                            label="Delete" onClick={() => deleteOption(index)}
+                          />
+                        </div>
+                      ))}
+                      <Button
+                        isLink={true}
+                        onClick={() => addOption()}
+                      >
+                        Add option
+                      </Button>
+                    </div>
+                    : null
+                  }
 
 
-              <TextControl
-                label="Id"
-                key={"id"}
-                value={uuid}
-                onChange={(value) => {
-                  props.setAttributes({uuid: value});
-                }}/>
+                  <TextControl
+                    label="Id"
+                    key={"id"}
+                    value={uuid}
+                    onChange={(value) => {
+                      props.setAttributes({uuid: value});
+                    }}/>
 
 
-              <TextareaControl
-                key={"displayCondition"}
-                label="Conditie de afisare"
-                value={displayCondition}
-                onChange={(value) => {
-                  props.setAttributes({displayCondition: value});
-                }}/>
+                  <TextareaControl
+                    key={"displayCondition"}
+                    label="Conditie de afisare"
+                    value={displayCondition}
+                    onChange={(value) => {
+                      props.setAttributes({displayCondition: value});
+                    }}/>
 
 
-            </div>
+                </div>
+              )}
+            </TutorialWpContext.Consumer>
             :
             <div>
               <TextControl

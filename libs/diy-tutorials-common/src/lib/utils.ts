@@ -9,7 +9,7 @@ export function serializeAttributes(attributes = {}) {
 }
 
 
-export function deserializeAttributes(attributes = "e30=") {
+export function deserializeAttributes(attributes = "W10=") {
   return JSON.parse(atob(attributes));
 }
 

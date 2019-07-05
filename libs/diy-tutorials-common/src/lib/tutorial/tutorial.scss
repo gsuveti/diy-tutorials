@@ -82,6 +82,13 @@ $spacers: map-merge(
   }
 }
 
+.wp-admin select {
+  height: 30px !important;
+  padding: 0;
+  margin: 0;
+  box-sizing: content-box;
+}
+
 .font-size-small {
   font-size: 14px;
 }

@@ -18,12 +18,7 @@ export const tutorialEdit = (props) => {
   const {attributes, className, innerBlocks} = props;
   const {uuid} = attributes;
 
-  const sections = innerBlocks.reduce((acc, block, index) => {
-    return {
-      [block.clientId]: index,
-      ...acc
-    }
-  }, {});
+  const sections = innerBlocks.map(( block) => block.clientId);
 
   if (!uuid) {
     props.setAttributes({uuid: generateUUID()})

@@ -21,7 +21,7 @@ export interface TutorialProps {
 /* tslint:disable:no-empty-interface */
 export interface TutorialState {
   filters?: {};
-  activeSection: number;
+  activeSectionIndex: number;
 }
 
 
@@ -33,7 +33,7 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
     this.submit = this.submit.bind(this);
     this.state = {
       filters: {},
-      activeSection: 0
+      activeSectionIndex: 0
     };
   }
 
@@ -49,12 +49,16 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
   }
 
   navigate(steps: number) {
-    const {activeSection} = this.state;
-    this.setState({activeSection: activeSection + steps});
+    const {activeSectionIndex} = this.state;
+    const {sections} = this.props;
+
+    const newIndex = Math.min(activeSectionIndex + steps, sections.length - 1);
+    this.setState({activeSectionIndex: newIndex});
   }
 
   submit() {
     const {filters} = this.state;
+    console.log(filters);
   }
 
 
@@ -62,14 +66,14 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
 
     const {id, attributes, className, sections = [], children} = this.props;
     const {uuid} = attributes;
-    const {filters, activeSection} = this.state;
+    const {filters, activeSectionIndex} = this.state;
+    const activeSection = sections[activeSectionIndex];
 
     const innerBlocks = sections.map((section, index) => {
       return (
-        <Section className={activeSection != index ? "hide" : "show"} {...section}/>
+        <Section className={activeSectionIndex != index ? "hide" : "show"} {...section}/>
       );
     });
-
 
     const content = children ?
       children
@@ -90,33 +94,36 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
            data-attributes={serializeAttributes(attributes)}
       >
         {content}
-        <div>
-          {
-            activeSection > 0 ?
-              <Button
-                onClick={() => this.navigate(-1)}
-              >
-                Back
-              </Button> : null
-          }
+        {activeSection ?
+          <div>
+            {
+              activeSectionIndex > 0 ?
+                <Button
+                  onClick={() => this.navigate(-1)}
+                >
+                  Back
+                </Button> : null
+            }
 
-          {
-            activeSection < (sections.length - 1) ?
-              <Button
-                onClick={() => this.navigate(1)}
-              >
-                Next
-              </Button> : null
-          }
-          {
-            activeSection === (sections.length - 1) ?
-              <Button
-                onClick={this.submit}
-              >
-                Submit
-              </Button> : null
-          }
-        </div>
+            {
+              !(activeSection.attributes.submitForm) ?
+                <Button
+                  onClick={() => this.navigate(1)}
+                >
+                  Next
+                </Button> : null
+            }
+            {
+              activeSection.attributes.submitForm ?
+                <Button
+                  onClick={this.submit}
+                >
+                  Submit
+                </Button> : null
+            }
+          </div>
+          : null
+        }
       </div>
     );
   }

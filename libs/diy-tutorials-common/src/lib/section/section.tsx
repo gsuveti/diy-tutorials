@@ -10,7 +10,9 @@ import {TutorialContext} from '../context';
 export interface SectionProps {
   className?: string;
   clientId?: string;
-  attributes?: {};
+  attributes?: {
+    submitForm:boolean
+  };
   innerBlocks?: any[];
   children?: any;
   isServer?: boolean;
