@@ -1,9 +1,10 @@
 import React from "react";
 import './tutorial.scss';
 import {Section} from '../section/section';
-import {TutorialContext} from '../context';
+import {ContextType, TutorialContext} from '../context';
 import {serializeAttributes} from '../utils';
 import Button from '@material/react-button';
+import Immutable from 'immutable';
 
 
 /* tslint:disable:no-empty-interface */
@@ -19,46 +20,72 @@ export interface TutorialProps {
 }
 
 /* tslint:disable:no-empty-interface */
-export interface TutorialState {
-  filters?: {};
+export interface TutorialState extends ContextType {
   activeSectionIndex: number;
+  sectionHistory: number[];
 }
 
 
 export class Tutorial extends React.Component<TutorialProps, TutorialState> {
   constructor(props) {
     super(props);
-    this.addFilter = this.addFilter.bind(this);
-    this.navigate = this.navigate.bind(this);
+    this.addAnswer = this.addAnswer.bind(this);
+    this.next = this.next.bind(this);
+    this.back = this.back.bind(this);
     this.submit = this.submit.bind(this);
     this.state = {
-      filters: {},
-      activeSectionIndex: 0
+      answers: [],
+      activeSectionIndex: 0,
+      sectionHistory: []
     };
   }
 
-  addFilter({key, value}) {
-    const {filters} = this.state;
+  addAnswer(answer) {
+    const {activeSectionIndex} = this.state;
+    const {answers} = this.state;
+    const answersMap = Immutable.Map(answers.map(v => [v.uuid, v]));
+
+    const newAnswersMap = answersMap.set(answer.uuid, {
+      ...answer,
+      section: activeSectionIndex
+    });
 
     this.setState({
-      filters: {
-        ...filters,
-        [key]: value
-      }
+      answers: newAnswersMap.toList().toJSON()
     });
   }
 
-  navigate(steps: number) {
-    const {activeSectionIndex} = this.state;
+  next() {
+    const {activeSectionIndex, answers, sectionHistory} = this.state;
     const {sections} = this.props;
 
-    const newIndex = Math.min(activeSectionIndex + steps, sections.length - 1);
-    this.setState({activeSectionIndex: newIndex});
+    const nextSectionIndex = Math.min(activeSectionIndex + 1, sections.length - 1);
+    const newActiveSectionIndex = answers.reduce((nextSectionIndex, answer) => {
+      if (answer.section === activeSectionIndex && answer.nextSection) {
+        return answer.nextSection;
+      }
+      return nextSectionIndex;
+    }, nextSectionIndex);
+
+    const newSectionHistory = sectionHistory.concat([activeSectionIndex])
+    this.setState({
+      activeSectionIndex: newActiveSectionIndex,
+      sectionHistory: newSectionHistory
+    });
+  }
+
+  back() {
+    const {sectionHistory} = this.state;
+    const newSectionHistory = sectionHistory.slice(0, Math.max(0, sectionHistory.length - 1));
+    this.setState({
+      activeSectionIndex: sectionHistory[sectionHistory.length - 1],
+      sectionHistory: newSectionHistory
+    });
   }
 
   submit() {
-    const {filters} = this.state;
-    console.log(filters);
+    const {answers} = this.state;
+    console.log(answers);
   }
 
 
@@ -66,7 +93,7 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
 
     const {id, attributes, className, sections = [], children} = this.props;
     const {uuid} = attributes;
-    const {filters, activeSectionIndex} = this.state;
+    const {answers, activeSectionIndex} = this.state;
     const activeSection = sections[activeSectionIndex];
 
     const innerBlocks = sections.map((section, index) => {
@@ -79,9 +106,8 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
       children
       :
       <TutorialContext.Provider value={{
-        filters: filters,
-        addFilter: this.addFilter,
-        navigate: this.navigate
+        answers: answers,
+        addAnswer: this.addAnswer
       }
       }>
         {innerBlocks}
@@ -99,7 +125,7 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
             {
               activeSectionIndex > 0 ?
                 <Button
-                  onClick={() => this.navigate(-1)}
+                  onClick={() => this.back()}
                 >
                   Back
                 </Button> : null
@@ -108,7 +134,7 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
             {
               !(activeSection.attributes.submitForm) ?
                 <Button
-                  onClick={() => this.navigate(1)}
+                  onClick={() => this.next()}
                 >
                   Next
                 </Button> : null
@@ -127,4 +153,4 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
       </div>
     );
   }
-};
+}

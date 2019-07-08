@@ -1,11 +1,20 @@
 import React from 'react';
 
-interface ContextType {
-  filters: any,
-  addFilter?: (any) => void
+export interface Answer {
+  uuid: string,
+  text: string,
+  value?: string,
+  values?: string[],
+  nextSection?: number
+  section?: number
+}
+
+export interface ContextType {
+  answers?: Answer[],
+  addAnswer?: (answer: Answer) => void
   navigate?: (steps: number) => void
 }
 
 export const TutorialContext = React.createContext<ContextType>({
-  filters: undefined
+  answers: []
 });

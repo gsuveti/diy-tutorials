@@ -29,9 +29,14 @@ export const Section = (props: SectionProps) => {
     }
     return (
       <TutorialContext.Consumer key={block.key}>
-        {({filters, addFilter}) => (
-          <Question {...block} addFilter={addFilter} answer={filters[block.attributes.uuid]}/>
-        )}
+        {({answers, addAnswer}) => {
+
+          const answer = answers.find(answer=> answer.uuid ===block.attributes.uuid);
+
+          return (
+            <Question {...block} addAnswer={addAnswer} answer={answer}/>
+          )
+        }}
       </TutorialContext.Consumer>
     );
   });

@@ -5,9 +5,10 @@ import {serializeAttributes} from '../utils';
 import Select, {Option} from '@material/react-select';
 import TextField, {Input} from '@material/react-text-field';
 import MaterialIcon from '@material/react-material-icon';
+import {Answer, ContextType} from '../context';
 
 /* tslint:disable:no-empty-interface */
-export interface QuestionProps {
+export interface QuestionProps extends ContextType {
   className?: string;
   attributes?: {
     type: string,
@@ -17,36 +18,62 @@ export interface QuestionProps {
     optionsJSON?: string;
     uuid?: string;
   };
+  answer?: Answer;
   children?: any;
-  answer?: any;
   isServer?: boolean;
-  addFilter?: (filer: any) => void;
 }
 
 
-export class Question extends React.Component<QuestionProps> {
+/* tslint:disable:no-empty-interface */
+export interface QuestionState {
+  options: { value: string, nextSection: number }[] | null
+}
+
+
+export class Question extends React.Component<QuestionProps, QuestionState> {
   constructor(props) {
     super(props);
     this.renderTextQuestion = this.renderTextQuestion.bind(this);
     this.renderSelectOneQuestion = this.renderSelectOneQuestion.bind(this);
+    this.state = {
+      options: null
+    }
   }
 
-  submitAnswer(value: any) {
-    const {addFilter, attributes} = this.props;
+  static getDerivedStateFromProps(nextProps: QuestionProps, prevState) {
+    const {attributes: {optionsJSON}} = nextProps;
+
+    if (optionsJSON) {
+      const options: { value: string, nextSection: number }[] = JSON.parse(optionsJSON)
+        .map((option: { value: string, nextSection: string }) => {
+          return {
+            value: option.value,
+            nextSection: Number.parseInt(option.nextSection) || undefined,
+          }
+        });
+      return {options};
+    }
+    return {options: null};
+  }
+
+
+  submitAnswer(value: string, index?: number,) {
+    const {addAnswer, attributes} = this.props;
     const {uuid, text} = attributes;
 
-    addFilter({
-      key: uuid,
-      value: {
-        value: value,
-        text: text
-      }
-    })
+    const {options = []} = this.state;
+    const option = options[index] || {};
+
+    addAnswer({
+      uuid: uuid,
+      value: value,
+      ...option,
+      text
+    });
   }
 
   renderTextQuestion() {
-    const {answer = {}} = this.props;
-    const {value} = answer;
+    const {answer: {value}} = this.props;
 
     return (
       <div>
@@ -54,21 +81,21 @@ export class Question extends React.Component<QuestionProps> {
           className={"form-control"}
           onTrailingIconSelect={() => this.submitAnswer("")}
           trailingIcon={<MaterialIcon role="button" icon="delete"/>}
-        ><Input
-          value={value}
-          onChange={(event: FormEvent<HTMLInputElement>) => {
-            this.submitAnswer(event.currentTarget.value)
-          }}/>
+        >
+          <Input
+            value={value}
+            onChange={(event: FormEvent<HTMLInputElement>) => {
+              this.submitAnswer(event.currentTarget.value)
+            }}/>
         </TextField>
       </div>
     );
   };
 
   renderSelectOneQuestion() {
-    const {answer = {}, attributes} = this.props;
-    const {value} = answer;
-    const {optionsJSON} = attributes;
-    const options: any[] = JSON.parse(optionsJSON);
+    const {answer, attributes} = this.props;
+    const {options} = this.state;
+    const value: string = answer ? answer.value : "";
 
     if (options) {
       return (
@@ -76,11 +103,9 @@ export class Question extends React.Component<QuestionProps> {
           className={"form-control"}
           enhanced
           value={value}
-          onChange={(event) => this.submitAnswer(event.currentTarget.value)}
-          onEnhancedChange={(index, item) => this.submitAnswer(item.getAttribute('data-value'))}
+          onEnhancedChange={(index) => this.submitAnswer(undefined, index)}
         >
-
-          {options.map(({value, section}) => (
+          {options.map(({value}) => (
               <Option key={value} value={value}>{value}</Option>
             )
           )}
@@ -103,7 +128,6 @@ export class Question extends React.Component<QuestionProps> {
 
         {isServer ?
           null :
-
           <div className={"pt-md"}>
             {text ?
               <div>

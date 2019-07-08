@@ -127,8 +127,8 @@ registerBlockType('irian/diy-question', {
                   {type.startsWith("select") ?
                     <div key={'select'}>
 
-                      {options.map(({value = "", section = ""}, index) => (
-                        <div className={"d-flex flex-row"}>
+                      {options.map(({value = "", nextSection = ""}, index) => (
+                        <div className={"d-flex flex-row"} key={index}>
                           <TextControl
                             placeholder={`Option ${index + 1}`}
                             className={"pr-sm m-0"}
@@ -140,9 +140,9 @@ registerBlockType('irian/diy-question', {
 
                           <SelectControl
                             className={"pr-sm m-0"}
-                            key="section_select"
-                            value={section}
-                            options={[{value: "", label: "Next section"}].concat(
+                            key="nextSection"
+                            value={nextSection}
+                            options={[{value: "null", label: "Next section"}].concat(
                               sections.map((section, index) => {
                                 return {
                                   label: `Section ${index + 1}`,
@@ -150,8 +150,8 @@ registerBlockType('irian/diy-question', {
                                 }
                               }))
                             }
-                            onChange={(section) => {
-                              updateOptions(index, "section", section);
+                            onChange={(nextSection) => {
+                              updateOptions(index, "nextSection", nextSection);
                             }}
                           />
                           <IconButton
