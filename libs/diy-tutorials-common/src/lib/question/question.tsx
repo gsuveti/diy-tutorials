@@ -73,7 +73,8 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
   }
 
   renderTextQuestion() {
-    const {answer: {value}} = this.props;
+    const {answer} = this.props;
+    const value: string = answer ? answer.value : "";
 
     return (
       <div>
@@ -93,7 +94,7 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
   };
 
   renderSelectOneQuestion() {
-    const {answer, attributes} = this.props;
+    const {answer} = this.props;
     const {options} = this.state;
     const value: string = answer ? answer.value : "";
 
