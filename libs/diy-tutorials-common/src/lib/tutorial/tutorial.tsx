@@ -1,9 +1,8 @@
 import React from "react";
 import './tutorial.scss';
 import {Section} from '../section/section';
-import {ContextType, TutorialContext} from '../context';
+import {Answer, ContextType, TutorialContext} from '../context';
 import {serializeAttributes} from '../utils';
-import Button from '@material/react-button';
 import Immutable from 'immutable';
 
 
@@ -21,8 +20,7 @@ export interface TutorialProps {
 
 /* tslint:disable:no-empty-interface */
 export interface TutorialState extends ContextType {
-  activeSectionIndex: number;
-  sectionHistory: number[];
+  displayedSections: number[];
 }
 
 
@@ -30,75 +28,61 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
   constructor(props) {
     super(props);
     this.addAnswer = this.addAnswer.bind(this);
-    this.next = this.next.bind(this);
-    this.back = this.back.bind(this);
     this.submit = this.submit.bind(this);
     this.state = {
       answers: [],
-      activeSectionIndex: 0,
-      sectionHistory: []
+      displayedSections: [0]
     };
   }
 
-  addAnswer(answer) {
-    const {activeSectionIndex} = this.state;
+
+  addAnswer(answer: Answer) {
+    const {sections} = this.props;
+    const {displayedSections} = this.state;
     const {answers} = this.state;
     const answersMap = Immutable.Map(answers.map(v => [v.uuid, v]));
+    const newAnswersMap = answersMap.set(answer.uuid, answer);
 
-    const newAnswersMap = answersMap.set(answer.uuid, {
-      ...answer,
-      section: activeSectionIndex
-    });
+
+    const nextSectionIndex = Math.min(answer.sectionIndex + 1, sections.length - 1);
+    const newActiveSectionIndex = answer.nextSection ? answer.nextSection : nextSectionIndex;
+
+    const newDisplayedSections = answer.goToNextSection ?
+      displayedSections
+        .slice(0, Math.max(0, displayedSections.indexOf(answer.sectionIndex)))
+        .concat([answer.sectionIndex, newActiveSectionIndex])
+      :
+      displayedSections.concat([]);
+
 
     this.setState({
-      answers: newAnswersMap.toList().toJSON()
+      answers: newAnswersMap.toList().toJSON(),
+      displayedSections: newDisplayedSections
     });
   }
 
-  next() {
-    const {activeSectionIndex, answers, sectionHistory} = this.state;
-    const {sections} = this.props;
-
-    const nextSectionIndex = Math.min(activeSectionIndex + 1, sections.length - 1);
-    const newActiveSectionIndex = answers.reduce((nextSectionIndex, answer) => {
-      if (answer.section === activeSectionIndex && answer.nextSection) {
-        return answer.nextSection;
-      }
-      return nextSectionIndex;
-    }, nextSectionIndex);
-
-    const newSectionHistory = sectionHistory.concat([activeSectionIndex])
-    this.setState({
-      activeSectionIndex: newActiveSectionIndex,
-      sectionHistory: newSectionHistory
-    });
-  }
-
-  back() {
-    const {sectionHistory} = this.state;
-    const newSectionHistory = sectionHistory.slice(0, Math.max(0, sectionHistory.length - 1));
-    this.setState({
-      activeSectionIndex: sectionHistory[sectionHistory.length - 1],
-      sectionHistory: newSectionHistory
-    });
-  }
 
   submit() {
     const {answers} = this.state;
     console.log(answers);
   }
 
+  getSectionClassName(index: number) {
+    const {displayedSections} = this.state;
+    return displayedSections.indexOf(index) < 0 ? "hide" : "show";
+  }
 
   render(): React.ReactNode {
 
     const {id, attributes, className, sections = [], children} = this.props;
     const {uuid} = attributes;
-    const {answers, activeSectionIndex} = this.state;
-    const activeSection = sections[activeSectionIndex];
+    const {answers} = this.state;
 
     const innerBlocks = sections.map((section, index) => {
       return (
-        <Section className={activeSectionIndex != index ? "hide" : "show"} {...section}/>
+        <Section className={this.getSectionClassName(index)}
+                 sectionIndex={index}
+                 {...section}/>
       );
     });
 
@@ -120,36 +104,6 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
            data-attributes={serializeAttributes(attributes)}
       >
         {content}
-        {activeSection ?
-          <div>
-            {
-              activeSectionIndex > 0 ?
-                <Button
-                  onClick={() => this.back()}
-                >
-                  Back
-                </Button> : null
-            }
-
-            {
-              !(activeSection.attributes.submitForm) ?
-                <Button
-                  onClick={() => this.next()}
-                >
-                  Next
-                </Button> : null
-            }
-            {
-              activeSection.attributes.submitForm ?
-                <Button
-                  onClick={this.submit}
-                >
-                  Submit
-                </Button> : null
-            }
-          </div>
-          : null
-        }
       </div>
     );
   }

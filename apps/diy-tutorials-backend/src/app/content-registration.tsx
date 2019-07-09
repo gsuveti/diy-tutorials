@@ -51,7 +51,6 @@ registerBlockType('irian/diy-content', {
       // ['core/image', {}],
       ['core/paragraph', {placeholder: 'Content paragraph', content: "Lorem ipsum"}]
     ];
-    const ALLOWED_BLOCKS = ['core/heading', 'core/image', 'core/paragraph'];
 
 
     return ([
@@ -69,7 +68,6 @@ registerBlockType('irian/diy-content', {
         <Content className={props.className} key='content'>
           <InnerBlocks
             template={BLOCKS_TEMPLATE} templateLock={false}
-            allowedBlocks={ALLOWED_BLOCKS}
           />
         </Content>
       ]

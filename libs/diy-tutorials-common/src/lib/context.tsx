@@ -6,7 +6,8 @@ export interface Answer {
   value?: string,
   values?: string[],
   nextSection?: number
-  section?: number
+  sectionIndex?: number
+  goToNextSection?: boolean
 }
 
 export interface ContextType {

@@ -18,6 +18,7 @@ export interface QuestionProps extends ContextType {
     optionsJSON?: string;
     uuid?: string;
   };
+  sectionIndex?: number;
   answer?: Answer;
   children?: any;
   isServer?: boolean;
@@ -57,8 +58,8 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
   }
 
 
-  submitAnswer(value: string, index?: number,) {
-    const {addAnswer, attributes} = this.props;
+  submitAnswer(value: string, index?: number, goToNextSection = false) {
+    const {addAnswer, attributes, sectionIndex} = this.props;
     const {uuid, text} = attributes;
 
     const {options = []} = this.state;
@@ -68,7 +69,9 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
       uuid: uuid,
       value: value,
       ...option,
-      text
+      text,
+      sectionIndex: sectionIndex,
+      goToNextSection
     });
   }
 
@@ -104,7 +107,7 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
           className={"form-control"}
           enhanced
           value={value}
-          onEnhancedChange={(index) => this.submitAnswer(undefined, index)}
+          onEnhancedChange={(index) => this.submitAnswer(undefined, index, true)}
         >
           {options.map(({value}) => (
               <Option key={value} value={value}>{value}</Option>

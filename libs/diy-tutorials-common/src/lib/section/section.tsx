@@ -10,8 +10,9 @@ import {TutorialContext} from '../context';
 export interface SectionProps {
   className?: string;
   clientId?: string;
+  sectionIndex?: string;
   attributes?: {
-    submitForm:boolean
+    submitForm: boolean
   };
   innerBlocks?: any[];
   children?: any;
@@ -19,7 +20,7 @@ export interface SectionProps {
 }
 
 export const Section = (props: SectionProps) => {
-  const {innerBlocks = [], children, className, attributes, clientId, isServer} = props;
+  const {innerBlocks = [], children, className, attributes, sectionIndex, isServer} = props;
 
   const blocks = innerBlocks.map(block => {
     if (block.name === 'content') {
@@ -31,10 +32,10 @@ export const Section = (props: SectionProps) => {
       <TutorialContext.Consumer key={block.key}>
         {({answers, addAnswer}) => {
 
-          const answer = answers.find(answer=> answer.uuid ===block.attributes.uuid);
+          const answer = answers.find(answer => answer.uuid === block.attributes.uuid);
 
           return (
-            <Question {...block} addAnswer={addAnswer} answer={answer}/>
+            <Question {...block} sectionIndex={sectionIndex} addAnswer={addAnswer} answer={answer}/>
           )
         }}
       </TutorialContext.Consumer>
@@ -43,7 +44,6 @@ export const Section = (props: SectionProps) => {
 
   return (
     <div className={className}
-         data-client_id={clientId}
          data-attributes={serializeAttributes(attributes)}
     >
       {children}
