@@ -2,52 +2,45 @@ import React from 'react';
 
 import './section.scss';
 import {Content} from '../content/content';
-import {Question} from '../question/question';
+import {ConnectedQuestion} from '../question/question';
 import {serializeAttributes} from '../utils';
-import {TutorialContext} from '../context';
+import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
+import {ConnectedMeasurementForm} from '../measurement-form/measurement-form';
 
 /* tslint:disable:no-empty-interface */
 export interface SectionProps {
   className?: string;
   clientId?: string;
-  sectionIndex?: string;
+  sectionIndex?: number;
   attributes?: {
+    uuid: string
     submitForm: boolean
   };
   innerBlocks?: any[];
   children?: any;
-  isServer?: boolean;
 }
 
+
+const allowedComponents = {
+  'irian/diy-question': ConnectedQuestion,
+  'irian/diy-content': Content,
+  'irian/diy-measurement-form': ConnectedMeasurementForm,
+};
+
+
 export const Section = (props: SectionProps) => {
-  const {innerBlocks = [], children, className, attributes, sectionIndex, isServer} = props;
-
-  const blocks = innerBlocks.map(block => {
-    if (block.name === 'content') {
-      return (
-        <Content key={block.key} {...block}/>
-      );
-    }
-    return (
-      <TutorialContext.Consumer key={block.key}>
-        {({answers, addAnswer}) => {
-
-          const answer = answers.find(answer => answer.uuid === block.attributes.uuid);
-
-          return (
-            <Question {...block} sectionIndex={sectionIndex} addAnswer={addAnswer} answer={answer}/>
-          )
-        }}
-      </TutorialContext.Consumer>
-    );
-  });
+  const {innerBlocks = [], children, className, attributes} = props;
+  const {uuid} = attributes;
 
   return (
     <div className={className}
          data-attributes={serializeAttributes(attributes)}
     >
       {children}
-      {blocks}
+      <InnerBlocksContent
+        innerBlocks={innerBlocks}
+        allowedComponents={allowedComponents}
+      />
     </div>
   );
 };

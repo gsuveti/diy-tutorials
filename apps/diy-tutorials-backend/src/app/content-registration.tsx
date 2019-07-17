@@ -1,5 +1,5 @@
 import React from 'react';
-import {Content} from '@diy-tutorials/diy-tutorials-common';
+import {Content, generateUUID} from '@diy-tutorials/diy-tutorials-common';
 
 // @ts-ignore
 const {TextControl} = wp.components;
@@ -29,9 +29,9 @@ registerBlockType('irian/diy-content', {
   category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
   keywords: [],
   attributes: {
-    displayCondition: {
-      type: 'string'
-    }
+    uuid: {type: 'string'},
+    name: {type: 'string'},
+    displayCondition: {type: 'string'}
   },
 
   /**
@@ -43,7 +43,8 @@ registerBlockType('irian/diy-content', {
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
   edit: function (props: any) {
-    const {displayCondition} = props.attributes;
+    const {attributes, name} = props;
+    const {displayCondition, uuid} = attributes;
 
 
     const BLOCKS_TEMPLATE = [
@@ -52,6 +53,12 @@ registerBlockType('irian/diy-content', {
       ['core/paragraph', {placeholder: 'Content paragraph', content: "Lorem ipsum"}]
     ];
 
+    if (!uuid) {
+      props.setAttributes({
+        uuid: generateUUID(),
+        name: name,
+      })
+    }
 
     return ([
         <BlockControls key='controls'>
@@ -67,6 +74,7 @@ registerBlockType('irian/diy-content', {
         </InspectorControls>,
         <Content className={props.className} key='content'>
           <InnerBlocks
+            attributes={attributes}
             template={BLOCKS_TEMPLATE} templateLock={false}
           />
         </Content>
@@ -84,8 +92,12 @@ registerBlockType('irian/diy-content', {
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
   save: function (props: any) {
+    const {attributes} = props;
+
     return (
-      <Content className={props.className} key='content'>
+      <Content className={props.className}
+               attributes={attributes}
+      >
         <InnerBlocks.Content></InnerBlocks.Content>
       </Content>
     );

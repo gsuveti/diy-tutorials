@@ -1,9 +1,10 @@
 import React from "react";
 import './tutorial.scss';
 import {Section} from '../section/section';
-import {Answer, ContextType, TutorialContext} from '../context';
 import {serializeAttributes} from '../utils';
-import Immutable from 'immutable';
+import * as firebase from 'firebase';
+import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
+import {Block} from '../models/block.model';
 
 
 /* tslint:disable:no-empty-interface */
@@ -12,59 +13,63 @@ export interface TutorialProps {
   uuid?: string;
   className?: string;
   children?: any;
-  sections?: any[];
+  innerBlocks?: from[];
   attributes?: {
     uuid?: string;
+    name?: string;
   };
 }
 
 /* tslint:disable:no-empty-interface */
-export interface TutorialState extends ContextType {
+export interface TutorialState {
   displayedSections: number[];
 }
 
+const allowedComponents = {
+  'irian/diy-section': Section
+};
 
 export class Tutorial extends React.Component<TutorialProps, TutorialState> {
   constructor(props) {
     super(props);
-    this.addAnswer = this.addAnswer.bind(this);
-    this.submit = this.submit.bind(this);
     this.state = {
-      answers: [],
       displayedSections: [0]
     };
   }
 
+  componentDidMount(): void {
 
-  addAnswer(answer: Answer) {
-    const {sections} = this.props;
-    const {displayedSections} = this.state;
-    const {answers} = this.state;
-    const answersMap = Immutable.Map(answers.map(v => [v.uuid, v]));
-    const newAnswersMap = answersMap.set(answer.uuid, answer);
+    const firebaseConfig = {
+      apiKey: "AIzaSyD285HeMOqIYGUtbxtqReraee3wGYJDoyM",
+      authDomain: "diy-tutorials-ro.firebaseapp.com",
+      databaseURL: "https://diy-tutorials-ro.firebaseio.com",
+      projectId: "diy-tutorials-ro",
+      storageBucket: "",
+      messagingSenderId: "755597193306",
+      appId: "1:755597193306:web:a6746b5e60b01885"
+    };
 
+    const app = firebase.initializeApp(firebaseConfig);
 
-    const nextSectionIndex = Math.min(answer.sectionIndex + 1, sections.length - 1);
-    const newActiveSectionIndex = answer.nextSection ? answer.nextSection : nextSectionIndex;
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(function () {
+        firebase.auth().signInAnonymously()
+          .catch(function (error) {
+            console.error(error);
+          });
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
 
-    const newDisplayedSections = answer.goToNextSection ?
-      displayedSections
-        .slice(0, Math.max(0, displayedSections.indexOf(answer.sectionIndex)))
-        .concat([answer.sectionIndex, newActiveSectionIndex])
-      :
-      displayedSections.concat([]);
-
-
-    this.setState({
-      answers: newAnswersMap.toList().toJSON(),
-      displayedSections: newDisplayedSections
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        console.log(user.uid);
+        console.log(user.isAnonymous);
+      } else {
+        // User is signed out.
+      }
     });
-  }
-
-
-  submit() {
-    const {answers} = this.state;
-    console.log(answers);
   }
 
   getSectionClassName(index: number) {
@@ -74,28 +79,16 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
 
   render(): React.ReactNode {
 
-    const {id, attributes, className, sections = [], children} = this.props;
-    const {uuid} = attributes;
-    const {answers} = this.state;
-
-    const innerBlocks = sections.map((section, index) => {
-      return (
-        <Section className={this.getSectionClassName(index)}
-                 sectionIndex={index}
-                 {...section}/>
-      );
-    });
+    const {id, attributes, className, innerBlocks = [], children} = this.props;
 
     const content = children ?
       children
       :
-      <TutorialContext.Provider value={{
-        answers: answers,
-        addAnswer: this.addAnswer
-      }
-      }>
-        {innerBlocks}
-      </TutorialContext.Provider>
+      <InnerBlocksContent
+        innerBlocks={innerBlocks}
+        allowedComponents={allowedComponents}
+
+      />
     ;
 
     return (

@@ -32,6 +32,7 @@ registerBlockType('irian/diy-question', {
   keywords: [],
   attributes: {
     uuid: {type: 'string'},
+    name: {type: 'string'},
     type: {type: 'string', default: 'selectOne'},
     displayCondition: {type: 'string'},
     text: {type: 'string'},
@@ -48,11 +49,14 @@ registerBlockType('irian/diy-question', {
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
   edit: function (props: any) {
-    const {isSelected, attributes, className, setAttributes} = props;
+    const {isSelected, attributes, className, setAttributes, name} = props;
     const {uuid, displayCondition, text, type, required, optionsJSON, optionsNo} = attributes;
 
     if (!uuid) {
-      setAttributes({uuid: generateUUID()})
+      setAttributes({
+        uuid: generateUUID(),
+        name: name,
+      })
     }
 
     const options = List(JSON.parse(optionsJSON));
@@ -87,112 +91,116 @@ registerBlockType('irian/diy-question', {
         <Question className={className}
                   attributes={attributes}
                   key='content'
-                  isServer={true}>
+                  isRenderedInEditor={true}>
           {isSelected ?
             <TutorialWpContext.Consumer>
-              {({sections = {}}: { sections: any }) => (
-                <div>
-                  <TextControl
-                    label="Intrebare"
-                    key={"question"}
-                    value={text}
-                    onChange={(value) => {
-                      props.setAttributes({text: value});
-                    }}/>
+              {(context) => {
+                const sections = context ? context.sections : [];
 
+                return (
                   <div>
-                    <SelectControl
-                      key={"type"}
-                      label="Tip raspuns"
-                      value={type}
-                      options={[
-                        {label: 'Un raspuns', value: 'selectOne'},
-                        {label: 'Raspuns multiplu', value: 'selectMany'},
-                        {label: 'Text', value: 'text'},
-                        {label: 'Numeric', value: 'numeric'},
-                      ]}
+                    <TextControl
+                      label="Intrebare"
+                      key={"question"}
+                      value={text}
                       onChange={(value) => {
-                        props.setAttributes({type: value});
-                      }}
-                    />
-                    <CheckboxControl
-                      label="Raspuns obligatoriu"
-                      checked={required}
-                      onChange={(isChecked) => {
-                        props.setAttributes({required: isChecked});
-                      }}
-                    />
-                  </div>
+                        props.setAttributes({text: value});
+                      }}/>
 
-                  {type.startsWith("select") ?
-                    <div key={'select'}>
-
-                      {options.map(({value = "", nextSection = ""}, index) => (
-                        <div className={"d-flex flex-row"} key={index}>
-                          <TextControl
-                            placeholder={`Option ${index + 1}`}
-                            className={"pr-sm m-0"}
-                            key={"option"}
-                            value={value}
-                            onChange={(newValue) => {
-                              updateOptions(index, "value", newValue);
-                            }}/>
-
-                          <SelectControl
-                            className={"pr-sm m-0"}
-                            key="nextSection"
-                            value={nextSection}
-                            options={[{value: "null", label: "Next section"}].concat(
-                              sections.map((section, index) => {
-                                return {
-                                  label: `Section ${index + 1}`,
-                                  value: `${index}`
-                                }
-                              }))
-                            }
-                            onChange={(nextSection) => {
-                              updateOptions(index, "nextSection", nextSection);
-                            }}
-                          />
-                          <IconButton
-                            className={"py-0 mb-sm"}
-                            key="delete"
-                            icon="trash"
-                            label="Delete" onClick={() => deleteOption(index)}
-                          />
-                        </div>
-                      ))}
-                      <Button
-                        isLink={true}
-                        onClick={() => addOption()}
-                      >
-                        Add option
-                      </Button>
+                    <div>
+                      <SelectControl
+                        key={"type"}
+                        label="Tip raspuns"
+                        value={type}
+                        options={[
+                          {label: 'Un raspuns', value: 'selectOne'},
+                          {label: 'Raspuns multiplu', value: 'selectMany'},
+                          {label: 'Text', value: 'text'},
+                          {label: 'Numeric', value: 'numeric'},
+                        ]}
+                        onChange={(value) => {
+                          props.setAttributes({type: value});
+                        }}
+                      />
+                      <CheckboxControl
+                        label="Raspuns obligatoriu"
+                        checked={required}
+                        onChange={(isChecked) => {
+                          props.setAttributes({required: isChecked});
+                        }}
+                      />
                     </div>
-                    : null
-                  }
+
+                    {type.startsWith("select") ?
+                      <div key={'select'}>
+
+                        {options.map(({value = "", nextSection = ""}, index) => (
+                          <div className={"d-flex flex-row"} key={index}>
+                            <TextControl
+                              placeholder={`Option ${index + 1}`}
+                              className={"pr-sm m-0"}
+                              key={"option"}
+                              value={value}
+                              onChange={(newValue) => {
+                                updateOptions(index, "value", newValue);
+                              }}/>
+
+                            <SelectControl
+                              className={"pr-sm m-0"}
+                              key="nextSection"
+                              value={nextSection}
+                              options={[{value: "null", label: "Next section"}].concat(
+                                sections.map((section, index) => {
+                                  return {
+                                    label: `Section ${index + 1}`,
+                                    value: `${index}`
+                                  }
+                                }))
+                              }
+                              onChange={(nextSection) => {
+                                updateOptions(index, "nextSection", nextSection);
+                              }}
+                            />
+                            <IconButton
+                              className={"py-0 mb-sm"}
+                              key="delete"
+                              icon="trash"
+                              label="Delete" onClick={() => deleteOption(index)}
+                            />
+                          </div>
+                        ))}
+                        <Button
+                          isLink={true}
+                          onClick={() => addOption()}
+                        >
+                          Add option
+                        </Button>
+                      </div>
+                      : null
+                    }
 
 
-                  <TextControl
-                    label="Id"
-                    key={"id"}
-                    value={uuid}
-                    onChange={(value) => {
-                      props.setAttributes({uuid: value});
-                    }}/>
+                    <TextControl
+                      label="Id"
+                      key={"id"}
+                      value={uuid}
+                      onChange={(value) => {
+                        props.setAttributes({uuid: value});
+                      }}/>
 
 
-                  <TextareaControl
-                    key={"displayCondition"}
-                    label="Conditie de afisare"
-                    value={displayCondition}
-                    onChange={(value) => {
-                      props.setAttributes({displayCondition: value});
-                    }}/>
+                    <TextareaControl
+                      key={"displayCondition"}
+                      label="Conditie de afisare"
+                      value={displayCondition}
+                      onChange={(value) => {
+                        props.setAttributes({displayCondition: value});
+                      }}/>
 
 
-                </div>
-              )}
+                  </div>
+                );
+              }}
             </TutorialWpContext.Consumer>
             :
             <div>
@@ -226,7 +234,7 @@ registerBlockType('irian/diy-question', {
       <Question
         className={props.className}
         attributes={attributes} key='content'
-        isServer={true}
+        isRenderedInEditor={true}
       />
     );
   },

@@ -1,14 +1,18 @@
 import React, {FormEvent} from 'react';
+import {connect} from 'react-redux';
 
 import './question.scss';
 import {serializeAttributes} from '../utils';
 import Select, {Option} from '@material/react-select';
 import TextField, {Input} from '@material/react-text-field';
 import MaterialIcon from '@material/react-material-icon';
-import {Answer, ContextType} from '../context';
+import {Answer} from '../models/answer.model';
+import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
+import {addAnswer, TutorialActions} from '../tutorial/+state/tutorial.actions';
+import {AppState} from '@diy-tutorials/diy-tutorials-common';
 
 /* tslint:disable:no-empty-interface */
-export interface QuestionProps extends ContextType {
+export interface OwnProps {
   className?: string;
   attributes?: {
     type: string,
@@ -19,10 +23,19 @@ export interface QuestionProps extends ContextType {
     uuid?: string;
   };
   sectionIndex?: number;
-  answer?: Answer;
   children?: any;
-  isServer?: boolean;
+  isRenderedInEditor?: boolean;
 }
+
+interface DispatchProps {
+  addAnswer?: typeof addAnswer
+}
+
+interface StateProps {
+  answer?: Answer;
+}
+
+type QuestionProps = StateProps & DispatchProps & OwnProps;
 
 
 /* tslint:disable:no-empty-interface */
@@ -121,7 +134,7 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
 
 
   render(): React.ReactNode {
-    const {className, children, attributes, isServer} = this.props;
+    const {className, children, attributes, isRenderedInEditor} = this.props;
     const {text, type} = attributes;
 
 
@@ -130,13 +143,13 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
            data-attributes={serializeAttributes(attributes)}>
         {children}
 
-        {isServer ?
+        {isRenderedInEditor ?
           null :
           <div className={"pt-md"}>
             {text ?
               <div>
-                <p>{text}</p>
-                < div className="d-flex align-items-baseline">
+                <p className={'mt-sm mb-0'}>{text}</p>
+                <div className="d-flex align-items-baseline">
                   {type === 'text' ?
                     this.renderTextQuestion() : null
                   }
@@ -154,3 +167,21 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
     );
   }
 }
+
+function mapStateToProps(state: AppState, ownProps: QuestionProps, ownState: QuestionState): StateProps {
+  return {
+    answer: state.tutorial.answers[ownProps.attributes.uuid]
+  };
+}
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
+  bindActionCreators<TutorialActions, ActionCreatorsMapObject<TutorialActions> & DispatchProps>({
+    addAnswer
+  }, dispatch);
+
+
+export const ConnectedQuestion = connect<StateProps, DispatchProps, QuestionProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(Question);
+

@@ -1,6 +1,5 @@
 import React from 'react';
-import {generateUUID, Section, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
-import {TutorialWpContext} from './tutorial-wp-context';
+import {generateUUID, MeasurementForm, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
 
 // @ts-ignore
 const {TextControl, CheckboxControl, Toolbar, DropdownMenu} = wp.components;
@@ -9,7 +8,7 @@ const {registerBlockType} = window.wp.blocks;
 // @ts-ignore
 const {BlockControls, InspectorControls, InnerBlocks} = window.wp.editor;
 
-console.log("registerBlockType section");
+console.log("registerBlockType measurement form");
 /**
  * Register: aa Gutenberg Block.
  *
@@ -23,38 +22,31 @@ console.log("registerBlockType section");
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType('irian/diy-section', {
-  // Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
-  title: 'diy-section', // Block title.
-  icon: 'layout', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
-  category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
+registerBlockType('irian/diy-measurement-form', {
+  title: 'Measurement form', // Block title.
+  icon: 'layout',
+  category: 'common',
   keywords: [],
   attributes: withBaseAttributes({
-    nextSection: {type: 'string'},
-    submitForm: {type: 'boolean', default: false}
+    formula: {type: 'string'},
   }),
 
-  /**
-   * The edit function describes the structure of your block in the context of the editor.
-   * This represents what the editor will render when the block is used.
-   *
-   * The "edit" property must be a valid function.
-   *
-   * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
-   */
+
   edit: function (props: any) {
     const {attributes, clientId, setAttributes, name} = props;
-    const {uuid, submitForm} = attributes;
+    const {submitForm, uuid, formula} = attributes;
+
+    if (!uuid) {
+      props.setAttributes({
+        uuid: generateUUID(),
+        name: name,
+      })
+    }
 
     const BLOCKS_TEMPLATE = [
-      ['irian/diy-content'],
-      ['irian/diy-question']
+      ['irian/diy-measurement']
     ];
-    const ALLOWED_BLOCKS = [
-      'irian/diy-content',
-      'irian/diy-question',
-      'irian/diy-measurement-form'
-    ];
+    const ALLOWED_BLOCKS = ['irian/diy-measurement'];
 
     const controls = [
       {
@@ -70,13 +62,6 @@ registerBlockType('irian/diy-section', {
       }
     ];
 
-    if (!uuid) {
-      props.setAttributes({
-        uuid: generateUUID(),
-        name: name,
-      })
-    }
-
 
     return ([
         <BlockControls key='controls'>
@@ -84,23 +69,23 @@ registerBlockType('irian/diy-section', {
           </Toolbar>
         </BlockControls>,
         <InspectorControls key='inspector'>
+
         </InspectorControls>,
-        <Section
-          key='content'
-          className={props.className}
-          clientId={clientId}
-          attributes={attributes}
+        <MeasurementForm attributes={attributes}
         >
-          <TutorialWpContext.Consumer key={'index'}>
-            {({sections = {}}: { sections: any }) => (
-              <p>Section: {sections.indexOf(clientId) + 1} {submitForm ? "(Submit)" : null}</p>
-            )}
-          </TutorialWpContext.Consumer>
+          <TextControl
+            label="Formula"
+            key={"formula"}
+            value={formula}
+            onChange={(value) => {
+              props.setAttributes({formula: value});
+            }}/>
+          
           <InnerBlocks
             template={BLOCKS_TEMPLATE} templateLock={false}
             allowedBlocks={ALLOWED_BLOCKS}
           />
-        </Section>
+        </MeasurementForm>
 
       ]
     );
@@ -119,13 +104,9 @@ registerBlockType('irian/diy-section', {
     const {attributes, clientId} = props;
 
     return (
-      <Section
-        key='content'
-        className={props.className}
-        clientId={clientId}
-        attributes={attributes}>
-        <InnerBlocks.Content></InnerBlocks.Content>
-      </Section>
+      <MeasurementForm attributes={attributes}>
+        <InnerBlocks.Content/>
+      </MeasurementForm>
     );
   },
 });
