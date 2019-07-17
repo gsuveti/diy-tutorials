@@ -38,11 +38,4 @@ testem.log
 .DS_Store
 Thumbs.db
 
-
-/wp-content/
-!/wp-content/index.php
-!/wp-content/plugins/hello.php
-!/wp-content/plugins/index.php
-!/wp-content/plugins/diy-tutorials/
 /wp-content/plugins/diy-tutorials/dist
-
