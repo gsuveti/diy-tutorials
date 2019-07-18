@@ -1,5 +1,4 @@
 import React from 'react';
-import {ProductWpContext} from './product-wp-context';
 import {ProductList} from '@diy-tutorials/diy-tutorials-common';
 
 // @ts-ignore
@@ -49,17 +48,12 @@ registerBlockType('irian/diy-product-list', {
 
 
             </InspectorControls>,
-            <ProductWpContext.Provider value={
-              {productRangeList}
-            }>
-              <ProductList>
-                {JSON.stringify(productRangeList)}
-                <InnerBlocks allowedBlocks={ALLOWED_BLOCKS}
-                />
-              </ProductList>
-            </ProductWpContext.Provider>
 
-
+            <ProductList>
+              {JSON.stringify(productRangeList)}
+              <InnerBlocks allowedBlocks={ALLOWED_BLOCKS}
+              />
+            </ProductList>
           ]
         );
       }),

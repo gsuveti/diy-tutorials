@@ -9,6 +9,8 @@ const {TextControl, Button, SelectControl, TextareaControl, CheckboxControl, Ico
 const {registerBlockType} = window.wp.blocks;
 // @ts-ignore
 const {BlockControls, InspectorControls} = window.wp.editor;
+// @ts-ignore
+const {withSelect} = window.wp.data;
 
 console.log("registerBlockType question");
 /**
@@ -48,175 +50,175 @@ registerBlockType('irian/diy-question', {
    *
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
-  edit: function (props: any) {
-    const {isSelected, attributes, className, setAttributes, name} = props;
-    const {uuid, displayCondition, text, type, required, optionsJSON, optionsNo} = attributes;
+  edit: withSelect((select, ownProps) => {
+    const {getSectionOptions} = select("diy-tutorial");
 
-    if (!uuid) {
-      setAttributes({
-        uuid: generateUUID(),
-        name: name,
-      })
-    }
+    return {
+      sectionOptions: getSectionOptions()
+    };
+  })(
+    (props: any) => {
+      const {isSelected, attributes, className, setAttributes, name, sectionOptions} = props;
+      const {uuid, displayCondition, text, type, required, optionsJSON} = attributes;
 
-    const options = List(JSON.parse(optionsJSON));
+      if (!uuid) {
+        setAttributes({
+          uuid: generateUUID(),
+          name: name,
+        })
+      }
+
+      const options = List(JSON.parse(optionsJSON));
 
 
-    function updateOptions(index: number, attribute: string, value: string) {
-      const newOptions = options.setIn([index, attribute], value);
-      setAttributes({optionsJSON: JSON.stringify(newOptions.toJSON())});
-    }
-
-
-    function deleteOption(index: number) {
-      if (options.size > 1) {
-        const newOptions = options.delete(index);
+      function updateOptions(index: number, attribute: string, value: string) {
+        const newOptions = options.setIn([index, attribute], value);
         setAttributes({optionsJSON: JSON.stringify(newOptions.toJSON())});
       }
-    }
-
-    function addOption() {
-      const newOptions = options.setIn([options.size], {});
-      setAttributes({optionsJSON: JSON.stringify(newOptions.toJSON())});
-    }
 
 
-    return ([
-        <BlockControls key='controls'>
+      function deleteOption(index: number) {
+        if (options.size > 1) {
+          const newOptions = options.delete(index);
+          setAttributes({optionsJSON: JSON.stringify(newOptions.toJSON())});
+        }
+      }
 
-        </BlockControls>,
-        <InspectorControls key='inspector'>
+      function addOption() {
+        const newOptions = options.setIn([options.size], {});
+        setAttributes({optionsJSON: JSON.stringify(newOptions.toJSON())});
+      }
 
-        </InspectorControls>,
-        <Question className={className}
-                  attributes={attributes}
-                  key='content'
-                  isRenderedInEditor={true}>
-          {isSelected ?
-            <TutorialWpContext.Consumer>
-              {(context) => {
-                const sections = context ? context.sections : [];
 
-                return (
-                  <div>
-                    <TextControl
-                      label="Intrebare"
-                      key={"question"}
-                      value={text}
-                      onChange={(value) => {
-                        props.setAttributes({text: value});
-                      }}/>
+      return ([
+          <BlockControls key='controls'>
 
+          </BlockControls>,
+          <InspectorControls key='inspector'>
+
+          </InspectorControls>,
+          <Question className={className}
+                    attributes={attributes}
+                    key='content'
+                    isRenderedInEditor={true}>
+            {isSelected ?
+              <TutorialWpContext.Consumer>
+                {(context) => {
+                  const sections = context ? context.sections : [];
+
+                  return (
                     <div>
-                      <SelectControl
-                        key={"type"}
-                        label="Tip raspuns"
-                        value={type}
-                        options={[
-                          {label: 'Un raspuns', value: 'selectOne'},
-                          {label: 'Raspuns multiplu', value: 'selectMany'},
-                          {label: 'Text', value: 'text'},
-                          {label: 'Numeric', value: 'numeric'},
-                        ]}
+                      <TextControl
+                        label="Intrebare"
+                        key={"question"}
+                        value={text}
                         onChange={(value) => {
-                          props.setAttributes({type: value});
-                        }}
-                      />
-                      <CheckboxControl
-                        label="Raspuns obligatoriu"
-                        checked={required}
-                        onChange={(isChecked) => {
-                          props.setAttributes({required: isChecked});
-                        }}
-                      />
-                    </div>
+                          props.setAttributes({text: value});
+                        }}/>
 
-                    {type.startsWith("select") ?
-                      <div key={'select'}>
-
-                        {options.map(({value = "", nextSection = ""}, index) => (
-                          <div className={"d-flex flex-row"} key={index}>
-                            <TextControl
-                              placeholder={`Option ${index + 1}`}
-                              className={"pr-sm m-0"}
-                              key={"option"}
-                              value={value}
-                              onChange={(newValue) => {
-                                updateOptions(index, "value", newValue);
-                              }}/>
-
-                            <SelectControl
-                              className={"pr-sm m-0"}
-                              key="nextSection"
-                              value={nextSection}
-                              options={[{value: "null", label: "Next section"}].concat(
-                                sections.map((section, index) => {
-                                  return {
-                                    label: `Section ${index + 1}`,
-                                    value: `${index}`
-                                  }
-                                }))
-                              }
-                              onChange={(nextSection) => {
-                                updateOptions(index, "nextSection", nextSection);
-                              }}
-                            />
-                            <IconButton
-                              className={"py-0 mb-sm"}
-                              key="delete"
-                              icon="trash"
-                              label="Delete" onClick={() => deleteOption(index)}
-                            />
-                          </div>
-                        ))}
-                        <Button
-                          isLink={true}
-                          onClick={() => addOption()}
-                        >
-                          Add option
-                        </Button>
+                      <div>
+                        <SelectControl
+                          key={"type"}
+                          label="Tip raspuns"
+                          value={type}
+                          options={[
+                            {label: 'Un raspuns', value: 'selectOne'},
+                            {label: 'Raspuns multiplu', value: 'selectMany'},
+                            {label: 'Text', value: 'text'},
+                            {label: 'Numeric', value: 'numeric'},
+                          ]}
+                          onChange={(value) => {
+                            props.setAttributes({type: value});
+                          }}
+                        />
+                        <CheckboxControl
+                          label="Raspuns obligatoriu"
+                          checked={required}
+                          onChange={(isChecked) => {
+                            props.setAttributes({required: isChecked});
+                          }}
+                        />
                       </div>
-                      : null
-                    }
+
+                      {type.startsWith("select") ?
+                        <div key={'select'}>
+
+                          {options.map(({value = "", nextSection = ""}, index) => (
+                            <div className={"d-flex flex-row"} key={index}>
+                              <TextControl
+                                placeholder={`Option ${index + 1}`}
+                                className={"pr-sm m-0"}
+                                key={"option"}
+                                value={value}
+                                onChange={(newValue) => {
+                                  updateOptions(index, "value", newValue);
+                                }}/>
+
+                              <SelectControl
+                                className={"pr-sm m-0"}
+                                key="nextSection"
+                                value={nextSection}
+                                options={sectionOptions}
+                                onChange={(nextSection) => {
+                                  updateOptions(index, "nextSection", nextSection);
+                                }}
+                              />
+                              <IconButton
+                                className={"py-0 mb-sm"}
+                                key="delete"
+                                icon="trash"
+                                label="Delete" onClick={() => deleteOption(index)}
+                              />
+                            </div>
+                          ))}
+                          <Button
+                            isLink={true}
+                            onClick={() => addOption()}
+                          >
+                            Add option
+                          </Button>
+                        </div>
+                        : null
+                      }
 
 
-                    <TextControl
-                      label="Id"
-                      key={"id"}
-                      value={uuid}
-                      onChange={(value) => {
-                        props.setAttributes({uuid: value});
-                      }}/>
+                      <TextControl
+                        label="Id"
+                        key={"id"}
+                        value={uuid}
+                        onChange={(value) => {
+                          props.setAttributes({uuid: value});
+                        }}/>
 
 
-                    <TextareaControl
-                      key={"displayCondition"}
-                      label="Conditie de afisare"
-                      value={displayCondition}
-                      onChange={(value) => {
-                        props.setAttributes({displayCondition: value});
-                      }}/>
+                      <TextareaControl
+                        key={"displayCondition"}
+                        label="Conditie de afisare"
+                        value={displayCondition}
+                        onChange={(value) => {
+                          props.setAttributes({displayCondition: value});
+                        }}/>
 
 
-                  </div>
-                );
-              }}
-            </TutorialWpContext.Consumer>
-            :
-            <div>
-              <TextControl
-                label="Intrebare"
-                key={"question"}
-                value={text}
-                onChange={(value) => {
-                  props.setAttributes({text: value});
-                }}/>
-            </div>
-          }
-        </Question>
-      ]
-    );
-  },
+                    </div>
+                  );
+                }}
+              </TutorialWpContext.Consumer>
+              :
+              <div>
+                <TextControl
+                  label="Intrebare"
+                  key={"question"}
+                  value={text}
+                  onChange={(value) => {
+                    props.setAttributes({text: value});
+                  }}/>
+              </div>
+            }
+          </Question>
+        ]
+      );
+    }),
 
 
   /**

@@ -13,12 +13,14 @@ export interface TutorialState {
   measurements: BlockAttributes[],
   answers: { [uuid: string]: Answer };
   measuredValues: { [uuid: string]: { [instanceIndex: string]: string } };
+  measuredFormValues: { [uuid: string]:  number  };
   instancesCountByMeasurementForm: { [uuid: string]: number };
 }
 
 export const initialTutorialState: TutorialState = {
   answers: {},
   measuredValues: {},
+  measuredFormValues: {},
   instancesCountByMeasurementForm: {},
   blocks: [],
   sections: [],
@@ -52,7 +54,7 @@ export const tutorialReducer = createReducer(initialTutorialState, {
 
     const instancesCount = state.instancesCountByMeasurementForm[parentBlockUUID];
 
-    const sum = new Array(instancesCount).fill(1).reduce((sum, value, index) => {
+    const measurementFormValue = new Array(instancesCount).fill(1).reduce((sum, value, index) => {
 
       const parser = new FormulaParser();
       parser.on('callCellValue', function (cellCoord, done) {
@@ -62,8 +64,7 @@ export const tutorialReducer = createReducer(initialTutorialState, {
 
     }, 0);
 
-    console.log(sum);
-    console.log(measurementsByInstance);
+    state.measuredFormValues[parentBlockUUID] = measurementFormValue;
 
     return state;
   },

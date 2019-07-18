@@ -42,46 +42,8 @@ export function getInnerBlocks(element: HTMLElement, parentBlockUUID?: string): 
   return innerBlocks;
 }
 
-export function getBlockList(blocks: Block[], depth = 1): BlockAttributes[] {
-  return blocks.reduce((accumulator, block, index) => {
-    accumulator.push({
-      ...block.attributes,
-      depth,
-      index
-    });
-    if (block.innerBlocks) {
-      accumulator.push(...getBlockList(block.innerBlocks, depth + 1))
-    }
-    return accumulator;
-  }, []);
-}
 
-export function filterBlocksByName(blocks: BlockAttributes[], blockName:BlockNames): BlockAttributes[] {
-  return blocks
-    .filter(block => block.name === blockName);
-}
-
-export function getQuestionsToSectionMap(blocks: Block[]): { [uuid: string]: string } {
-  return blocks
-    .filter(block => block.attributes.name === BlockNames.Section)
-    .reduce((map, block) => {
-
-      const newMap = block.innerBlocks
-        .filter((innerBlock) => innerBlock.attributes.name === BlockNames.Question)
-        .reduce((map, innerBlock) => {
-          return {
-            ...map,
-            [innerBlock.attributes.uuid]: block.attributes.uuid
-          }
-        }, {});
-      return {
-        ...map,
-        ...newMap
-      }
-    }, {});
-}
-
-export function getBlock(element: HTMLElement, parentBlockUUID?: string) {
+export function getBlock(element: HTMLElement, parentBlockUUID?: string): Block {
   const attributes = deserializeAttributes(element.dataset.attributes);
   const innerBlocks = getInnerBlocks(element, attributes.uuid);
 
@@ -91,4 +53,25 @@ export function getBlock(element: HTMLElement, parentBlockUUID?: string) {
     attributes: {...attributes, parentBlockUUID},
     html: innerBlocks.length ? undefined : element.innerHTML
   };
+}
+
+export function getBlockAttributesList(blocks: Block[], depth = 1, parentBlockUUID?:string): BlockAttributes[] {
+  return blocks.reduce((accumulator, block, index) => {
+    accumulator.push({
+      ...block.attributes,
+      depth,
+      index,
+      parentBlockUUID
+    });
+    if (block.innerBlocks) {
+      accumulator.push(...getBlockAttributesList(block.innerBlocks, depth + 1, block.attributes.uuid))
+    }
+    return accumulator;
+  }, []);
+}
+
+
+export function filterBlocksByName(blocks: BlockAttributes[], blockName: BlockNames): BlockAttributes[] {
+  return blocks
+    .filter(block => block.name === blockName);
 }

@@ -1,6 +1,5 @@
 import React from 'react';
 import {ProductType} from '@diy-tutorials/diy-tutorials-common';
-import {ProductWpContext} from './product-wp-context';
 
 // @ts-ignore
 const {TextControl} = wp.components;
@@ -35,13 +34,9 @@ registerBlockType('irian/diy-product-type', {
         </InspectorControls>,
 
         <ProductType>
-          <ProductWpContext.Consumer key={'index'}>
-            {({productRangeList = []}: { productRangeList: any[] }) => (
-              <InnerBlocks allowedBlocks={ALLOWED_BLOCKS}
-                           template={getTemplate(productRangeList.length)}
-              />
-            )}
-          </ProductWpContext.Consumer>
+            <InnerBlocks allowedBlocks={ALLOWED_BLOCKS}
+                         template={getTemplate(1)}
+            />
 
         </ProductType>
       ]

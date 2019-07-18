@@ -1,53 +1,71 @@
 // @ts-ignore
-const {apiFetch} = window.wp;
+import {BlockNames, filterBlocksByName, getBlockAttributesList} from '@diy-tutorials/diy-tutorials-common';
 // @ts-ignore
 const {registerStore} = window.wp.data;
 
 const DEFAULT_STATE = {
-  prices: {},
-  discountPercent: 0,
+  sectionsOrder: [],
+  sectionOptions: [],
+  measurementFormsOrder: [],
+  measurementsOrder: {}
 };
 
 export const actions = {
-  setPrice(item, price) {
-    return {
-      type: 'SET_PRICE',
-      item,
-      price,
-    };
-  },
 
-  startSale(discountPercent) {
+  init(blocks) {
     return {
-      type: 'START_SALE',
-      discountPercent,
+      type: 'INIT',
+      blocks,
     };
-  },
-
-  fetchFromAPI(path) {
-    return {
-      type: 'FETCH_FROM_API',
-      path,
-    };
-  },
+  }
 };
 
-registerStore('my-shop', {
+registerStore('diy-tutorial', {
   reducer(state = DEFAULT_STATE, action) {
     switch (action.type) {
-      case 'SET_PRICE':
-        return {
-          ...state,
-          prices: {
-            ...state.prices,
-            [action.item]: action.price,
-          },
-        };
+      case 'INIT':
 
-      case 'START_SALE':
+        const {blocks} = action;
+
+        const blockAttributesList = getBlockAttributesList(blocks);
+        const sections = filterBlocksByName(blockAttributesList, BlockNames.Section);
+
+        const sectionsOrder = sections.map(attributes => attributes.uuid);
+        const sectionOptions = [{value: "null", label: "Next section"}].concat(
+          sections.map((attributes, index) => {
+            return {
+              value: attributes.uuid,
+              label: `Section ${index + 1}`
+            };
+          })
+        );
+
+        const measurementFormsOrder = filterBlocksByName(blockAttributesList, BlockNames.MeasurementForm)
+          .map(attributes => attributes.uuid);
+
+        const measurementsOrder = filterBlocksByName(blockAttributesList, BlockNames.Measurement)
+          .reduce((acc, block) => {
+            const index = acc.parentBlockUUID === block.parentBlockUUID ? acc.index + 1 : 0;
+            const orders = {
+              ...acc.orders,
+              [block.uuid]: index
+            };
+
+            return {
+              orders,
+              parentBlockUUID: block.parentBlockUUID,
+              index,
+            };
+          }, {orders: {}, parentBlockUUID: null, index: 0})
+          .orders;
+
+
         return {
           ...state,
-          discountPercent: action.discountPercent,
+          sectionsOrder,
+          measurementFormsOrder,
+          measurementsOrder,
+          sectionOptions
         };
     }
 
@@ -57,25 +75,21 @@ registerStore('my-shop', {
   actions,
 
   selectors: {
-    getPrice(state, item) {
-      const {prices, discountPercent} = state;
-      const price = prices[item];
+    getSectionIndex(state, clientId) {
+      const {sectionsOrder} = state;
+      return sectionsOrder.indexOf(clientId);
+    },
 
-      return price * (1 - (0.01 * discountPercent));
+    getMeasurementIndex(state, clientId) {
+      const {measurementsOrder} = state;
+      return measurementsOrder[clientId];
+    },
+
+    getSectionOptions(state) {
+      return state.sectionOptions;
     },
   },
 
-  controls: {
-    FETCH_FROM_API(action) {
-      return apiFetch({path: action.path});
-    },
-  },
-
-  resolvers: {
-    * getPrice(item) {
-      const path = '/wp/v2/prices/' + item;
-      const price = yield actions.fetchFromAPI(path);
-      return actions.setPrice(item, price);
-    },
-  },
+  controls: {},
+  resolvers: {},
 });

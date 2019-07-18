@@ -45,11 +45,11 @@ export const Measurement = (props: MeasurementProps, state: MeasurementState) =>
   const {property, uuid, parentBlockUUID} = attributes;
 
   return (
-    <div className={className}
+    <div className={`${className} p-sm`}
          data-attributes={serializeAttributes(attributes)}>
       {isRenderedInEditor ? children :
         <div>
-          <p className={"mt-sm mb-0"}>{property}<span>{instanceIndex}</span></p>
+          <p className={"mt-sm mb-0"}>{property}</p>
           <TextField
             className={"form-control"}
             onTrailingIconSelect={() => {

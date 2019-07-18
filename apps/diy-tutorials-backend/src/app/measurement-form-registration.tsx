@@ -28,7 +28,7 @@ registerBlockType('irian/diy-measurement-form', {
   category: 'common',
   keywords: [],
   attributes: withBaseAttributes({
-    formula: {type: 'string'},
+    formula: {type: 'string', default: "A1"},
   }),
 
 
@@ -71,7 +71,9 @@ registerBlockType('irian/diy-measurement-form', {
         <InspectorControls key='inspector'>
 
         </InspectorControls>,
-        <MeasurementForm attributes={attributes}
+        <MeasurementForm
+          attributes={attributes}
+                         isRenderedInEditor={true}
         >
           <TextControl
             label="Formula"
@@ -80,7 +82,7 @@ registerBlockType('irian/diy-measurement-form', {
             onChange={(value) => {
               props.setAttributes({formula: value});
             }}/>
-          
+
           <InnerBlocks
             template={BLOCKS_TEMPLATE} templateLock={false}
             allowedBlocks={ALLOWED_BLOCKS}
@@ -104,7 +106,9 @@ registerBlockType('irian/diy-measurement-form', {
     const {attributes, clientId} = props;
 
     return (
-      <MeasurementForm attributes={attributes}>
+      <MeasurementForm
+        attributes={attributes}
+        isRenderedInEditor={true}>
         <InnerBlocks.Content/>
       </MeasurementForm>
     );

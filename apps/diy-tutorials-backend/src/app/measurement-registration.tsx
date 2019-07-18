@@ -1,5 +1,5 @@
 import React from 'react';
-import {generateUUID, Measurement} from '@diy-tutorials/diy-tutorials-common';
+import {generateUUID, Measurement, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
 
 // @ts-ignore
 const {TextControl, CheckboxControl, Toolbar, DropdownMenu} = wp.components;
@@ -7,6 +7,8 @@ const {TextControl, CheckboxControl, Toolbar, DropdownMenu} = wp.components;
 const {registerBlockType} = window.wp.blocks;
 // @ts-ignore
 const {BlockControls, InspectorControls, InnerBlocks} = window.wp.editor;
+// @ts-ignore
+const {withSelect} = window.wp.data;
 
 console.log("registerBlockType measurement");
 /**
@@ -27,19 +29,24 @@ registerBlockType('irian/diy-measurement', {
   icon: 'layout',
   category: 'common',
   keywords: [],
-  attributes: {
-    uuid: {type: 'string'},
+  attributes: withBaseAttributes({
     property: {type: 'string'},
-  },
+  }),
 
 
-  edit: function (props: any) {
-    const {isSelected, attributes, className, setAttributes, name} = props;
+  edit: withSelect((select, ownProps) => {
+    const {getMeasurementIndex} = select("diy-tutorial");
+
+    return {
+      index: getMeasurementIndex(ownProps.attributes.uuid)
+    };
+  })((props: any) => {
+    const {isSelected, setAttributes, attributes, className, index, name, clientId} = props;
     const {uuid, property} = attributes;
 
 
     if (!uuid) {
-      props.setAttributes({
+      setAttributes({
         uuid: generateUUID(),
         name: name,
       })
@@ -55,7 +62,7 @@ registerBlockType('irian/diy-measurement', {
           attributes={attributes}>
           <div>
             <TextControl
-              label="Proprietate masurabila"
+              label={`Proprietate masurabila (A${index + 1})`}
               key={"property"}
               value={property}
               onChange={(value) => {
@@ -66,7 +73,7 @@ registerBlockType('irian/diy-measurement', {
 
       ]
     );
-  },
+  }),
 
 
   /**

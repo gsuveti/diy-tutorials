@@ -21,6 +21,7 @@ interface OwnProps {
     uuid?: string;
     name?: string;
   };
+  isRenderedInEditor?: boolean;
 }
 
 
@@ -30,6 +31,7 @@ interface DispatchProps {
 
 interface StateProps {
   instancesCount?: number
+  value?: number
 }
 
 type MeasurementFormProps = StateProps & DispatchProps & OwnProps;
@@ -44,7 +46,10 @@ const allowedComponents = {
 };
 
 export const MeasurementForm = (props: MeasurementFormProps) => {
-  const {children, className, attributes, innerBlocks = [], instancesCount, changeInstancesCount} = props;
+  const {
+    children, className, attributes, innerBlocks = [], instancesCount, changeInstancesCount, value,
+    isRenderedInEditor
+  } = props;
   const {uuid} = attributes;
 
   const measurements = new Array(instancesCount || 1).fill(1)
@@ -67,38 +72,49 @@ export const MeasurementForm = (props: MeasurementFormProps) => {
     });
 
   return (
-    <div className={className}
+    <div className={`${className} mt-md`}
          data-attributes={serializeAttributes(attributes)}>
-      <p>measurement-form</p>
       {children}
-      <TextField
-        label={"Number of instances"}
-        className={"form-control"}
-        onLeadingIconSelect={() => {
-          changeInstancesCount(
-            uuid, instancesCount ? instancesCount + 1 : 2
-          );
-        }}
-        onTrailingIconSelect={() => {
-          changeInstancesCount(
-            uuid, instancesCount ? Math.max(instancesCount - 1, 1) : 1
-          );
-        }}
-        leadingIcon={<MaterialIcon role="button" icon="arrow_drop_up"/>}
-        trailingIcon={<MaterialIcon role="button" icon="arrow_drop_down"/>}
-      >
-        <Input
-          value={instancesCount || ""}
-          onChange={(event: FormEvent<HTMLInputElement>) => {
-            const value = Number.parseInt(event.currentTarget.value.replace(/[^0-9]/, '')) || null;
-            changeInstancesCount(
-              uuid,
-              value
-            );
-          }}/>
-      </TextField>
+      {
+        isRenderedInEditor ?
+          null :
+          <div>
+            <TextField
+              label={"Number of instances"}
+              className={"form-control"}
+              onLeadingIconSelect={() => {
+                changeInstancesCount(
+                  uuid, instancesCount ? instancesCount + 1 : 2
+                );
+              }}
+              onTrailingIconSelect={() => {
+                changeInstancesCount(
+                  uuid, instancesCount ? Math.max(instancesCount - 1, 1) : 1
+                );
+              }}
+              leadingIcon={<MaterialIcon role="button" icon="arrow_drop_up"/>}
+              trailingIcon={<MaterialIcon role="button" icon="arrow_drop_down"/>}
+            >
+              <Input
+                value={instancesCount || ""}
+                onChange={(event: FormEvent<HTMLInputElement>) => {
+                  const value = Number.parseInt(event.currentTarget.value.replace(/[^0-9]/, '')) || null;
+                  changeInstancesCount(
+                    uuid,
+                    value
+                  );
+                }}/>
+            </TextField>
 
-      {measurements}
+            <div>
+              {measurements}
+            </div>
+            
+            <p>Sum: {value}</p>
+
+          </div>
+      }
+
 
     </div>
   );
@@ -107,7 +123,8 @@ export const MeasurementForm = (props: MeasurementFormProps) => {
 
 function mapStateToProps(state: AppState, ownProps: MeasurementFormProps, ownState: MeasurementFormState): StateProps {
   return {
-    instancesCount: state.tutorial.instancesCountByMeasurementForm[ownProps.attributes.uuid]
+    instancesCount: state.tutorial.instancesCountByMeasurementForm[ownProps.attributes.uuid],
+    value: state.tutorial.measuredFormValues[ownProps.attributes.uuid]
   };
 }
 

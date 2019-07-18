@@ -6,9 +6,8 @@ import {
   configureStore,
   deserializeAttributes,
   filterBlocksByName,
-  getBlockList,
+  getBlockAttributesList,
   getInnerBlocks,
-  getQuestionsToSectionMap,
   ROOT_ID,
   Tutorial
 } from '@diy-tutorials/diy-tutorials-common';
@@ -19,18 +18,17 @@ const rootElement = document.getElementById(ROOT_ID);
 if (rootElement) {
   console.log("hydrating root element");
 
-  const innerBlocks = getInnerBlocks(rootElement);
-  const blocks = getBlockList(innerBlocks);
+  const attributes = deserializeAttributes(rootElement.dataset.attributes);
+  const innerBlocks = getInnerBlocks(rootElement, attributes.uuid);
+  const blocks = getBlockAttributesList(innerBlocks);
   const sections = filterBlocksByName(blocks, BlockNames.Section);
   const questions = filterBlocksByName(blocks, BlockNames.Question);
   const measurements = filterBlocksByName(blocks, BlockNames.Measurement);
   const measurementForms = filterBlocksByName(blocks, BlockNames.MeasurementForm);
 
-  const questionsToSectionLinks = getQuestionsToSectionMap(innerBlocks);
 
   console.log(innerBlocks);
   console.log(blocks);
-  console.log(questionsToSectionLinks);
 
   ReactDOM.render(
     <Provider store={configureStore({
@@ -41,11 +39,12 @@ if (rootElement) {
         measurements,
         answers: {},
         measuredValues: {},
+        measuredFormValues: {},
         instancesCountByMeasurementForm: {},
       }
     })}>
       <Tutorial
-        attributes={deserializeAttributes(rootElement.dataset.attributes)}
+        attributes={attributes}
         innerBlocks={innerBlocks}>
       </Tutorial>
     </Provider>,

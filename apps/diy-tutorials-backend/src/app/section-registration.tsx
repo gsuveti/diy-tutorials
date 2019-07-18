@@ -1,13 +1,15 @@
 import React from 'react';
 import {generateUUID, Section, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
-import {TutorialWpContext} from './tutorial-wp-context';
 
 // @ts-ignore
-const {TextControl, CheckboxControl, Toolbar, DropdownMenu} = wp.components;
+const {Toolbar} = wp.components;
 // @ts-ignore
 const {registerBlockType} = window.wp.blocks;
 // @ts-ignore
 const {BlockControls, InspectorControls, InnerBlocks} = window.wp.editor;
+// @ts-ignore
+const {withSelect} = window.wp.data;
+
 
 console.log("registerBlockType section");
 /**
@@ -42,69 +44,74 @@ registerBlockType('irian/diy-section', {
    *
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
-  edit: function (props: any) {
-    const {attributes, clientId, setAttributes, name} = props;
-    const {uuid, submitForm} = attributes;
+  edit: withSelect((select, ownProps) => {
+    const {getSectionIndex} = select("diy-tutorial");
 
-    const BLOCKS_TEMPLATE = [
-      ['irian/diy-content'],
-      ['irian/diy-question']
-    ];
-    const ALLOWED_BLOCKS = [
-      'irian/diy-content',
-      'irian/diy-question',
-      'irian/diy-measurement-form'
-    ];
+    return {
+      index: getSectionIndex(ownProps.attributes.uuid)
+    };
+  })(
+    (props: any) => {
+      const {attributes, clientId, setAttributes, name, index} = props;
+      const {uuid, submitForm} = attributes;
 
-    const controls = [
-      {
-        icon: `arrow-right-alt`,
-        title: `Go next`,
-        isActive: !submitForm,
-        onClick: () => setAttributes({submitForm: false}),
-      }, {
-        icon: `external`,
-        title: `Submit form`,
-        isActive: submitForm,
-        onClick: () => setAttributes({submitForm: true}),
+      const BLOCKS_TEMPLATE = [
+        ['irian/diy-content'],
+        ['irian/diy-question']
+      ];
+      const ALLOWED_BLOCKS = [
+        'irian/diy-content',
+        'irian/diy-question',
+        'irian/diy-measurement-form'
+      ];
+
+      const controls = [
+        {
+          icon: `arrow-right-alt`,
+          title: `Go next`,
+          isActive: !submitForm,
+          onClick: () => setAttributes({submitForm: false}),
+        }, {
+          icon: `external`,
+          title: `Submit form`,
+          isActive: submitForm,
+          onClick: () => setAttributes({submitForm: true}),
+        }
+      ];
+
+      if (!uuid) {
+        props.setAttributes({
+          uuid: generateUUID(),
+          name: name,
+        })
       }
-    ];
-
-    if (!uuid) {
-      props.setAttributes({
-        uuid: generateUUID(),
-        name: name,
-      })
-    }
 
 
-    return ([
-        <BlockControls key='controls'>
-          <Toolbar controls={controls}>
-          </Toolbar>
-        </BlockControls>,
-        <InspectorControls key='inspector'>
-        </InspectorControls>,
-        <Section
-          key='content'
-          className={props.className}
-          clientId={clientId}
-          attributes={attributes}
-        >
-          <TutorialWpContext.Consumer key={'index'}>
-            {({sections = {}}: { sections: any }) => (
-              <p>Section: {sections.indexOf(clientId) + 1} {submitForm ? "(Submit)" : null}</p>
-            )}
-          </TutorialWpContext.Consumer>
-          <InnerBlocks
-            template={BLOCKS_TEMPLATE} templateLock={false}
-            allowedBlocks={ALLOWED_BLOCKS}
-          />
-        </Section>
+      return ([
+          <BlockControls key='controls'>
+            <Toolbar controls={controls}>
+            </Toolbar>
+          </BlockControls>,
+          <InspectorControls key='inspector'>
+          </InspectorControls>,
+          <Section
+            key='content'
+            className={props.className}
+            clientId={clientId}
+            attributes={attributes}
+          >
 
-      ]
-    );
-  },
+            <p>Section: {index + 1} {submitForm ? "(Submit)" : null}</p>
+
+            <InnerBlocks
+              template={BLOCKS_TEMPLATE} templateLock={false}
+              allowedBlocks={ALLOWED_BLOCKS}
+            />
+          </Section>
+
+        ]
+      );
+    }),
 
 
   /**

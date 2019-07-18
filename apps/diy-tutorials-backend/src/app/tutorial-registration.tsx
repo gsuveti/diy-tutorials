@@ -1,6 +1,5 @@
 import React from 'react';
 import {generateUUID, ROOT_ID, Tutorial} from '@diy-tutorials/diy-tutorials-common';
-import {TutorialWpContext} from './tutorial-wp-context';
 
 // @ts-ignore
 const {registerBlockType} = window.wp.blocks;
@@ -9,7 +8,7 @@ const {Component} = window.wp.element;
 // @ts-ignore
 const {BlockControls, InspectorControls, AlignmentToolbar, InnerBlocks} = window.wp.editor;
 // @ts-ignore
-const {withSelect} = window.wp.data;
+const {withSelect, withDispatch} = window.wp.data;
 
 
 console.log("registerBlockType tutorial");
@@ -32,52 +31,56 @@ registerBlockType('irian/diy-tutorial', {
       postId: getCurrentPostId(),
       innerBlocks: getBlocks(ownProps.clientId)
     };
-  })((props) => {
-    const {attributes, className, innerBlocks, name} = props;
-    const {uuid} = attributes;
+  })(
+    withDispatch((dispatch, ownProps) => {
+      const {init} = dispatch('diy-tutorial');
+      return {
+        init
+      };
+    })(
+      (props) => {
+        const {attributes, className, innerBlocks, name, init} = props;
+        const {uuid} = attributes;
+        init(innerBlocks);
 
-    const sections = innerBlocks.map((block) => block.clientId);
+        if (!uuid) {
+          props.setAttributes({
+            uuid: generateUUID(),
+            name: name,
+          })
+        }
 
-    if (!uuid) {
-      props.setAttributes({
-        uuid: generateUUID(),
-        name: name,
-      })
-    }
-
-    const BLOCKS_TEMPLATE = [
-      ['irian/diy-section']
-    ];
-    const ALLOWED_BLOCKS = ['irian/diy-section'];
+        const BLOCKS_TEMPLATE = [
+          ['irian/diy-section'],
+          ['irian/diy-product-list']
+        ];
+        const ALLOWED_BLOCKS = ['irian/diy-section'];
 
 
-    return ([
-        <BlockControls key='controls'>
+        return ([
+            <BlockControls key='controls'>
 
-        </BlockControls>,
-        <InspectorControls key='inspector'>
+            </BlockControls>,
+            <InspectorControls key='inspector'>
 
-        </InspectorControls>,
-        <TutorialWpContext.Provider value={
-          {
-            sections: sections
-          }
-        }>
-          <Tutorial
-            id={ROOT_ID}
-            attributes={attributes}
-            className={className} key='content'>
-            <p>{uuid}</p>
-            <InnerBlocks
-              template={BLOCKS_TEMPLATE}
-              templateLock={false}
-              allowedBlocks={ALLOWED_BLOCKS}
-            />
-          </Tutorial>
-        </TutorialWpContext.Provider>
-      ]
-    );
-  }),
+            </InspectorControls>,
+
+            <Tutorial
+              id={ROOT_ID}
+              attributes={attributes}
+              className={className} key='content'>
+              <p>{uuid}</p>
+              <InnerBlocks
+                template={BLOCKS_TEMPLATE}
+                templateLock={false}
+                allowedBlocks={ALLOWED_BLOCKS}
+              />
+            </Tutorial>
+          ]
+        );
+      }
+    )
+  ),
 
   save: (props: any) => {
     const {attributes} = props;

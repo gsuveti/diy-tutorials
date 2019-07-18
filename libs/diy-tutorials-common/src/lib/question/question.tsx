@@ -122,8 +122,8 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
           value={value}
           onEnhancedChange={(index) => this.submitAnswer(undefined, index, true)}
         >
-          {options.map(({value}) => (
-              <Option key={value} value={value}>{value}</Option>
+          {options.map(({value}, index) => (
+              <Option key={index} value={value}>{value}</Option>
             )
           )}
         </Select>
