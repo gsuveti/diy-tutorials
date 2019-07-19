@@ -1,9 +1,10 @@
 import React from "react";
 import './tutorial.scss';
-import {Section} from '../section/section';
+import {ConnectedSection} from '../section/section';
 import {serializeAttributes} from '../utils';
 import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {Block} from '../models/block.model';
+import {ProductList} from '../product-list/product-list';
 
 
 /* tslint:disable:no-empty-interface */
@@ -17,7 +18,7 @@ export interface TutorialProps {
     uuid?: string;
     name?: string;
   };
-  isRenderedInEditor?:boolean;
+  isRenderedInEditor?: boolean;
 }
 
 /* tslint:disable:no-empty-interface */
@@ -26,7 +27,8 @@ export interface TutorialState {
 }
 
 const allowedComponents = {
-  'irian/diy-section': Section
+  'irian/diy-section': ConnectedSection,
+  'irian/diy-product-list': ProductList
 };
 
 export class Tutorial extends React.Component<TutorialProps, TutorialState> {

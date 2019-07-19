@@ -30,6 +30,17 @@ export function withBaseAttributes(attributes) {
   };
 }
 
+export function initBaseAttributes(props) {
+  if (!props.attributes.uuid) {
+    props.setAttributes({
+      uuid: generateUUID(),
+      name: props.name,
+    })
+  }
+}
+
+
+
 
 export function getInnerBlocks(element: HTMLElement, parentBlockUUID?: string): Block[] {
   const innerBlocks = [];

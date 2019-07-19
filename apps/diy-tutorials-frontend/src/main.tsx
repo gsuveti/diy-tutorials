@@ -25,7 +25,17 @@ if (rootElement) {
   const questions = filterBlocksByName(blocks, BlockNames.Question);
   const measurements = filterBlocksByName(blocks, BlockNames.Measurement);
   const measurementForms = filterBlocksByName(blocks, BlockNames.MeasurementForm);
+  const measurementFormsOrder = measurementForms.map(attributes => attributes.uuid);
 
+  const products = filterBlocksByName(blocks, BlockNames.Product);
+
+  const displayedSections = [sections[0].uuid];
+  const productQuantities = products.reduce((productQuantities, {uuid}) => {
+    return {
+      ...productQuantities,
+      [uuid]: 1
+    }
+  }, {});
 
   console.log(innerBlocks);
   console.log(blocks);
@@ -35,8 +45,13 @@ if (rootElement) {
       tutorial: {
         blocks,
         sections,
+        displayedSections,
         questions,
         measurements,
+        measurementForms,
+        measurementFormsOrder,
+        products,
+        productQuantities,
         answers: {},
         measuredValues: {},
         measuredFormValues: {},

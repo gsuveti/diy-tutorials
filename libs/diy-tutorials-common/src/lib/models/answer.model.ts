@@ -3,7 +3,6 @@ export interface Answer {
   value?: string,
   values?: string[],
   text: string,
-  nextSection?: number
-  sectionIndex?: number
+  nextSection?: string
   goToNextSection?: boolean
 }

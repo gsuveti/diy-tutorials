@@ -1,5 +1,5 @@
 import React from 'react';
-import {ProductRange} from '@diy-tutorials/diy-tutorials-common';
+import {initBaseAttributes, ProductRange, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
 
 // @ts-ignore
 const {TextControl} = wp.components;
@@ -15,12 +15,15 @@ registerBlockType('irian/diy-product-range', {
   icon: 'slides',
   category: 'common',
   keywords: [],
-  attributes: {
+  attributes: withBaseAttributes({
     headline: {type: 'string'},
-  },
+  }),
 
   edit: function (props: any) {
-    const {headline, setAttributes} = props;
+    const {setAttributes, attributes} = props;
+    const {headline} = attributes;
+
+    initBaseAttributes(props);
 
     return ([
         <BlockControls key='controls'>
@@ -29,7 +32,7 @@ registerBlockType('irian/diy-product-range', {
         <InspectorControls key='inspector'>
 
         </InspectorControls>,
-        <ProductRange>
+        <ProductRange attributes={attributes}>
 
           <TextControl
             label="Gama"
@@ -46,8 +49,10 @@ registerBlockType('irian/diy-product-range', {
 
 
   save: function (props: any) {
+    const {attributes} = props;
+
     return (
-      <ProductRange/>
+      <ProductRange attributes={attributes}/>
     );
   },
 });

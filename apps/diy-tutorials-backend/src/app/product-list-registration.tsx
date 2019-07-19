@@ -1,5 +1,5 @@
 import React from 'react';
-import {ProductList} from '@diy-tutorials/diy-tutorials-common';
+import {initBaseAttributes, ProductList, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
 
 // @ts-ignore
 const {TextControl} = wp.components;
@@ -17,7 +17,7 @@ registerBlockType('irian/diy-product-list', {
   icon: 'slides',
   category: 'common',
   keywords: [],
-  attributes: {},
+  attributes: withBaseAttributes({}),
 
   edit:
     withSelect((select, ownProps) => {
@@ -28,17 +28,14 @@ registerBlockType('irian/diy-product-list', {
       };
     })(
       (props: any) => {
-        const {innerBlocks} = props;
-        const ALLOWED_BLOCKS = ['irian/diy-product-type', 'irian/diy-product-range'];
+        const {className, attributes} = props;
+        const ALLOWED_BLOCKS = [
+          'irian/diy-product',
+          'irian/diy-product-type',
+          'irian/diy-product-range'];
 
-        const productRangeList = innerBlocks
-          .filter(block => block.name === 'irian/diy-product-range')
-          .map(block => {
-            return {
-              clientId: block.clientId,
-              headline: block.attributes.headline,
-            }
-          });
+
+        initBaseAttributes(props);
 
         return ([
             <BlockControls key='controls'>
@@ -49,8 +46,9 @@ registerBlockType('irian/diy-product-list', {
 
             </InspectorControls>,
 
-            <ProductList>
-              {JSON.stringify(productRangeList)}
+            <ProductList
+              className={className}
+              attributes={attributes}>
               <InnerBlocks allowedBlocks={ALLOWED_BLOCKS}
               />
             </ProductList>
@@ -59,8 +57,9 @@ registerBlockType('irian/diy-product-list', {
       }),
 
   save: function (props: any) {
+    const {attributes} = props;
     return (
-      <ProductList>
+      <ProductList attributes={attributes}>
         <InnerBlocks.Content/>
       </ProductList>
     );

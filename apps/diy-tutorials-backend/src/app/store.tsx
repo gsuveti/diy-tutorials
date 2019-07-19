@@ -4,8 +4,11 @@ import {BlockNames, filterBlocksByName, getBlockAttributesList} from '@diy-tutor
 const {registerStore} = window.wp.data;
 
 const DEFAULT_STATE = {
+  blocks: [],
   sectionsOrder: [],
   sectionOptions: [],
+  productRangeOptions: [],
+  productTypeOptions: [],
   measurementFormsOrder: [],
   measurementsOrder: {}
 };
@@ -60,12 +63,35 @@ registerStore('diy-tutorial', {
           .orders;
 
 
+        const productRanges = filterBlocksByName(blockAttributesList, BlockNames.ProductRange);
+        const productRangeOptions = [{value: "null", label: "Fara gama"}].concat(
+          productRanges.map(attributes => {
+            return {
+              value: attributes.uuid,
+              label: attributes.headline
+            };
+          })
+        );
+
+        const productTypes = filterBlocksByName(blockAttributesList, BlockNames.ProductType);
+        const productTypeOptions = [{value: "null", label: "Fara tip"}].concat(
+          productTypes.map(attributes => {
+            return {
+              value: attributes.uuid,
+              label: attributes.headline
+            };
+          })
+        );
+
         return {
           ...state,
+          blocks: blockAttributesList,
           sectionsOrder,
           measurementFormsOrder,
           measurementsOrder,
-          sectionOptions
+          sectionOptions,
+          productRangeOptions,
+          productTypeOptions
         };
     }
 
@@ -87,6 +113,12 @@ registerStore('diy-tutorial', {
 
     getSectionOptions(state) {
       return state.sectionOptions;
+    },
+    getProductRangeOptions(state) {
+      return state.productRangeOptions;
+    },
+    getProductTypeOptions(state) {
+      return state.productTypeOptions;
     },
   },
 

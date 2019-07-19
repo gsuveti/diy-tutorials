@@ -22,7 +22,6 @@ export interface OwnProps {
     optionsJSON?: string;
     uuid?: string;
   };
-  sectionIndex?: number;
   children?: any;
   isRenderedInEditor?: boolean;
 }
@@ -40,7 +39,7 @@ type QuestionProps = StateProps & DispatchProps & OwnProps;
 
 /* tslint:disable:no-empty-interface */
 export interface QuestionState {
-  options: { value: string, nextSection: number }[] | null
+  options: { value: string, nextSection: string }[] | null
 }
 
 
@@ -58,11 +57,11 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
     const {attributes: {optionsJSON}} = nextProps;
 
     if (optionsJSON) {
-      const options: { value: string, nextSection: number }[] = JSON.parse(optionsJSON)
+      const options: { value: string, nextSection: string }[] = JSON.parse(optionsJSON)
         .map((option: { value: string, nextSection: string }) => {
           return {
             value: option.value,
-            nextSection: Number.parseInt(option.nextSection) || undefined,
+            nextSection: option.nextSection,
           }
         });
       return {options};
@@ -72,7 +71,7 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
 
 
   submitAnswer(value: string, index?: number, goToNextSection = false) {
-    const {addAnswer, attributes, sectionIndex} = this.props;
+    const {addAnswer, attributes} = this.props;
     const {uuid, text} = attributes;
 
     const {options = []} = this.state;
@@ -83,7 +82,6 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
       value: value,
       ...option,
       text,
-      sectionIndex: sectionIndex,
       goToNextSection
     });
   }

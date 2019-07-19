@@ -1,5 +1,5 @@
 import React from 'react';
-import {ProductType} from '@diy-tutorials/diy-tutorials-common';
+import {initBaseAttributes, ProductType, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
 
 // @ts-ignore
 const {TextControl} = wp.components;
@@ -15,15 +15,15 @@ registerBlockType('irian/diy-product-type', {
   icon: 'slides',
   category: 'common',
   keywords: [],
-  attributes: {},
+  attributes: withBaseAttributes({
+    headline: {type: 'string'},
+  }),
 
   edit: function (props: any) {
-    const ALLOWED_BLOCKS = ['irian/diy-product'];
+    const {setAttributes, attributes} = props;
+    const {headline} = attributes;
 
-
-    function getTemplate(size) {
-      return new Array(size).fill(['irian/diy-product']);
-    }
+    initBaseAttributes(props);
 
     return ([
         <BlockControls key='controls'>
@@ -33,11 +33,15 @@ registerBlockType('irian/diy-product-type', {
 
         </InspectorControls>,
 
-        <ProductType>
-            <InnerBlocks allowedBlocks={ALLOWED_BLOCKS}
-                         template={getTemplate(1)}
-            />
+        <ProductType attributes={attributes}>
 
+          <TextControl
+            label="Tip produs"
+            key={"headline"}
+            value={headline}
+            onChange={(value) => {
+              setAttributes({headline: value});
+            }}/>
         </ProductType>
       ]
     );
@@ -45,10 +49,10 @@ registerBlockType('irian/diy-product-type', {
 
 
   save: function (props: any) {
+    const {attributes} = props;
+
     return (
-      <ProductType>
-        <InnerBlocks.Content/>
-      </ProductType>
+      <ProductType attributes={attributes}/>
     );
   },
 });

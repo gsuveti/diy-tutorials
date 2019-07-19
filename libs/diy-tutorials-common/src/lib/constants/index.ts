@@ -6,4 +6,7 @@ export enum BlockNames{
   Tutorial = 'irian/diy-tutorial',
   MeasurementForm = 'irian/diy-measurement-form',
   Measurement = 'irian/diy-measurement',
+  ProductRange = 'irian/diy-product-range',
+  ProductType = 'irian/diy-product-type',
+  Product = 'irian/diy-product',
 }
