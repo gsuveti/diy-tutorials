@@ -223,7 +223,6 @@ registerBlockType('irian/diy-question', {
       <Question
         className={props.className}
         attributes={attributes} key='content'
-        isRenderedInEditor={true}
       />
     );
   },

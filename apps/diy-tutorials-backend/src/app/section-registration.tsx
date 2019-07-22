@@ -99,6 +99,7 @@ registerBlockType('irian/diy-section', {
             className={props.className}
             clientId={clientId}
             attributes={attributes}
+            isRenderedInEditor={true}
           >
 
             <p>Section: {index + 1} {submitForm ? "(Submit)" : null}</p>

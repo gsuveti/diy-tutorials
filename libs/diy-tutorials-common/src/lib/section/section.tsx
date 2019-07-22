@@ -9,7 +9,7 @@ import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {ConnectedMeasurementForm} from '../measurement-form/measurement-form';
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
-import {addMeasurement, TutorialActions} from '../tutorial/+state/tutorial.actions';
+import {showProducts, TutorialActions} from '../tutorial/+state/tutorial.actions';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
@@ -21,14 +21,16 @@ interface OwnProps {
   };
   innerBlocks?: any[];
   children?: any;
+  isRenderedInEditor?: boolean;
 }
 
 
 interface DispatchProps {
+  showProducts?: typeof showProducts;
 }
 
 interface StateProps {
-  isDisplayed?: boolean;
+  isVisible?: boolean;
 }
 
 type SectionProps = StateProps & DispatchProps & OwnProps;
@@ -46,12 +48,15 @@ const allowedComponents = {
 
 
 export const Section = (props: SectionProps) => {
-  const {innerBlocks = [], children, className, attributes, isDisplayed} = props;
-  const {uuid} = attributes;
+  const {
+    innerBlocks = [], children, className, attributes, isVisible = true,
+    isRenderedInEditor, showProducts
+  } = props;
+  const {submitForm} = attributes;
 
 
   return (
-    <div className={`${className} ${isDisplayed ? "" : "hide"}`}
+    <div className={`${className} ${isVisible ? "show" : "hide"}`}
          data-attributes={serializeAttributes(attributes)}
     >
       {children}
@@ -59,6 +64,15 @@ export const Section = (props: SectionProps) => {
         innerBlocks={innerBlocks}
         allowedComponents={allowedComponents}
       />
+      {
+        isRenderedInEditor ? null :
+          <div>
+            {submitForm ?
+              <button onClick={() => showProducts()}>Show products</button>
+              : null
+            }
+          </div>
+      }
     </div>
   );
 };
@@ -68,13 +82,13 @@ function mapStateToProps(state: AppState, ownProps: SectionProps, ownState: Sect
   const {attributes} = ownProps;
   const {uuid} = attributes;
   return {
-    isDisplayed: state.tutorial.displayedSections.indexOf(uuid) >= 0
+    isVisible: state.tutorial.displayedSections.indexOf(uuid) >= 0
   };
 }
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators<TutorialActions, ActionCreatorsMapObject<TutorialActions> & DispatchProps>({
-    addMeasurement,
+    showProducts,
   }, dispatch);
 
 

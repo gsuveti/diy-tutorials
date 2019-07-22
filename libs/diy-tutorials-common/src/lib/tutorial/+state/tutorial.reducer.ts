@@ -1,4 +1,4 @@
-import {AddAnswer, AddMeasurement, ChangeInstancesCount, TutorialActionTypes} from './tutorial.actions';
+import {AddAnswer, AddMeasurement, ChangeInstancesCount, ShowProducts, TutorialActionTypes} from './tutorial.actions';
 import {createReducer} from 'redux-starter-kit'
 import {Answer} from '../../models/answer.model';
 import {BlockAttributes} from '../../models/block-attributes.model';
@@ -15,6 +15,7 @@ export interface TutorialState {
   measurementForms: BlockAttributes[],
   measurementFormsOrder: string[],
   products: BlockAttributes[],
+  showProducts: boolean,
   productQuantities: { [uuid: string]: number };
   answers: { [uuid: string]: Answer };
   measuredValues: { [uuid: string]: { [instanceIndex: string]: string } };
@@ -30,6 +31,7 @@ export const initialTutorialState: TutorialState = {
   measurements: [],
   measurementForms: [],
   measurementFormsOrder: [],
+  showProducts: false,
   products: [],
   productQuantities: {},
   answers: {},
@@ -54,9 +56,17 @@ export const tutorialReducer = createReducer(initialTutorialState, {
 
     if (answer.goToNextSection) {
       state.displayedSections = [...history, answer.nextSection];
+      state.showProducts = false;
     }
+
     return state;
   },
+  
+  [TutorialActionTypes.ShowProducts]: (state: TutorialState, action: ShowProducts) => {
+    state.showProducts = true;
+    return state;
+  },
+
   [TutorialActionTypes.AddMeasurement]: (state: TutorialState, action: AddMeasurement) => {
     const {uuid, value, parentBlockUUID, instanceIndex} = action.payload;
 
@@ -111,7 +121,9 @@ function calculateProductQuantities(state: TutorialState) {
       done(measuredFormValues[cellCoord.row.index]);
     });
 
-    const quantity = parser.parse(block.quantityFormula).result || 1;
+    const parsedObject = parser.parse(block.quantityFormula);
+    const quantity = parsedObject.error ? 0 : parsedObject.result;
+
     return {
       ...productQuantities,
       [block.uuid]: Math.ceil(quantity)

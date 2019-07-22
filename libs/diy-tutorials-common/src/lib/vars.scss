@@ -1,0 +1,21 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+$spacer: 1em;
+
+$spacers: map-merge(
+    (
+      0: 0,
+      1: ($spacer * .25),
+      2: ($spacer * .5),
+      3: $spacer,
+      4: ($spacer * 1.5),
+      none: 0,
+      xs: ($spacer * .25),
+      sm: ($spacer * .5),
+      "": $spacer,
+      md: $spacer,
+      lg: ($spacer * 1.5),
+      xl: ($spacer * 2)
+    ),
+    $spacers
+);

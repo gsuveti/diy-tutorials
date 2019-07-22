@@ -4,7 +4,7 @@ import {ConnectedSection} from '../section/section';
 import {serializeAttributes} from '../utils';
 import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {Block} from '../models/block.model';
-import {ProductList} from '../product-list/product-list';
+import {ConnectedProductList} from '../product-list/product-list';
 
 
 /* tslint:disable:no-empty-interface */
@@ -28,7 +28,7 @@ export interface TutorialState {
 
 const allowedComponents = {
   'irian/diy-section': ConnectedSection,
-  'irian/diy-product-list': ProductList
+  'irian/diy-product-list': ConnectedProductList
 };
 
 export class Tutorial extends React.Component<TutorialProps, TutorialState> {

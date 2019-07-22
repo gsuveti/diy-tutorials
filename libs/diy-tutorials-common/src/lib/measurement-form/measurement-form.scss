@@ -1,0 +1,10 @@
+@import "../vars";
+
+.measurements-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+
+  > * {
+    padding: $spacer 0;
+  }
+}

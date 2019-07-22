@@ -2,11 +2,11 @@ import React from 'react';
 import {initBaseAttributes, ProductRange, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
 
 // @ts-ignore
-const {TextControl} = wp.components;
+const {TextControl, TextareaControl} = wp.components;
 // @ts-ignore
 const {registerBlockType} = window.wp.blocks;
 // @ts-ignore
-const {BlockControls, InspectorControls} = window.wp.editor;
+const {BlockControls, InspectorControls, InnerBlocks} = window.wp.editor;
 
 console.log("registerBlockType content");
 
@@ -17,13 +17,16 @@ registerBlockType('irian/diy-product-range', {
   keywords: [],
   attributes: withBaseAttributes({
     headline: {type: 'string'},
+    description: {type: 'string'},
   }),
 
   edit: function (props: any) {
     const {setAttributes, attributes} = props;
-    const {headline} = attributes;
+    const {headline, description} = attributes;
 
     initBaseAttributes(props);
+    const ALLOWED_BLOCKS = [
+      'irian/diy-product'];
 
     return ([
         <BlockControls key='controls'>
@@ -32,8 +35,8 @@ registerBlockType('irian/diy-product-range', {
         <InspectorControls key='inspector'>
 
         </InspectorControls>,
-        <ProductRange attributes={attributes}>
-
+        <ProductRange attributes={attributes}
+                      isRenderedInEditor={true}>
           <TextControl
             label="Gama"
             key={"headline"}
@@ -41,7 +44,15 @@ registerBlockType('irian/diy-product-range', {
             onChange={(value) => {
               setAttributes({headline: value});
             }}/>
-
+          <TextareaControl
+            label="Description"
+            key={"description"}
+            value={description}
+            onChange={(value) => {
+              setAttributes({description: value});
+            }}/>
+          <InnerBlocks allowedBlocks={ALLOWED_BLOCKS}
+          />
         </ProductRange>
       ]
     );
@@ -52,7 +63,9 @@ registerBlockType('irian/diy-product-range', {
     const {attributes} = props;
 
     return (
-      <ProductRange attributes={attributes}/>
+      <ProductRange attributes={attributes}>
+        <InnerBlocks.Content/>
+      </ProductRange>
     );
   },
 });

@@ -106,10 +106,10 @@ export const MeasurementForm = (props: MeasurementFormProps) => {
                 }}/>
             </TextField>
 
-            <div>
+            <div className={"measurements-wrapper"}>
               {measurements}
             </div>
-            
+
             <p>Sum: {value}</p>
 
           </div>

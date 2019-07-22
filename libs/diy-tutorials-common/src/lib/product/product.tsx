@@ -9,6 +9,7 @@ import {AppState} from '../store';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
+  className?: string;
   children?: any;
   attributes?: {
     uuid: string;
@@ -16,7 +17,6 @@ interface OwnProps {
     headline: string;
     imageUrl: string;
     productType: string;
-    productRange: string;
     price: number;
     quantityFormula: string;
   };
@@ -28,6 +28,7 @@ interface DispatchProps {
 }
 
 interface StateProps {
+  isVisible?: boolean;
   quantity?: number;
 }
 
@@ -39,11 +40,12 @@ export interface ProductState {
 }
 
 export const Product = (props: ProductProps) => {
-  const {children, attributes, isRenderedInEditor, quantity} = props;
+  const {className, children, attributes, isRenderedInEditor, quantity = 0, isVisible = true} = props;
   const {price, imageUrl, headline} = attributes;
 
   return (
-    <div data-attributes={serializeAttributes(attributes)}>
+    <div data-attributes={serializeAttributes(attributes)}
+         className={`${className} ${isVisible ? "show" : "hide"}`}>
       {children}
       {
         isRenderedInEditor ? null :
@@ -61,8 +63,10 @@ export const Product = (props: ProductProps) => {
 function mapStateToProps(state: AppState, ownProps: ProductProps, ownState: ProductState): StateProps {
   const {attributes} = ownProps;
   const {uuid} = attributes;
+  const quantity = state.tutorial.productQuantities[uuid];
   return {
-    quantity: state.tutorial.productQuantities[uuid]
+    isVisible: true,
+    quantity,
   };
 }
 

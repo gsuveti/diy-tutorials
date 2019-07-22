@@ -21,7 +21,6 @@ registerBlockType('irian/diy-product', {
     headline: {type: 'string'},
     imageUrl: {type: 'string'},
     productType: {type: 'string'},
-    productRange: {type: 'string'},
     price: {type: 'string'},
     quantityFormula: {type: 'string'},
     optional: {type: 'boolean', default: false},
@@ -38,7 +37,7 @@ registerBlockType('irian/diy-product', {
   })(
     (props: any) => {
       const {setAttributes, attributes, productRangeOptions, productTypeOptions} = props;
-      const {headline, imageUrl, price, quantityFormula, productType, productRange} = attributes;
+      const {headline, imageUrl, price, quantityFormula, productType} = attributes;
 
       initBaseAttributes(props);
 
@@ -83,15 +82,6 @@ registerBlockType('irian/diy-product', {
               }}/>
             <SelectControl
               className={"pr-sm m-0"}
-              key="productRange"
-              value={productRange}
-              options={productRangeOptions}
-              onChange={(value) => {
-                props.setAttributes({productRange: value});
-              }}
-            />
-            <SelectControl
-              className={"pr-sm m-0"}
               key="productType"
               value={productType}
               options={productTypeOptions}
@@ -110,7 +100,6 @@ registerBlockType('irian/diy-product', {
 
     return (
       <Product
-        isRenderedInEditor={true}
         attributes={attributes}/>
     );
   },

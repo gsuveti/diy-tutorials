@@ -107,8 +107,7 @@ registerBlockType('irian/diy-measurement-form', {
 
     return (
       <MeasurementForm
-        attributes={attributes}
-        isRenderedInEditor={true}>
+        attributes={attributes}>
         <InnerBlocks.Content/>
       </MeasurementForm>
     );

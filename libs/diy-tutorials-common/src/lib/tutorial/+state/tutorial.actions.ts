@@ -4,6 +4,7 @@ import {action} from 'typesafe-actions';
 
 export enum TutorialActionTypes {
   AddAnswer = '[Tutorial] Add answer',
+  ShowProducts = '[Tutorial] Show products',
   AddMeasurement = '[Tutorial] Add measurement',
   ChangeInstancesCount = '[Tutorial] ChangeInstancesCount',
 }
@@ -56,4 +57,13 @@ export const addMeasurement: ActionCreator<AddMeasurement> =
     });
 
 
-export type TutorialActions = AddAnswer | AddMeasurement | ChangeInstancesCount;
+export interface ShowProducts extends Action<string> {
+  type: typeof TutorialActionTypes.ShowProducts
+  payload: {}
+}
+
+export const showProducts: ActionCreator<ShowProducts> = () => action(
+  TutorialActionTypes.ShowProducts, {});
+
+
+export type TutorialActions = AddAnswer | AddMeasurement | ChangeInstancesCount | ShowProducts;

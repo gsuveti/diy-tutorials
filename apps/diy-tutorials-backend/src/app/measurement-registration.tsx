@@ -89,7 +89,6 @@ registerBlockType('irian/diy-measurement', {
 
     return (
       <Measurement
-        isRenderedInEditor={true}
         attributes={attributes}>
       </Measurement>
     );

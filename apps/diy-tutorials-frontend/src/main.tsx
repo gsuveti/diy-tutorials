@@ -33,7 +33,7 @@ if (rootElement) {
   const productQuantities = products.reduce((productQuantities, {uuid}) => {
     return {
       ...productQuantities,
-      [uuid]: 1
+      [uuid]: 0
     }
   }, {});
 
@@ -51,6 +51,7 @@ if (rootElement) {
         measurementForms,
         measurementFormsOrder,
         products,
+        showProducts: false,
         productQuantities,
         answers: {},
         measuredValues: {},
