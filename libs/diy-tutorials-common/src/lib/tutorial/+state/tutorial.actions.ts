@@ -70,10 +70,11 @@ export const showProducts: ActionCreator<ShowProducts> = () => action(
 export interface AddProductsToCart extends Action<string> {
   type: typeof TutorialActionTypes.AddProductsToCart
   payload: {
-    productRangeUUID
+    products: any
   }
 }
-export const addProductsToCart: ActionCreator<AddProductsToCart> = (productRangeUUID:string) => action(
-  TutorialActionTypes.AddProductsToCart, {productRangeUUID});
+
+export const addProductsToCart: ActionCreator<AddProductsToCart> = (products: any[]) => action(
+  TutorialActionTypes.AddProductsToCart, {products});
 
 export type TutorialActions = AddResponse | AddMeasurement | ChangeInstancesCount | ShowProducts | AddProductsToCart;

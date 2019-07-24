@@ -64,18 +64,11 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
             <p>{description}</p>
           </div>
       }
-
-
       {content}
-
       {
         isRenderedInEditor ? null :
           <div>
-            <button onClick={() => {
-              addProductsToCart(uuid);
-            }}>
-              Adauga produse in cos
-            </button>
+
           </div>
       }
     </div>

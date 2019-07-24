@@ -28,6 +28,7 @@ if (rootElement) {
   const measurementFormsOrder = measurementForms.map(attributes => attributes.uuid);
 
   const products = filterBlocksByName(blocks, BlockNames.Product);
+  const productRanges = filterBlocksByName(blocks, BlockNames.ProductRange);
 
   const displayedSections = [sections[0].uuid];
   const productQuantities = products.reduce((productQuantities, {uuid}) => {
@@ -54,6 +55,7 @@ if (rootElement) {
         measurementForms,
         measurementFormsOrder,
         products,
+        productRanges,
         showProducts: false,
         productQuantities,
         responses: {},

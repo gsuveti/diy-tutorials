@@ -24,6 +24,7 @@ export interface TutorialState {
   measurementForms: BlockAttributes[],
   measurementFormsOrder: string[],
   products: BlockAttributes[],
+  productRanges: BlockAttributes[],
   showProducts: boolean,
   productQuantities: { [uuid: string]: number };
   responses: { [uuid: string]: Response };
@@ -44,6 +45,7 @@ export const initialTutorialState: TutorialState = {
   measurementForms: [],
   measurementFormsOrder: [],
   showProducts: false,
+  productRanges: [],
   products: [],
   productQuantities: {},
   responses: {},
@@ -104,14 +106,9 @@ export const tutorialReducer = createReducer(initialTutorialState, {
     return state;
   },
   [TutorialActionTypes.AddProductsToCart]: (state: TutorialState, action: AddProductsToCart) => {
-    const {productRangeUUID} = action.payload;
-    const products = state.products.filter((block: BlockAttributes) => {
-      const productType = block.productType;
-      const isProductVisible = productType ? state.displayedProductTypes[productType] : true;
-      return block.parentBlockUUID === productRangeUUID && isProductVisible;
-    });
+    const {products} = action.payload;
 
-    console.log(JSON.stringify(products));
+    console.log(products);
 
     return state;
   }

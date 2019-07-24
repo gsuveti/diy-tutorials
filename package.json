@@ -33,6 +33,7 @@
   "dependencies": {
     "@material-ui/core": "^4.0.0-rc.0",
     "@material/react-button": "^0.14.1",
+    "@material/react-icon-button": "^0.15.0",
     "@material/react-material-icon": "^0.14.1",
     "@material/react-select": "^0.14.1",
     "@material/react-text-field": "^0.14.1",
