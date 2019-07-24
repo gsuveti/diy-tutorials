@@ -6,20 +6,19 @@ import {serializeAttributes} from '../utils';
 import Select, {Option} from '@material/react-select';
 import TextField, {Input} from '@material/react-text-field';
 import MaterialIcon from '@material/react-material-icon';
-import {Answer} from '../models/answer.model';
+import {Response} from '../models/response.model';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
-import {addAnswer, TutorialActions} from '../tutorial/+state/tutorial.actions';
-import {AppState} from '@diy-tutorials/diy-tutorials-common';
+import {addResponse, TutorialActions} from '../tutorial/+state/tutorial.actions';
+import {AppState} from '../store';
 
 /* tslint:disable:no-empty-interface */
-export interface OwnProps {
+interface OwnProps {
   className?: string;
   attributes?: {
     type: string,
     displayCondition?: string;
     text?: string;
     required?: boolean;
-    optionsJSON?: string;
     uuid?: string;
   };
   children?: any;
@@ -27,19 +26,20 @@ export interface OwnProps {
 }
 
 interface DispatchProps {
-  addAnswer?: typeof addAnswer
+  addResponse?: typeof addResponse
 }
 
 interface StateProps {
-  answer?: Answer;
+  response?: Response;
+  options?: { value: string, nextSection: string, uuid: string }[] | null
 }
 
-type QuestionProps = StateProps & DispatchProps & OwnProps;
+export type QuestionProps = StateProps & DispatchProps & OwnProps;
 
 
 /* tslint:disable:no-empty-interface */
 export interface QuestionState {
-  options: { value: string, nextSection: string }[] | null
+
 }
 
 
@@ -54,53 +54,43 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
   }
 
   static getDerivedStateFromProps(nextProps: QuestionProps, prevState) {
-    const {attributes: {optionsJSON}} = nextProps;
+    const {attributes} = nextProps;
 
-    if (optionsJSON) {
-      const options: { value: string, nextSection: string }[] = JSON.parse(optionsJSON)
-        .map((option: { value: string, nextSection: string }) => {
-          return {
-            value: option.value,
-            nextSection: option.nextSection,
-          }
-        });
-      return {options};
-    }
     return {options: null};
   }
 
 
-  submitAnswer(value: string, index?: number, goToNextSection = false) {
-    const {addAnswer, attributes} = this.props;
+  submitResponse(value: string, index?: number, goToNextSection = false) {
+    const {addResponse, attributes, options = []} = this.props;
     const {uuid, text} = attributes;
 
-    const {options = []} = this.state;
-    const option = options[index] || {};
+    const option = options[index] || {value: undefined, nextSection: undefined, uuid: undefined};
 
-    addAnswer({
-      uuid: uuid,
-      value: value,
-      ...option,
+    addResponse({
+      questionUUID: uuid,
+      responseUUID: option.uuid,
+      value: value || option.value,
       text,
+      nextSection: option.nextSection,
       goToNextSection
     });
   }
 
   renderTextQuestion() {
-    const {answer} = this.props;
-    const value: string = answer ? answer.value : "";
+    const {response} = this.props;
+    const value: string = response ? response.value : "";
 
     return (
       <div>
         <TextField
           className={"form-control"}
-          onTrailingIconSelect={() => this.submitAnswer("")}
+          onTrailingIconSelect={() => this.submitResponse("")}
           trailingIcon={<MaterialIcon role="button" icon="delete"/>}
         >
           <Input
             value={value}
             onChange={(event: FormEvent<HTMLInputElement>) => {
-              this.submitAnswer(event.currentTarget.value)
+              this.submitResponse(event.currentTarget.value)
             }}/>
         </TextField>
       </div>
@@ -108,9 +98,8 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
   };
 
   renderSelectOneQuestion() {
-    const {answer} = this.props;
-    const {options} = this.state;
-    const value: string = answer ? answer.value : "";
+    const {response, options} = this.props;
+    const value: string = response ? response.value : "";
 
     if (options) {
       return (
@@ -118,7 +107,7 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
           className={"form-control"}
           enhanced
           value={value}
-          onEnhancedChange={(index) => this.submitAnswer(undefined, index, true)}
+          onEnhancedChange={(index) => this.submitResponse(undefined, index, true)}
         >
           {options.map(({value}, index) => (
               <Option key={index} value={value}>{value}</Option>
@@ -168,13 +157,14 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
 
 function mapStateToProps(state: AppState, ownProps: QuestionProps, ownState: QuestionState): StateProps {
   return {
-    answer: state.tutorial.answers[ownProps.attributes.uuid]
+    response: state.tutorial.responses[ownProps.attributes.uuid],
+    options: state.tutorial.questionOptions[ownProps.attributes.uuid]
   };
 }
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators<TutorialActions, ActionCreatorsMapObject<TutorialActions> & DispatchProps>({
-    addAnswer
+    addResponse
   }, dispatch);
 
 

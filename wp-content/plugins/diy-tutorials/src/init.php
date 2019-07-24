@@ -94,7 +94,9 @@ function diy_tutorials_block_assets()
   register_block_type('irian/diy-product-list');
   register_block_type('irian/diy-product');
   register_block_type('irian/diy-product-range');
-  register_block_type('irian/diy-product-type');
+  register_block_type('irian/diy-product-range');
+  register_block_type('irian/diy-display-condition');
+  register_block_type('irian/diy-question-option');
 
   register_block_type(
     'irian/diy-tutorial', array(

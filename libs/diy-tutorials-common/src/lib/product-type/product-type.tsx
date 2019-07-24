@@ -6,15 +6,18 @@ import {serializeAttributes} from '../utils';
 /* tslint:disable:no-empty-interface */
 export interface ProductTypeProps {
   children?: any;
-  attributes?: any;
+  attributes?: {
+    headline: string;
+    sections: string;
+  };
 }
 
 export const ProductType = (props: ProductTypeProps) => {
-  const {attributes} = props;
+  const {attributes, children} = props;
 
   return (
     <div data-attributes={serializeAttributes(attributes)}>
-      {props.children}
+      {children}
     </div>
   );
 };

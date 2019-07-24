@@ -12,7 +12,7 @@ import {
   Tutorial
 } from '@diy-tutorials/diy-tutorials-common';
 import {serialize} from '@wordpress/blocks';
-
+import {groupBy} from 'lodash';
 
 const rootElement = document.getElementById(ROOT_ID);
 if (rootElement) {
@@ -36,6 +36,9 @@ if (rootElement) {
       [uuid]: 0
     }
   }, {});
+  const displayedConditions = groupBy(filterBlocksByName(blocks, BlockNames.DisplayCondition), 'parentBlockUUID');
+
+  const questionOptions = groupBy(filterBlocksByName(blocks, BlockNames.QuestionOption), 'parentBlockUUID');
 
   console.log(innerBlocks);
   console.log(blocks);
@@ -53,10 +56,13 @@ if (rootElement) {
         products,
         showProducts: false,
         productQuantities,
-        answers: {},
+        responses: {},
         measuredValues: {},
         measuredFormValues: {},
         instancesCountByMeasurementForm: {},
+        questionOptions,
+        displayedConditions,
+        displayedProductTypes: {}
       }
     })}>
       <Tutorial

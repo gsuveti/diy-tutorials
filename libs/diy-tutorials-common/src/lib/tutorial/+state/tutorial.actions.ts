@@ -1,24 +1,25 @@
 import {Action, ActionCreator} from 'redux';
-import {Answer} from '../../models/answer.model';
+import {Response} from '../../models/response.model';
 import {action} from 'typesafe-actions';
 
 export enum TutorialActionTypes {
-  AddAnswer = '[Tutorial] Add answer',
+  AddResponse = '[Tutorial] Add response',
   ShowProducts = '[Tutorial] Show products',
+  AddProductsToCart = '[Tutorial] Add products to cart',
   AddMeasurement = '[Tutorial] Add measurement',
   ChangeInstancesCount = '[Tutorial] ChangeInstancesCount',
 }
 
 
-export interface AddAnswer extends Action<string> {
-  type: typeof TutorialActionTypes.AddAnswer
+export interface AddResponse extends Action<string> {
+  type: typeof TutorialActionTypes.AddResponse
   payload: {
-    answer: Answer
+    answer: Response
   }
 }
 
-export const addAnswer: ActionCreator<AddAnswer> = (answer: Answer) => action(
-  TutorialActionTypes.AddAnswer, {
+export const addResponse: ActionCreator<AddResponse> = (answer: Response) => action(
+  TutorialActionTypes.AddResponse, {
     answer: answer
   });
 
@@ -66,4 +67,13 @@ export const showProducts: ActionCreator<ShowProducts> = () => action(
   TutorialActionTypes.ShowProducts, {});
 
 
-export type TutorialActions = AddAnswer | AddMeasurement | ChangeInstancesCount | ShowProducts;
+export interface AddProductsToCart extends Action<string> {
+  type: typeof TutorialActionTypes.AddProductsToCart
+  payload: {
+    productRangeUUID
+  }
+}
+export const addProductsToCart: ActionCreator<AddProductsToCart> = (productRangeUUID:string) => action(
+  TutorialActionTypes.AddProductsToCart, {productRangeUUID});
+
+export type TutorialActions = AddResponse | AddMeasurement | ChangeInstancesCount | ShowProducts | AddProductsToCart;

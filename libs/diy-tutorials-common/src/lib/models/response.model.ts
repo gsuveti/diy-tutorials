@@ -1,5 +1,6 @@
-export interface Answer {
-  uuid: string,
+export interface Response {
+  questionUUID: string,
+  responseUUID: string,
   value?: string,
   values?: string[],
   text: string,

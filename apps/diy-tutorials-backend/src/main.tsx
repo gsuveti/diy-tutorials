@@ -8,4 +8,6 @@ export * from './app/product-registration';
 export * from './app/product-type-registration';
 export * from './app/measurement-form-registration';
 export * from './app/measurement-registration';
+export * from './app/display-condition-registration';
+export * from './app/question-option-registration';
 export * from './app/store';

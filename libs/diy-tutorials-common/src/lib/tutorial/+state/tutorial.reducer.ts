@@ -1,8 +1,17 @@
-import {AddAnswer, AddMeasurement, ChangeInstancesCount, ShowProducts, TutorialActionTypes} from './tutorial.actions';
+import {
+  AddMeasurement,
+  AddProductsToCart,
+  AddResponse,
+  ChangeInstancesCount,
+  ShowProducts,
+  TutorialActionTypes
+} from './tutorial.actions';
 import {createReducer} from 'redux-starter-kit'
-import {Answer} from '../../models/answer.model';
+import {Response} from '../../models/response.model';
 import {BlockAttributes} from '../../models/block-attributes.model';
 import {zip} from 'lodash';
+import {filterBlocksByName} from '../../utils';
+import {BlockNames} from '../../constants';
 
 const FormulaParser = require('hot-formula-parser').Parser;
 
@@ -17,10 +26,13 @@ export interface TutorialState {
   products: BlockAttributes[],
   showProducts: boolean,
   productQuantities: { [uuid: string]: number };
-  answers: { [uuid: string]: Answer };
+  responses: { [uuid: string]: Response };
   measuredValues: { [uuid: string]: { [instanceIndex: string]: string } };
   measuredFormValues: { [uuid: string]: number };
   instancesCountByMeasurementForm: { [uuid: string]: number };
+  questionOptions: { [uuid: string]: any };
+  displayedConditions: { [uuid: string]: any };
+  displayedProductTypes: { [uuid: string]: boolean };
 }
 
 export const initialTutorialState: TutorialState = {
@@ -34,25 +46,29 @@ export const initialTutorialState: TutorialState = {
   showProducts: false,
   products: [],
   productQuantities: {},
-  answers: {},
+  responses: {},
   measuredValues: {},
   measuredFormValues: {},
   instancesCountByMeasurementForm: {},
+  questionOptions: {},
+  displayedConditions: {},
+  displayedProductTypes: {},
 };
 
 export const tutorialReducer = createReducer(initialTutorialState, {
-  [TutorialActionTypes.AddAnswer]: (state: TutorialState, action: AddAnswer) => {
+  [TutorialActionTypes.AddResponse]: (state: TutorialState, action: AddResponse) => {
     const {answer} = action.payload;
-    const {uuid} = answer;
+    const {questionUUID} = answer;
 
-    const parentBlockUUID = state.questions.find(attributes => attributes.uuid === uuid).parentBlockUUID;
+    const parentBlockUUID = state.questions.find(attributes => attributes.uuid === questionUUID).parentBlockUUID;
 
-    state.answers[answer.uuid] = answer;
+    state.responses[answer.questionUUID] = answer;
 
 
     const historyEnd = state.displayedSections.indexOf(parentBlockUUID) + 1;
     const history = state.displayedSections.slice(0, historyEnd);
 
+    state.displayedProductTypes = calculateDisplayedProductTypes(state);
 
     if (answer.goToNextSection) {
       state.displayedSections = [...history, answer.nextSection];
@@ -61,9 +77,10 @@ export const tutorialReducer = createReducer(initialTutorialState, {
 
     return state;
   },
-  
+
   [TutorialActionTypes.ShowProducts]: (state: TutorialState, action: ShowProducts) => {
     state.showProducts = true;
+
     return state;
   },
 
@@ -78,12 +95,23 @@ export const tutorialReducer = createReducer(initialTutorialState, {
     state.measuredFormValues[parentBlockUUID] = calculateMeasuredFormValue(state, parentBlockUUID);
     state.productQuantities = calculateProductQuantities(state);
 
-
     return state;
   },
   [TutorialActionTypes.ChangeInstancesCount]: (state: TutorialState, action: ChangeInstancesCount) => {
     const {uuid, count} = action.payload;
     state.instancesCountByMeasurementForm[uuid] = count;
+
+    return state;
+  },
+  [TutorialActionTypes.AddProductsToCart]: (state: TutorialState, action: AddProductsToCart) => {
+    const {productRangeUUID} = action.payload;
+    const products = state.products.filter((block: BlockAttributes) => {
+      const productType = block.productType;
+      const isProductVisible = productType ? state.displayedProductTypes[productType] : true;
+      return block.parentBlockUUID === productRangeUUID && isProductVisible;
+    });
+
+    console.log(JSON.stringify(products));
 
     return state;
   }
@@ -131,4 +159,21 @@ function calculateProductQuantities(state: TutorialState) {
 
   }, {});
 
+}
+
+function calculateDisplayedProductTypes(state: TutorialState) {
+
+  return filterBlocksByName(state.blocks, BlockNames.ProductType)
+    .reduce((displayedProductTypes, {uuid}) => {
+      return {
+        [uuid]: isDisplayed(state, state.displayedConditions[uuid]),
+        ...displayedProductTypes
+      };
+    }, {});
+}
+
+function isDisplayed(state: TutorialState, displayedConditions: { question: string, response: string }[] = []): boolean {
+  return displayedConditions.reduce((displayed, condition) => {
+    return displayed && (state.responses[condition.question].responseUUID === condition.response);
+  }, true);
 }

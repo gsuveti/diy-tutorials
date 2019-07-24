@@ -31,6 +31,7 @@ interface DispatchProps {
 
 interface StateProps {
   isVisible?: boolean;
+  showSubmitFormButton?: boolean;
 }
 
 type SectionProps = StateProps & DispatchProps & OwnProps;
@@ -50,7 +51,7 @@ const allowedComponents = {
 export const Section = (props: SectionProps) => {
   const {
     innerBlocks = [], children, className, attributes, isVisible = true,
-    isRenderedInEditor, showProducts
+    showSubmitFormButton, showProducts, isRenderedInEditor
   } = props;
   const {submitForm} = attributes;
 
@@ -67,8 +68,11 @@ export const Section = (props: SectionProps) => {
       {
         isRenderedInEditor ? null :
           <div>
-            {submitForm ?
-              <button onClick={() => showProducts()}>Show products</button>
+            {showSubmitFormButton ?
+              <button className={'my-md'}
+                      onClick={() => showProducts()}>
+                Show products
+              </button>
               : null
             }
           </div>
@@ -80,9 +84,10 @@ export const Section = (props: SectionProps) => {
 
 function mapStateToProps(state: AppState, ownProps: SectionProps, ownState: SectionState): StateProps {
   const {attributes} = ownProps;
-  const {uuid} = attributes;
+  const {uuid, submitForm} = attributes;
   return {
-    isVisible: state.tutorial.displayedSections.indexOf(uuid) >= 0
+    isVisible: state.tutorial.displayedSections.indexOf(uuid) >= 0,
+    showSubmitFormButton: submitForm && !state.tutorial.showProducts
   };
 }
 

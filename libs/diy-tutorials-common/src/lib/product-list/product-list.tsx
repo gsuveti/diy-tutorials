@@ -5,13 +5,13 @@ import './product-list.scss';
 import {serializeAttributes} from '../utils';
 import {Block} from '../models/block.model';
 import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
-import {ProductRange} from '../product-range/product-range';
+import {ConnectedProductRange} from '../product-range/product-range';
 import {showProducts, TutorialActions} from '../tutorial/+state/tutorial.actions';
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 
 /* tslint:disable:no-empty-interface */
-export interface OwnProps {
+interface OwnProps {
   className?: string;
   attributes?: {};
   children?: any;
@@ -35,7 +35,7 @@ export interface ProductListState {
 }
 
 const allowedComponents = {
-  'irian/diy-product-range': ProductRange,
+  'irian/diy-product-range': ConnectedProductRange,
 };
 
 export const ProductList = (props: ProductListProps) => {
@@ -51,7 +51,7 @@ export const ProductList = (props: ProductListProps) => {
   ;
 
   return (
-    <div className={`${className} ${isVisible ? "show" : "hide"}`}
+    <div className={`${className ? className : 'product-list row'} ${isVisible ? "show" : "hide"}`}
          data-attributes={serializeAttributes(attributes)}>
       {content}
     </div>

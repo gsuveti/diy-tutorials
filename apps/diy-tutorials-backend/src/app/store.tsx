@@ -1,11 +1,13 @@
 // @ts-ignore
 import {BlockNames, filterBlocksByName, getBlockAttributesList} from '@diy-tutorials/diy-tutorials-common';
+import {groupBy} from 'lodash';
 // @ts-ignore
 const {registerStore} = window.wp.data;
 
 const DEFAULT_STATE = {
   blocks: [],
   sectionsOrder: [],
+  questionOptions: [],
   sectionOptions: [],
   productRangeOptions: [],
   productTypeOptions: [],
@@ -83,6 +85,27 @@ registerStore('diy-tutorial', {
           })
         );
 
+        const questions = filterBlocksByName(blockAttributesList, BlockNames.Question);
+        const optionsByQuestion = groupBy(filterBlocksByName(blockAttributesList, BlockNames.QuestionOption), 'parentBlockUUID');
+
+        const questionOptions = [{value: "null", label: "-- Alege o intrebare --"}].concat(
+          questions.map(attributes => {
+            return {
+              value: attributes.uuid,
+              label: attributes.text,
+              options: [{value: "null", label: "-- Alege un raspuns --"}].concat(
+                (optionsByQuestion[attributes.uuid] || []).map(attributes => {
+                  return {
+                    value: attributes.uuid,
+                    label: attributes.value
+                  };
+                })
+              )
+            };
+          })
+        );
+
+
         return {
           ...state,
           blocks: blockAttributesList,
@@ -91,7 +114,8 @@ registerStore('diy-tutorial', {
           measurementsOrder,
           sectionOptions,
           productRangeOptions,
-          productTypeOptions
+          productTypeOptions,
+          questionOptions
         };
     }
 
@@ -114,6 +138,11 @@ registerStore('diy-tutorial', {
     getSectionOptions(state) {
       return state.sectionOptions;
     },
+
+    getQuestionOptions(state) {
+      return state.questionOptions;
+    },
+
     getProductRangeOptions(state) {
       return state.productRangeOptions;
     },

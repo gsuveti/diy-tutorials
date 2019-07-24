@@ -62,10 +62,10 @@ export const Product = (props: ProductProps) => {
 
 function mapStateToProps(state: AppState, ownProps: ProductProps, ownState: ProductState): StateProps {
   const {attributes} = ownProps;
-  const {uuid} = attributes;
+  const {uuid, productType} = attributes;
   const quantity = state.tutorial.productQuantities[uuid];
   return {
-    isVisible: true,
+    isVisible: productType ? state.tutorial.displayedProductTypes[productType] : true,
     quantity,
   };
 }

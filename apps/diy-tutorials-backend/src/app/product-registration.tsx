@@ -13,8 +13,8 @@ const {withSelect} = window.wp.data;
 console.log("registerBlockType content");
 
 registerBlockType('irian/diy-product', {
-  title: 'diy-product',
-  icon: 'slides',
+  title: 'Produs',
+  icon: 'cart',
   category: 'common',
   keywords: [],
   attributes: withBaseAttributes({

@@ -11,8 +11,8 @@ const {BlockControls, InspectorControls, InnerBlocks} = window.wp.editor;
 console.log("registerBlockType content");
 
 registerBlockType('irian/diy-product-range', {
-  title: 'diy-product-range',
-  icon: 'slides',
+  title: 'Gama',
+  icon: 'list-view',
   category: 'common',
   keywords: [],
   attributes: withBaseAttributes({
@@ -21,7 +21,7 @@ registerBlockType('irian/diy-product-range', {
   }),
 
   edit: function (props: any) {
-    const {setAttributes, attributes} = props;
+    const {setAttributes, attributes, className} = props;
     const {headline, description} = attributes;
 
     initBaseAttributes(props);
@@ -35,8 +35,10 @@ registerBlockType('irian/diy-product-range', {
         <InspectorControls key='inspector'>
 
         </InspectorControls>,
-        <ProductRange attributes={attributes}
-                      isRenderedInEditor={true}>
+        <ProductRange
+          className={className}
+          attributes={attributes}
+          isRenderedInEditor={true}>
           <TextControl
             label="Gama"
             key={"headline"}

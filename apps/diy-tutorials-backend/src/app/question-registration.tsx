@@ -1,13 +1,12 @@
 import React from 'react';
 import {generateUUID, Question, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
-import {List} from 'immutable';
 
 // @ts-ignore
 const {TextControl, Button, SelectControl, TextareaControl, CheckboxControl, IconButton} = wp.components;
 // @ts-ignore
 const {registerBlockType} = window.wp.blocks;
 // @ts-ignore
-const {BlockControls, InspectorControls} = window.wp.editor;
+const {BlockControls, InspectorControls, InnerBlocks} = window.wp.editor;
 // @ts-ignore
 const {withSelect} = window.wp.data;
 
@@ -27,7 +26,7 @@ console.log("registerBlockType question");
  */
 registerBlockType('irian/diy-question', {
   // Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
-  title: 'diy-question', // Block title.
+  title: 'Intrebare', // Block title.
   icon: 'forms', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
   category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
   keywords: [],
@@ -36,7 +35,6 @@ registerBlockType('irian/diy-question', {
     displayCondition: {type: 'string'},
     text: {type: 'string'},
     required: {type: 'boolean', default: false},
-    optionsJSON: {type: 'string', default: "[{},{}]"}
   }),
 
   /**
@@ -55,8 +53,8 @@ registerBlockType('irian/diy-question', {
     };
   })(
     (props: any) => {
-      const {isSelected, attributes, className, setAttributes, name, sectionOptions} = props;
-      const {uuid, displayCondition, text, type, required, optionsJSON} = attributes;
+      const {isSelected, attributes, className, setAttributes, name} = props;
+      const {uuid, displayCondition, text, type, required} = attributes;
 
       if (!uuid) {
         setAttributes({
@@ -65,27 +63,8 @@ registerBlockType('irian/diy-question', {
         })
       }
 
-      const options = List(JSON.parse(optionsJSON));
-
-
-      function updateOptions(index: number, attribute: string, value: string) {
-        const newOptions = options.setIn([index, attribute], value);
-        setAttributes({optionsJSON: JSON.stringify(newOptions.toJSON())});
-      }
-
-
-      function deleteOption(index: number) {
-        if (options.size > 1) {
-          const newOptions = options.delete(index);
-          setAttributes({optionsJSON: JSON.stringify(newOptions.toJSON())});
-        }
-      }
-
-      function addOption() {
-        const newOptions = options.setIn([options.size], {});
-        setAttributes({optionsJSON: JSON.stringify(newOptions.toJSON())});
-      }
-
+      const ALLOWED_BLOCKS = [
+        'irian/diy-question-option'];
 
       return ([
           <BlockControls key='controls'>
@@ -98,110 +77,45 @@ registerBlockType('irian/diy-question', {
                     attributes={attributes}
                     key='content'
                     isRenderedInEditor={true}>
-            {isSelected ?
+            <div>
+              <TextControl
+                label="Intrebare"
+                key={"question"}
+                value={text}
+                onChange={(value) => {
+                  props.setAttributes({text: value});
+                }}/>
+
               <div>
-                <TextControl
-                  label="Intrebare"
-                  key={"question"}
-                  value={text}
+
+                <SelectControl
+                  key={"type"}
+                  label="Tip raspuns"
+                  value={type}
+                  options={[
+                    {label: 'Un raspuns', value: 'selectOne'},
+                    {label: 'Raspuns multiplu', value: 'selectMany'},
+                    {label: 'Text', value: 'text'},
+                    {label: 'Numeric', value: 'numeric'},
+                  ]}
                   onChange={(value) => {
-                    props.setAttributes({text: value});
-                  }}/>
+                    props.setAttributes({type: value});
+                  }}
+                />
 
-                <div>
-                  <SelectControl
-                    key={"type"}
-                    label="Tip raspuns"
-                    value={type}
-                    options={[
-                      {label: 'Un raspuns', value: 'selectOne'},
-                      {label: 'Raspuns multiplu', value: 'selectMany'},
-                      {label: 'Text', value: 'text'},
-                      {label: 'Numeric', value: 'numeric'},
-                    ]}
-                    onChange={(value) => {
-                      props.setAttributes({type: value});
-                    }}
-                  />
-                  <CheckboxControl
-                    label="Raspuns obligatoriu"
-                    checked={required}
-                    onChange={(isChecked) => {
-                      props.setAttributes({required: isChecked});
-                    }}
-                  />
-                </div>
+                <CheckboxControl
+                  label="Raspuns obligatoriu"
+                  checked={required}
+                  onChange={(isChecked) => {
+                    props.setAttributes({required: isChecked});
+                  }}
+                />
 
-                {type.startsWith("select") ?
-                  <div key={'select'}>
-
-                    {options.map(({value = "", nextSection = ""}, index) => (
-                      <div className={"d-flex flex-row"} key={index}>
-                        <TextControl
-                          placeholder={`Option ${index + 1}`}
-                          className={"pr-sm m-0"}
-                          key={"option"}
-                          value={value}
-                          onChange={(newValue) => {
-                            updateOptions(index, "value", newValue);
-                          }}/>
-
-                        <SelectControl
-                          className={"pr-sm m-0"}
-                          key="nextSection"
-                          value={nextSection}
-                          options={sectionOptions}
-                          onChange={(nextSection) => {
-                            updateOptions(index, "nextSection", nextSection);
-                          }}
-                        />
-                        <IconButton
-                          className={"py-0 mb-sm"}
-                          key="delete"
-                          icon="trash"
-                          label="Delete" onClick={() => deleteOption(index)}
-                        />
-                      </div>
-                    ))}
-                    <Button
-                      isLink={true}
-                      onClick={() => addOption()}
-                    >
-                      Add option
-                    </Button>
-                  </div>
-                  : null
-                }
-
-
-                <TextControl
-                  label="Id"
-                  key={"id"}
-                  value={uuid}
-                  onChange={(value) => {
-                    props.setAttributes({uuid: value});
-                  }}/>
-
-
-                <TextareaControl
-                  key={"displayCondition"}
-                  label="Conditie de afisare"
-                  value={displayCondition}
-                  onChange={(value) => {
-                    props.setAttributes({displayCondition: value});
-                  }}/>
               </div>
-              :
-              <div>
-                <TextControl
-                  label="Intrebare"
-                  key={"question"}
-                  value={text}
-                  onChange={(value) => {
-                    props.setAttributes({text: value});
-                  }}/>
-              </div>
-            }
+              <InnerBlocks allowedBlocks={ALLOWED_BLOCKS}/>
+
+            </div>
+
           </Question>
         ]
       );
@@ -223,7 +137,9 @@ registerBlockType('irian/diy-question', {
       <Question
         className={props.className}
         attributes={attributes} key='content'
-      />
+      >
+        <InnerBlocks.Content/>
+      </Question>
     );
   },
 });
