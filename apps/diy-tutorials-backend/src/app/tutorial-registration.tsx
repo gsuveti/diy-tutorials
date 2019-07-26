@@ -54,7 +54,7 @@ registerBlockType('irian/diy-tutorial', {
           ['irian/diy-section'],
           ['irian/diy-product-list']
         ];
-        const ALLOWED_BLOCKS = ['irian/diy-section'];
+        const ALLOWED_BLOCKS = ['irian/diy-section', 'irian/diy-product-list'];
 
 
         return ([

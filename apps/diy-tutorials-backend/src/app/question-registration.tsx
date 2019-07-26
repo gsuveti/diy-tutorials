@@ -46,11 +46,8 @@ registerBlockType('irian/diy-question', {
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
   edit: withSelect((select, ownProps) => {
-    const {getSectionOptions} = select("diy-tutorial");
 
-    return {
-      sectionOptions: getSectionOptions()
-    };
+    return {};
   })(
     (props: any) => {
       const {isSelected, attributes, className, setAttributes, name} = props;

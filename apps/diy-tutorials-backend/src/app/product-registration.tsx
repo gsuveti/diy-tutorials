@@ -20,7 +20,7 @@ registerBlockType('irian/diy-product', {
   attributes: withBaseAttributes({
     headline: {type: 'string'},
     imageUrl: {type: 'string'},
-    productType: {type: 'string'},
+    productType: {type: 'string', default: ''},
     price: {type: 'string'},
     quantityFormula: {type: 'string'},
     optional: {type: 'boolean', default: false},

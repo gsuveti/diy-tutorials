@@ -53,7 +53,6 @@ export const Section = (props: SectionProps) => {
     innerBlocks = [], children, className, attributes, isVisible = true,
     showSubmitFormButton, showProducts, isRenderedInEditor
   } = props;
-  const {submitForm} = attributes;
 
 
   return (

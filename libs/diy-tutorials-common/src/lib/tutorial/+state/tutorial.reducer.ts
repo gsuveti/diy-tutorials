@@ -9,7 +9,6 @@ import {
 import {createReducer} from 'redux-starter-kit'
 import {Response} from '../../models/response.model';
 import {BlockAttributes} from '../../models/block-attributes.model';
-import {zip} from 'lodash';
 import {filterBlocksByName} from '../../utils';
 import {BlockNames} from '../../constants';
 
@@ -123,7 +122,7 @@ function calculateMeasuredFormValue(state: TutorialState, parentBlockUUID) {
       return measuredValues ? Object.values(measuredValues) : []
     });
 
-  const measurementsByInstance = zip(...measurementsByProperty);
+  const measurementsByInstance = transposeArray(measurementsByProperty);
 
   const instancesCount = state.instancesCountByMeasurementForm[parentBlockUUID];
 
@@ -173,4 +172,9 @@ function isDisplayed(state: TutorialState, displayedConditions: { question: stri
   return displayedConditions.reduce((displayed, condition) => {
     return displayed && (state.responses[condition.question].responseUUID === condition.response);
   }, true);
+}
+
+
+function transposeArray(array) {
+  return array[0].map((col, i) => array.map(row => row[i]));
 }

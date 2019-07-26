@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import './product-list.scss';
-import {serializeAttributes} from '../utils';
+import {groupBy, serializeAttributes} from '../utils';
 import {Block} from '../models/block.model';
 import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {ConnectedProductRange} from '../product-range/product-range';
@@ -10,7 +10,6 @@ import {addProductsToCart, showProducts, TutorialActions} from '../tutorial/+sta
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
-import {groupBy} from 'lodash';
 import {Button} from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 
@@ -101,9 +100,7 @@ export const ProductList = (props: ProductListProps) => {
   return (
     <div className={`${className ? className : 'product-list '} ${isVisible ? "show" : "hide"}`}
          data-attributes={serializeAttributes(attributes)}>
-      <div className={'row'}>
-        {content}
-      </div>
+      {content}
       {
         isRenderedInEditor ? null :
           <div className={'row'}>

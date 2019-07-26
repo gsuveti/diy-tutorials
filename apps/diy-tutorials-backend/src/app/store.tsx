@@ -1,6 +1,6 @@
 // @ts-ignore
-import {BlockNames, filterBlocksByName, getBlockAttributesList} from '@diy-tutorials/diy-tutorials-common';
-import {groupBy} from 'lodash';
+import {BlockNames, filterBlocksByName, getBlockAttributesList, groupBy} from '@diy-tutorials/diy-tutorials-common';
+
 // @ts-ignore
 const {registerStore} = window.wp.data;
 
@@ -36,7 +36,7 @@ registerStore('diy-tutorial', {
         const sections = filterBlocksByName(blockAttributesList, BlockNames.Section);
 
         const sectionsOrder = sections.map(attributes => attributes.uuid);
-        const sectionOptions = [{value: "null", label: "Next section"}].concat(
+        const sectionOptions = [{value: "", label: "-- Urmatoarea sectiune --"}].concat(
           sections.map((attributes, index) => {
             return {
               value: attributes.uuid,
@@ -66,7 +66,7 @@ registerStore('diy-tutorial', {
 
 
         const productRanges = filterBlocksByName(blockAttributesList, BlockNames.ProductRange);
-        const productRangeOptions = [{value: "null", label: "Fara gama"}].concat(
+        const productRangeOptions = [{value: "", label: "-- Alege o gama --"}].concat(
           productRanges.map(attributes => {
             return {
               value: attributes.uuid,
@@ -76,7 +76,7 @@ registerStore('diy-tutorial', {
         );
 
         const productTypes = filterBlocksByName(blockAttributesList, BlockNames.ProductType);
-        const productTypeOptions = [{value: "null", label: "Fara tip"}].concat(
+        const productTypeOptions = [{value: "", label: "-- Alege un tip --"}].concat(
           productTypes.map(attributes => {
             return {
               value: attributes.uuid,
@@ -88,12 +88,12 @@ registerStore('diy-tutorial', {
         const questions = filterBlocksByName(blockAttributesList, BlockNames.Question);
         const optionsByQuestion = groupBy(filterBlocksByName(blockAttributesList, BlockNames.QuestionOption), 'parentBlockUUID');
 
-        const questionOptions = [{value: "null", label: "-- Alege o intrebare --"}].concat(
+        const questionOptions = [{value: "", label: "-- Alege o intrebare --"}].concat(
           questions.map(attributes => {
             return {
               value: attributes.uuid,
               label: attributes.text,
-              options: [{value: "null", label: "-- Alege un raspuns --"}].concat(
+              options: [{value: undefined, label: "-- Alege un raspuns --"}].concat(
                 (optionsByQuestion[attributes.uuid] || []).map(attributes => {
                   return {
                     value: attributes.uuid,

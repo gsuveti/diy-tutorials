@@ -8,11 +8,11 @@ import {
   filterBlocksByName,
   getBlockAttributesList,
   getInnerBlocks,
+  groupBy,
   ROOT_ID,
   Tutorial
 } from '@diy-tutorials/diy-tutorials-common';
 import {serialize} from '@wordpress/blocks';
-import {groupBy} from 'lodash';
 
 const rootElement = document.getElementById(ROOT_ID);
 if (rootElement) {

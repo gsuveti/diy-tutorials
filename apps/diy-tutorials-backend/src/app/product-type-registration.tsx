@@ -19,17 +19,12 @@ registerBlockType('irian/diy-product-type', {
   keywords: [],
   attributes: withBaseAttributes({
     headline: {type: 'string'},
-    sections: {type: 'string', default: "[]"},
   }),
 
   edit: withSelect((select, ownProps) => {
-    const {getSectionOptions} = select("diy-tutorial");
-
-    return {
-      sectionOptions: getSectionOptions()
-    };
+    return {};
   })((props: any) => {
-    const {setAttributes, attributes, sectionOptions} = props;
+    const {setAttributes, attributes} = props;
     const {headline, sections} = attributes;
 
     initBaseAttributes(props);

@@ -48,25 +48,11 @@ registerBlockType('irian/diy-measurement-form', {
     ];
     const ALLOWED_BLOCKS = ['irian/diy-measurement'];
 
-    const controls = [
-      {
-        icon: `arrow-right-alt`,
-        title: `Go next`,
-        isActive: !submitForm,
-        onClick: () => setAttributes({submitForm: false}),
-      }, {
-        icon: `external`,
-        title: `Submit form`,
-        isActive: submitForm,
-        onClick: () => setAttributes({submitForm: true}),
-      }
-    ];
 
 
     return ([
         <BlockControls key='controls'>
-          <Toolbar controls={controls}>
-          </Toolbar>
+
         </BlockControls>,
         <InspectorControls key='inspector'>
 

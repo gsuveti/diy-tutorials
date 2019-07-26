@@ -32,8 +32,8 @@ registerBlockType('irian/diy-display-condition', {
     };
   })(
     (props: any) => {
-      const {attributes, clientId, setAttributes, name, index, questionOptions, className} = props;
-      const {uuid, submitForm, question, response} = attributes;
+      const {attributes, setAttributes, name, index, questionOptions, className} = props;
+      const {uuid, question, response} = attributes;
 
 
       if (!uuid) {

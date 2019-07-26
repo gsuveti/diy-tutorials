@@ -40,8 +40,6 @@ export function initBaseAttributes(props) {
 }
 
 
-
-
 export function getInnerBlocks(element: HTMLElement, parentBlockUUID?: string): Block[] {
   const innerBlocks = [];
   element.childNodes.forEach((node, key) => {
@@ -66,7 +64,7 @@ export function getBlock(element: HTMLElement, parentBlockUUID?: string): Block 
   };
 }
 
-export function getBlockAttributesList(blocks: Block[], depth = 1, parentBlockUUID?:string): BlockAttributes[] {
+export function getBlockAttributesList(blocks: Block[], depth = 1, parentBlockUUID?: string): BlockAttributes[] {
   return blocks.reduce((accumulator, block, index) => {
     accumulator.push({
       ...block.attributes,
@@ -85,4 +83,16 @@ export function getBlockAttributesList(blocks: Block[], depth = 1, parentBlockUU
 export function filterBlocksByName(blocks: BlockAttributes[], blockName: BlockNames): BlockAttributes[] {
   return blocks
     .filter(block => block.name === blockName);
+}
+
+export function groupBy(array: any[], attribute: string): any {
+  return array.reduce((obj, item) => {
+    const key = item[attribute];
+    const value = obj[key] || [];
+
+    return {
+      ...obj,
+      [key]: value.concat(item)
+    }
+  }, {});
 }

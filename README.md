@@ -1,5 +1,5 @@
 # DiyTutorials
 
-## Wordpress packages
+## Do not use lodash!!!
 
-npm i @wordpress/blocks @wordpress/element @wordpress/editor 
+Adding lodash in the plugin will break the gutenberg image block. 

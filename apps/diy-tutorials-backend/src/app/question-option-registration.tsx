@@ -1,5 +1,10 @@
 import React from 'react';
-import {generateUUID, QuestionOption, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
+import {
+  generateUUID,
+  initBaseAttributes,
+  QuestionOption,
+  withBaseAttributes
+} from '@diy-tutorials/diy-tutorials-common';
 
 // @ts-ignore
 const {TextControl, Button, SelectControl, TextareaControl, CheckboxControl, IconButton} = wp.components;
@@ -20,7 +25,7 @@ registerBlockType('irian/diy-question-option', {
   keywords: [],
   attributes: withBaseAttributes({
     value: {type: 'string'},
-    nextSection: {type: 'string'},
+    nextSection: {type: 'string', default: ""},
   }),
 
   edit: withSelect((select, ownProps) => {
@@ -35,13 +40,7 @@ registerBlockType('irian/diy-question-option', {
       const {uuid, value, nextSection} = attributes;
 
 
-      if (!uuid) {
-        props.setAttributes({
-          uuid: generateUUID(),
-          name: name,
-        })
-      }
-
+      initBaseAttributes(props);
 
       return ([
           <BlockControls key='controls'>

@@ -12,17 +12,6 @@
 .wp-block-irian-diy-tutorial {
   $margin: -14px;
   padding: $margin 0;
-
-  //&:before {
-  //  content: "";
-  //  position: absolute;
-  //  top: $margin;
-  //  left: $margin;
-  //  right: $margin;
-  //  bottom: $margin;
-  //  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  //  transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
-  //}
 }
 
 @import '~@material/react-list/dist/list.css';
