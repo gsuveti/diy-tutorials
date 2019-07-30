@@ -1,26 +1,19 @@
 @import "../vars";
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins/breakpoints";
-@import "~bootstrap/scss/mixins/grid";
-@import "~bootstrap/scss/mixins/grid-framework";
-@import "~bootstrap/scss/grid";
-@import "~bootstrap/scss/utilities/display";
-@import "~bootstrap/scss/utilities/flex";
-@import "~bootstrap/scss/utilities/spacing";
+//@import "~bootstrap/scss/functions";
+//@import "~bootstrap/scss/variables";
+//@import "~bootstrap/scss/mixins/breakpoints";
+//@import "~bootstrap/scss/mixins/grid";
+//@import "~bootstrap/scss/mixins/grid-framework";
+//@import "~bootstrap/scss/grid";
+//@import "~bootstrap/scss/utilities/display";
+//@import "~bootstrap/scss/utilities/flex";
+//@import "~bootstrap/scss/utilities/spacing";
+@import "~bootstrap/scss/bootstrap";
 
 .wp-block-irian-diy-tutorial {
   $margin: -14px;
   padding: $margin 0;
 }
-
-@import '~@material/react-list/dist/list.css';
-@import '~@material/react-menu-surface/dist/menu-surface.css';
-@import '~@material/react-menu/dist/menu.css';
-@import '~@material/react-select/dist/select.css';
-@import '~@material/react-button/dist/button.css';
-@import '~@material/react-text-field/dist/text-field.css';
-@import '~@material/react-material-icon/dist/material-icon.css';
 
 /* fallback */
 @font-face {
@@ -46,12 +39,6 @@
   -webkit-font-smoothing: antialiased;
 }
 
-.MuiInput-underline {
-  &:before, &:after {
-    display: block;
-    width: auto;
-  }
-}
 
 .wp-admin select {
   height: 30px !important;

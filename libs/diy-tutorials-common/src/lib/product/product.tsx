@@ -51,8 +51,8 @@ export const Product = (props: ProductProps) => {
         isRenderedInEditor ? null :
           <div>
             <p className={'m-0'}>{headline}</p>
+            <span className="badge badge-light badge-pill">{quantity} buc</span>
             <img src={imageUrl}/>
-            <p className={'m-0'}><strong>{quantity}</strong> X {price} = {quantity * price}</p>
           </div>
       }
     </div>

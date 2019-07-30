@@ -38,17 +38,30 @@ if (rootElement) {
     }
   }, {});
   const displayedConditions = groupBy(filterBlocksByName(blocks, BlockNames.DisplayCondition), 'parentBlockUUID');
+  const options = filterBlocksByName(blocks, BlockNames.QuestionOption);
 
-  const questionOptions = groupBy(filterBlocksByName(blocks, BlockNames.QuestionOption), 'parentBlockUUID');
+  const questionsWithRedirect: string[] = options.filter(option => option.nextSection)
+    .map(option => option.parentBlockUUID);
 
-  console.log(innerBlocks);
-  console.log(blocks);
+  const sectionsWithRedirect = questions
+    .filter(question => questionsWithRedirect.indexOf(question.uuid) > -1)
+    .map(question => question.parentBlockUUID);
+
+  const questionOptions = groupBy(options, 'parentBlockUUID');
+
+  const instancesCountByMeasurementForm = measurementForms.reduce((obj, item) => {
+    return {
+      ...obj,
+      [item.uuid]: 1
+    }
+  }, {});
 
   ReactDOM.render(
     <Provider store={configureStore({
       tutorial: {
         blocks,
         sections,
+        sectionsWithRedirect,
         displayedSections,
         questions,
         measurements,
@@ -61,7 +74,7 @@ if (rootElement) {
         responses: {},
         measuredValues: {},
         measuredFormValues: {},
-        instancesCountByMeasurementForm: {},
+        instancesCountByMeasurementForm,
         questionOptions,
         displayedConditions,
         displayedProductTypes: {}

@@ -1,5 +1,5 @@
 import React from 'react';
-import {initBaseAttributes, Section, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
+import {initBaseAttributes, Section, SUBMIT_FORM, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
 
 // @ts-ignore
 const {Toolbar, SelectControl} = wp.components;
@@ -13,11 +13,9 @@ const {withSelect} = window.wp.data;
 
 console.log("registerBlockType section");
 
-const SUBMIT_FORM = 'SUBMIT_FORM';
 
 registerBlockType('irian/diy-section', {
-  // Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
-  title: 'diy-section', // Block title.
+  title: 'Sectiune', // Block title.
   icon: 'layout', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
   category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
   keywords: [],
@@ -26,14 +24,7 @@ registerBlockType('irian/diy-section', {
     submitForm: {type: 'boolean', default: false}
   }),
 
-  /**
-   * The edit function describes the structure of your block in the context of the editor.
-   * This represents what the editor will render when the block is used.
-   *
-   * The "edit" property must be a valid function.
-   *
-   * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
-   */
+
   edit: withSelect((select, ownProps) => {
     const {getSectionIndex, getSectionOptions} = select("diy-tutorial");
 

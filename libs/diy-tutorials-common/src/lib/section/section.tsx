@@ -68,9 +68,9 @@ export const Section = (props: SectionProps) => {
         isRenderedInEditor ? null :
           <div>
             {showSubmitFormButton ?
-              <button className={'my-md'}
+              <button type="button" className="my-md btn btn-outline-primary d-flex"
                       onClick={() => showProducts()}>
-                Show products
+               Afiseaza produsele necesare
               </button>
               : null
             }

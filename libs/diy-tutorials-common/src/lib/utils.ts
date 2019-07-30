@@ -9,12 +9,16 @@ export function serializeAttributes(attributes = {}) {
   Object.keys(attributes).sort().forEach(function (key) {
     orderedAttributes[key] = attributes[key];
   });
-  return btoa(JSON.stringify(orderedAttributes));
+  const jsonString = JSON.stringify(orderedAttributes);
+  const encodedJsonString = encodeURI(jsonString);
+  return btoa(encodedJsonString);
 }
 
 
 export function deserializeAttributes(attributes = "W10=") {
-  return JSON.parse(atob(attributes));
+  const encodedJsonString = atob(attributes);
+  const jsonString = decodeURI(encodedJsonString);
+  return JSON.parse(jsonString);
 }
 
 export function generateUUID() {

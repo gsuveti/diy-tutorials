@@ -31,12 +31,6 @@
   },
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^4.0.0-rc.0",
-    "@material/react-button": "^0.14.1",
-    "@material/react-icon-button": "^0.15.0",
-    "@material/react-material-icon": "^0.14.1",
-    "@material/react-select": "^0.14.1",
-    "@material/react-text-field": "^0.14.1",
     "@wordpress/block-editor": "^2.2.0",
     "@wordpress/block-library": "^2.6.0",
     "@wordpress/blocks": "^6.4.0",

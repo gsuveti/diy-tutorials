@@ -101,6 +101,7 @@ registerBlockType('irian/diy-question', {
                 />
 
                 <CheckboxControl
+                  key={"required"}
                   label="Raspuns obligatoriu"
                   checked={required}
                   onChange={(isChecked) => {

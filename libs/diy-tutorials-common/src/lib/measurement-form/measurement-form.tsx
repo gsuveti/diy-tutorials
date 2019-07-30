@@ -9,8 +9,6 @@ import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {changeInstancesCount, TutorialActions} from '../tutorial/+state/tutorial.actions';
-import TextField, {Input} from '@material/react-text-field';
-import MaterialIcon from '@material/react-material-icon';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
@@ -20,6 +18,10 @@ interface OwnProps {
   attributes?: {
     uuid?: string;
     name?: string;
+    headline?: string;
+    description?: string;
+    multipleInstances?: boolean;
+    instancesCountQuestion?: string;
   };
   isRenderedInEditor?: boolean;
 }
@@ -50,7 +52,7 @@ export const MeasurementForm = (props: MeasurementFormProps) => {
     children, className, attributes, innerBlocks = [], instancesCount, changeInstancesCount, value,
     isRenderedInEditor
   } = props;
-  const {uuid} = attributes;
+  const {uuid, multipleInstances, instancesCountQuestion, headline, description} = attributes;
 
   const measurements = new Array(instancesCount || 1).fill(1)
     .map((value, index) => {
@@ -62,60 +64,56 @@ export const MeasurementForm = (props: MeasurementFormProps) => {
       });
 
       return (
-        <div key={index}>
-          <InnerBlocksContent
-            innerBlocks={alteredBlocks}
-            allowedComponents={allowedComponents}
-          />
-        </div>
+        <li className="list-group-item d-flex justify-content-between align-items-start" key={index}>
+          <div>
+            <InnerBlocksContent
+              innerBlocks={alteredBlocks}
+              allowedComponents={allowedComponents}
+            />
+          </div>
+          <span className="badge badge-primary badge-pill">{index + 1}</span>
+
+        </li>
       );
     });
 
   return (
-    <div className={`${className} mt-md`}
+    <div className={`${className ? className : ''} mt-md`}
          data-attributes={serializeAttributes(attributes)}>
       {children}
       {
         isRenderedInEditor ?
           null :
           <div>
-            <TextField
-              label={"Number of instances"}
-              className={"form-control"}
-              onLeadingIconSelect={() => {
-                changeInstancesCount(
-                  uuid, instancesCount ? instancesCount + 1 : 2
-                );
-              }}
-              onTrailingIconSelect={() => {
-                changeInstancesCount(
-                  uuid, instancesCount ? Math.max(instancesCount - 1, 1) : 1
-                );
-              }}
-              leadingIcon={<MaterialIcon role="button" icon="arrow_drop_up"/>}
-              trailingIcon={<MaterialIcon role="button" icon="arrow_drop_down"/>}
-            >
-              <Input
-                value={instancesCount || ""}
-                onChange={(event: FormEvent<HTMLInputElement>) => {
-                  const value = Number.parseInt(event.currentTarget.value.replace(/[^0-9]/, '')) || null;
-                  changeInstancesCount(
-                    uuid,
-                    value
-                  );
-                }}/>
-            </TextField>
+            <h4>{headline}</h4>
+            <p>{description}</p>
 
-            <div className={"measurements-wrapper"}>
+            {multipleInstances ?
+              <div className="form-group">
+                <label id={`${uuid}-label`} htmlFor={uuid}>{instancesCountQuestion}</label>
+                <input id={uuid} type="number" min={1} max={10} className="form-control"
+                       aria-label={instancesCountQuestion}
+                       value={instancesCount}
+                       aria-describedby="basic-addon1"
+                       onChange={(event: FormEvent<HTMLInputElement>) => {
+                         changeInstancesCount(
+                           uuid,
+                           Math.min(10, Number.parseInt(event.currentTarget.value))
+                         );
+                       }}/>
+              </div>
+              : null
+            }
+
+            <ul className="list-group">
               {measurements}
-            </div>
-
-            <p>Sum: {value}</p>
+              <li className="list-group-item d-flex justify-content-between align-items-start" key="total">
+                Sum: {value}
+              </li>
+            </ul>
 
           </div>
       }
-
-
     </div>
   );
 };

@@ -3,9 +3,6 @@ import {connect} from 'react-redux';
 
 import './question.scss';
 import {serializeAttributes} from '../utils';
-import Select, {Option} from '@material/react-select';
-import TextField, {Input} from '@material/react-text-field';
-import MaterialIcon from '@material/react-material-icon';
 import {Response} from '../models/response.model';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {addResponse, TutorialActions} from '../tutorial/+state/tutorial.actions';
@@ -60,65 +57,67 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
   }
 
 
-  submitResponse(value: string, index?: number, goToNextSection = false) {
+  submitResponse(value: string, responseUUID?: string, nextSection?: string, goToNextSection = false) {
     const {addResponse, attributes, options = []} = this.props;
     const {uuid, text} = attributes;
 
-    const option = options[index] || {value: undefined, nextSection: undefined, uuid: undefined};
 
     addResponse({
-      questionUUID: uuid,
-      responseUUID: option.uuid,
-      value: value || option.value,
       text,
-      nextSection: option.nextSection,
+      questionUUID: uuid,
+      responseUUID: responseUUID,
+      value: value,
+      nextSection: nextSection,
       goToNextSection
     });
   }
 
   renderTextQuestion() {
-    const {response} = this.props;
+    const {response, attributes} = this.props;
+    const {text} = attributes;
     const value: string = response ? response.value : "";
 
     return (
-      <div>
-        <TextField
-          className={"form-control"}
-          onTrailingIconSelect={() => this.submitResponse("")}
-          trailingIcon={<MaterialIcon role="button" icon="delete"/>}
-        >
-          <Input
-            value={value}
-            onChange={(event: FormEvent<HTMLInputElement>) => {
-              this.submitResponse(event.currentTarget.value)
-            }}/>
-        </TextField>
+      <div className="form-group">
+        <label>{text}</label>
+        <input type="text"
+               value={value || ""}
+               onChange={(event: FormEvent<HTMLInputElement>) => {
+                 this.submitResponse(event.currentTarget.value);
+               }}/>
       </div>
     );
   };
 
   renderSelectOneQuestion() {
-    const {response, options} = this.props;
-    const value: string = response ? response.value : "";
+    const {response, options, attributes} = this.props;
+    const {text} = attributes;
+    const value: string = response ? options.findIndex(option=>option.uuid===response.responseUUID).toString() : "";
 
     if (options) {
       return (
-        <Select
-          className={"form-control"}
-          enhanced
-          value={value}
-          onEnhancedChange={(index) => this.submitResponse(undefined, index, true)}
-        >
-          {options.map(({value}, index) => (
-              <Option key={index} value={value}>{value}</Option>
-            )
-          )}
-        </Select>
+        <div className="form-group">
+          <label>{text}</label>
+          <select className="custom-select"
+                  value={value}
+                  onChange={(event) => {
+                    const index: number = Number.parseInt(event.currentTarget.value);
+                    if (index >= 0) {
+                      const option = options[index];
+                      this.submitResponse(option.value, option.uuid, option.nextSection, true);
+                    }
+                  }}
+          >
+            {[{uuid: "", value: '-- Alege un raspuns --'}].concat(options).map(({value, uuid}, index) => (
+                <option key={index} value={index - 1}>{value}</option>
+              )
+            )}
+          </select>
+        </div>
       );
     }
     return null;
   };
-
 
   render(): React.ReactNode {
     const {className, children, attributes, isRenderedInEditor} = this.props;
@@ -130,12 +129,12 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
            data-attributes={serializeAttributes(attributes)}>
         {children}
 
+
         {isRenderedInEditor ?
           null :
           <div className={"pt-md"}>
             {text ?
               <div>
-                <p className={'mt-sm mb-0'}>{text}</p>
                 <div className="d-flex align-items-baseline">
                   {type === 'text' ?
                     this.renderTextQuestion() : null

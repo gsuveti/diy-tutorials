@@ -44,12 +44,12 @@ export interface AddMeasurement extends Action<string> {
     uuid: string,
     instanceIndex: number,
     parentBlockUUID: string,
-    value: string,
+    value: number,
   }
 }
 
 export const addMeasurement: ActionCreator<AddMeasurement> =
-  (uuid: string, parentBlockUUID: string, instanceIndex: number, value: string) => action(
+  (uuid: string, parentBlockUUID: string, instanceIndex: number, value: number) => action(
     TutorialActionTypes.AddMeasurement, {
       uuid: uuid,
       parentBlockUUID: parentBlockUUID,

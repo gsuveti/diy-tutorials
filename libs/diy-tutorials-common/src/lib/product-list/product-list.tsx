@@ -10,8 +10,6 @@ import {addProductsToCart, showProducts, TutorialActions} from '../tutorial/+sta
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
-import {Button} from '@material/react-button';
-import MaterialIcon from '@material/react-material-icon';
 
 
 /* tslint:disable:no-empty-interface */
@@ -63,48 +61,43 @@ export const ProductList = (props: ProductListProps) => {
       allowedComponents={allowedComponents}
     />
   ;
+
   const productRangesSummary = productRanges.map(productRange => {
     const products = productsByProductRange[productRange.uuid] || [];
     const total = products
       .reduce((sum, product) => sum + product.price * product.quantity, 0);
 
-    const icon = <MaterialIcon icon='shopping_cart'/>;
     return (
       <div key={productRange.uuid} className={'col-sm'}>
         <div className={'row'}>
-          <div className={'col'}>
-            <h4 className={'m-0'}>{productRange.headline}</h4>
-          </div>
-        </div>
-        <div className={'row'}>
-          <div className={'col-4'}>
-            <p className={'m-0 pt-xs'}>Total: {total} lei</p>
-          </div>
-          <div className={'col-8'}>
 
-            <Button
-              raised={true}
-              dense={true}
-              trailingIcon={icon}
-              onClick={() => {
-                addProductsToCart(products);
-              }}>
-              Adauga in cos
-            </Button>
+          <div className={'col-12'}>
+            <p className={'m-0 pt-xs'}>{productRange.headline}: {total} lei</p>
+          </div>
+          <div className={'col-12'}>
+            <button type="button" className="btn btn-outline-primary d-flex"
+                    onClick={() => {
+                      addProductsToCart(products);
+                    }}>
+              <span className={'material-icons'}>shopping_cart</span>Adauga in cos
+            </button>
           </div>
         </div>
+
       </div>
     );
   });
 
   return (
-    <div className={`${className ? className : 'product-list '} ${isVisible ? "show" : "hide"}`}
+    <div className={`${className ? className : 'product-list row'} ${isVisible ? "show" : "hide"}`}
          data-attributes={serializeAttributes(attributes)}>
       {content}
       {
         isRenderedInEditor ? null :
-          <div className={'row'}>
-            {productRangesSummary}
+          <div className={'col-12'}>
+            <div className={'row'}>
+              {productRangesSummary}
+            </div>
           </div>
       }
     </div>
@@ -121,7 +114,12 @@ function mapStateToProps(state: AppState, ownProps: ProductListProps, ownState: 
 
   const productsByProductRange = groupBy(
     state.tutorial.products
-      .filter(product => displayedProductTypes[product.productType])
+      .filter(product => {
+        if (product.productType) {
+          return displayedProductTypes[product.productType];
+        }
+        return true;
+      })
       .map(product => {
         return {...product, quantity: productQuantities[product.uuid]};
       }),

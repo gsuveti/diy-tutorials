@@ -2,8 +2,6 @@ import React, {FormEvent} from 'react';
 import {connect} from 'react-redux';
 
 import './measurement.scss';
-import MaterialIcon from '@material/react-material-icon';
-import TextField, {Input} from '@material/react-text-field';
 import {serializeAttributes} from '../utils';
 import {AppState} from '../store';
 import {addMeasurement, TutorialActions} from '../tutorial/+state/tutorial.actions';
@@ -45,29 +43,24 @@ export const Measurement = (props: MeasurementProps, state: MeasurementState) =>
   const {property, uuid, parentBlockUUID} = attributes;
 
   return (
-    <div className={`${className} p-sm`}
+    <div className={`${className} `}
          data-attributes={serializeAttributes(attributes)}>
       {isRenderedInEditor ? children :
         <div>
-          <p className={"mt-sm mb-0"}>{property}</p>
-          <TextField
-            className={"form-control"}
-            onTrailingIconSelect={() => {
-              console.log(1)
-            }}
-            trailingIcon={<MaterialIcon role="button" icon="delete"/>}
-          >
-            <Input
-              value={measuredValue}
-              onChange={(event: FormEvent<HTMLInputElement>) => {
-                addMeasurement(
-                  uuid,
-                  parentBlockUUID,
-                  instanceIndex,
-                  event.currentTarget.value,
-                );
-              }}/>
-          </TextField>
+          <div className="form-group">
+            <label htmlFor={uuid}>{property}</label>
+            <input id={uuid} type="number" step="0.01" min={1} className="form-control" aria-label={property}
+                   value={measuredValue || ""}
+                   aria-describedby="measurementHelp"
+                   onChange={(event: FormEvent<HTMLInputElement>) => {
+                     addMeasurement(
+                       uuid,
+                       parentBlockUUID,
+                       instanceIndex,
+                       Number.parseInt(event.currentTarget.value),
+                     );
+                   }}/>
+          </div>
         </div>
       }
     </div>

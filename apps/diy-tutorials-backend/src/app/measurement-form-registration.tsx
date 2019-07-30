@@ -2,7 +2,7 @@ import React from 'react';
 import {generateUUID, MeasurementForm, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
 
 // @ts-ignore
-const {TextControl, CheckboxControl, Toolbar, DropdownMenu} = wp.components;
+const {TextControl, CheckboxControl, TextareaControl} = wp.components;
 // @ts-ignore
 const {registerBlockType} = window.wp.blocks;
 // @ts-ignore
@@ -28,13 +28,17 @@ registerBlockType('irian/diy-measurement-form', {
   category: 'common',
   keywords: [],
   attributes: withBaseAttributes({
+    headline: {type: 'string'},
+    description: {type: 'string'},
+    multipleInstances: {type: 'boolean', default: false},
+    instancesCountQuestion: {type: 'string', default: "Numar de instante"},
     formula: {type: 'string', default: "A1"},
   }),
 
 
   edit: function (props: any) {
     const {attributes, clientId, setAttributes, name} = props;
-    const {submitForm, uuid, formula} = attributes;
+    const {multipleInstances, uuid, formula, instancesCountQuestion, headline, description} = attributes;
 
     if (!uuid) {
       props.setAttributes({
@@ -49,7 +53,6 @@ registerBlockType('irian/diy-measurement-form', {
     const ALLOWED_BLOCKS = ['irian/diy-measurement'];
 
 
-
     return ([
         <BlockControls key='controls'>
 
@@ -59,8 +62,24 @@ registerBlockType('irian/diy-measurement-form', {
         </InspectorControls>,
         <MeasurementForm
           attributes={attributes}
-                         isRenderedInEditor={true}
+          isRenderedInEditor={true}
         >
+          <TextControl
+            label="Titlu"
+            key={"headline"}
+            value={headline}
+            onChange={(value) => {
+              props.setAttributes({headline: value});
+            }}/>
+
+          <TextareaControl
+            label="Descriere"
+            key={"description"}
+            value={description}
+            onChange={(value) => {
+              props.setAttributes({description: value});
+            }}/>
+
           <TextControl
             label="Formula"
             key={"formula"}
@@ -68,6 +87,27 @@ registerBlockType('irian/diy-measurement-form', {
             onChange={(value) => {
               props.setAttributes({formula: value});
             }}/>
+
+          <CheckboxControl
+            key={"multipleInstances"}
+            label="Repeta masuratori"
+            checked={multipleInstances}
+            onChange={(isChecked) => {
+              props.setAttributes({multipleInstances: isChecked});
+            }}
+          />
+
+          {multipleInstances ?
+            <TextControl
+              label="Intrebare masuratori muliple"
+              key={"instancesCountQuestion"}
+              value={instancesCountQuestion}
+              onChange={(value) => {
+                props.setAttributes({instancesCountQuestion: value});
+              }}/>
+            :
+            null
+          }
 
           <InnerBlocks
             template={BLOCKS_TEMPLATE} templateLock={false}

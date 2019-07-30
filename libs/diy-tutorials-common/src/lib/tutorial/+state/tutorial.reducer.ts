@@ -10,13 +10,14 @@ import {createReducer} from 'redux-starter-kit'
 import {Response} from '../../models/response.model';
 import {BlockAttributes} from '../../models/block-attributes.model';
 import {filterBlocksByName} from '../../utils';
-import {BlockNames} from '../../constants';
+import {BlockNames, SUBMIT_FORM} from '../../constants';
 
 const FormulaParser = require('hot-formula-parser').Parser;
 
 export interface TutorialState {
   blocks: BlockAttributes[];
   sections: BlockAttributes[],
+  sectionsWithRedirect: string[],
   displayedSections: string[],
   questions: BlockAttributes[],
   measurements: BlockAttributes[],
@@ -38,6 +39,7 @@ export interface TutorialState {
 export const initialTutorialState: TutorialState = {
   blocks: [],
   sections: [],
+  sectionsWithRedirect: [],
   displayedSections: [],
   questions: [],
   measurements: [],
@@ -72,7 +74,8 @@ export const tutorialReducer = createReducer(initialTutorialState, {
     state.displayedProductTypes = calculateDisplayedProductTypes(state);
 
     if (answer.goToNextSection) {
-      state.displayedSections = [...history, answer.nextSection];
+      const nextSection = answer.nextSection;
+      state.displayedSections = [...history, ...getSectionsPath(state, nextSection)];
       state.showProducts = false;
     }
 
@@ -113,6 +116,20 @@ export const tutorialReducer = createReducer(initialTutorialState, {
   }
 });
 
+function getSectionsPath(state: TutorialState, sectionUUID: string): string[] {
+  if (!sectionUUID) {
+    return [];
+  }
+  if (state.sectionsWithRedirect.indexOf(sectionUUID) < 0) {
+    const sectionIndex = state.sections.findIndex(section => section.uuid === sectionUUID);
+    const section = state.sections[sectionIndex];
+    const nextSection = state.sections[sectionIndex + 1];
+    const nextSectionUUID = (section.nextSection != SUBMIT_FORM ? section.nextSection : undefined) || ((nextSection && !nextSection.submitForm) ? nextSection.uuid : undefined);
+    return [sectionUUID, ...getSectionsPath(state, nextSectionUUID)];
+  } else {
+    return [sectionUUID];
+  }
+}
 
 function calculateMeasuredFormValue(state: TutorialState, parentBlockUUID) {
   const measurementFormBlock = state.blocks.find(block => block.uuid === parentBlockUUID);

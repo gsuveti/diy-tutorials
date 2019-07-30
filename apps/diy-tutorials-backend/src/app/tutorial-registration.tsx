@@ -69,8 +69,10 @@ registerBlockType('irian/diy-tutorial', {
               id={ROOT_ID}
               attributes={attributes}
               className={className} key='content'>
-              <p>{uuid}</p>
+
+              <h4 key={'tutorial'}>Tutorial</h4>
               <InnerBlocks
+                key={'innerBlocks'}
                 template={BLOCKS_TEMPLATE}
                 templateLock={false}
                 allowedBlocks={ALLOWED_BLOCKS}

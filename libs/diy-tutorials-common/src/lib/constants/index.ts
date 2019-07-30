@@ -12,3 +12,4 @@ export enum BlockNames{
   QuestionOption = 'irian/diy-question-option',
   DisplayCondition = 'irian/diy-display-condition',
 }
+export const SUBMIT_FORM = 'SUBMIT_FORM';
