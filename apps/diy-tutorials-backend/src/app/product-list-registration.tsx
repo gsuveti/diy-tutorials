@@ -13,7 +13,7 @@ const {withSelect} = window.wp.data;
 console.log("registerBlockType content");
 
 registerBlockType('irian/diy-product-list', {
-  title: 'diy-product-list',
+  title: 'Sectiune de produse',
   icon: 'slides',
   category: 'common',
   keywords: [],

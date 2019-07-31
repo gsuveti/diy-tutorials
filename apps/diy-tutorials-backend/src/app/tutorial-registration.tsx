@@ -15,7 +15,7 @@ console.log("registerBlockType tutorial");
 
 
 registerBlockType('irian/diy-tutorial', {
-  title: 'Tutorial',
+  title: 'Reteta interactiva',
   icon: 'info',
   category: 'common',
   keywords: [],

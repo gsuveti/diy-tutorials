@@ -19,7 +19,7 @@ const {withSelect} = window.wp.data;
 console.log("registerBlockType question option");
 
 registerBlockType('irian/diy-question-option', {
-  title: 'Optiune',
+  title: 'Varianta de raspuns',
   icon: 'editor-ul',
   category: 'common',
   keywords: [],

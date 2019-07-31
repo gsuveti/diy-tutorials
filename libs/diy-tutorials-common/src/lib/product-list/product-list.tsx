@@ -10,6 +10,7 @@ import {addProductsToCart, showProducts, TutorialActions} from '../tutorial/+sta
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
+import {ConnectedProduct} from '@diy-tutorials/diy-tutorials-common';
 
 
 /* tslint:disable:no-empty-interface */
@@ -44,6 +45,7 @@ export interface ProductListState {
 
 const allowedComponents = {
   'irian/diy-product-range': ConnectedProductRange,
+  'irian/diy-product': ConnectedProduct,
 };
 
 export const ProductList = (props: ProductListProps) => {

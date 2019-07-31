@@ -10,6 +10,7 @@ export interface AppState {
 }
 
 const epicMiddleware = createEpicMiddleware();
+const devMiddlewares = (window && (window as any).__REDUX_DEVTOOLS_EXTENSION__) ? [(window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()] : [];
 
 export function configureStore(initialState: AppState = {
   tutorial: initialTutorialState
@@ -19,7 +20,7 @@ export function configureStore(initialState: AppState = {
     initialState,
     compose(
       applyMiddleware(thunk, epicMiddleware),
-      (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()
+      ...devMiddlewares
     )
   );
 }

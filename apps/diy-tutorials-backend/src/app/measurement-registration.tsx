@@ -25,7 +25,7 @@ console.log("registerBlockType measurement");
  *                             registered; otherwise `undefined`.
  */
 registerBlockType('irian/diy-measurement', {
-  title: 'Measurement', // Block title.
+  title: 'Proprietate masurabila', // Block title.
   icon: 'layout',
   category: 'common',
   keywords: [],

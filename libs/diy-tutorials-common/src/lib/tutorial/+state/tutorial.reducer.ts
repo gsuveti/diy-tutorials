@@ -71,6 +71,12 @@ export const tutorialReducer = createReducer(initialTutorialState, {
     const historyEnd = state.displayedSections.indexOf(parentBlockUUID) + 1;
     const history = state.displayedSections.slice(0, historyEnd);
 
+    JSON.parse(JSON.stringify(state.questions)).map(question => {
+      if (history.indexOf(question.parentBlockUUID) < 0) {
+        state.responses[question.uuid] = undefined;
+      }
+    });
+
     state.displayedProductTypes = calculateDisplayedProductTypes(state);
 
     if (answer.goToNextSection) {

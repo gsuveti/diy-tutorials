@@ -23,7 +23,7 @@ console.log("registerBlockType measurement form");
  *                             registered; otherwise `undefined`.
  */
 registerBlockType('irian/diy-measurement-form', {
-  title: 'Measurement form', // Block title.
+  title: 'Obiectiv de masurare', // Block title.
   icon: 'layout',
   category: 'common',
   keywords: [],

@@ -11,7 +11,7 @@ const {BlockControls, InspectorControls, InnerBlocks} = window.wp.editor;
 console.log("registerBlockType content");
 
 registerBlockType('irian/diy-product-range', {
-  title: 'Gama',
+  title: 'Gama produse',
   icon: 'list-view',
   category: 'common',
   keywords: [],
