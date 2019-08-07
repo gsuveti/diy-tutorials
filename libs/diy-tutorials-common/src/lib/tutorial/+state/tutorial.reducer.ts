@@ -89,7 +89,17 @@ export const tutorialReducer = createReducer(initialTutorialState, {
   },
 
   [TutorialActionTypes.ShowProducts]: (state: TutorialState, action: ShowProducts) => {
-    state.showProducts = true;
+    const measurementFormWithoutValue = state.measurementForms.find(measurementForm => {
+      return !state.measuredFormValues[measurementForm.uuid];
+    });
+
+    if (measurementFormWithoutValue) {
+      document.getElementById(measurementFormWithoutValue.uuid).scrollIntoView({
+        behavior: 'smooth'
+      });
+    } else {
+      state.showProducts = true;
+    }
 
     return state;
   },
@@ -115,9 +125,7 @@ export const tutorialReducer = createReducer(initialTutorialState, {
   },
   [TutorialActionTypes.AddProductsToCart]: (state: TutorialState, action: AddProductsToCart) => {
     const {products} = action.payload;
-
     console.log(products);
-
     return state;
   }
 });

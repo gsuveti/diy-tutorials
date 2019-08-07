@@ -84,7 +84,7 @@ export const MeasurementForm = (props: MeasurementFormProps) => {
       {
         isRenderedInEditor ?
           null :
-          <div>
+          <div id={uuid}>
             <h4>{headline}</h4>
             <p>{description}</p>
 

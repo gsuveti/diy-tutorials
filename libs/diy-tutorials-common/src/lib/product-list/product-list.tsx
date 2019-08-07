@@ -10,7 +10,7 @@ import {addProductsToCart, showProducts, TutorialActions} from '../tutorial/+sta
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
-import {ConnectedProduct} from '@diy-tutorials/diy-tutorials-common';
+import {ConnectedProduct} from '../product/product';
 
 
 /* tslint:disable:no-empty-interface */
