@@ -1,1 +1,63 @@
 /* You can add global styles to this file, and also import other style files */
+
+$sections-border: (
+  'irian/diy-tutorial': #9E9E9E,
+  'irian/diy-section':#F44336,
+  'irian/diy-question':#E91E63,
+  'irian/diy-question-option':#FFC107,
+  'irian/diy-measurement-form':#9C27B0,
+  'irian/diy-measurement':#03A9F4,
+  'irian/diy-content':#3F51B5,
+  'irian/diy-product-list':#2196F3,
+  'irian/diy-product-type':#8BC34A,
+  'irian/diy-product-range':#FF5722,
+  'irian/diy-product':#FF9800);
+
+.wp-block {
+  @each $section, $color in $sections-border {
+
+    &[data-type='#{$section}'] {
+      --block-color: #{$color};
+
+      margin-top: 4px;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      border-radius: 4px;
+      border-width: 4px;
+      border-style: solid;
+      border-color: var(--block-color);
+
+
+      &.is-selected {
+        border-style: dashed;
+      }
+
+      .editor-block-list__block-edit {
+        $margin: 11px;
+        margin-top: $margin !important;
+        margin-bottom: $margin !important;
+      }
+
+    }
+  }
+}
+
+.block-title {
+  position: relative;
+  top: -12px;
+  margin: 0 -16px;
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px !important;
+  border-bottom: 2px solid var(--block-color);
+}
+
+.wp-admin select {
+  height: 35px !important;
+  padding: 0;
+  margin: 0;
+  box-sizing: content-box;
+}
+
+

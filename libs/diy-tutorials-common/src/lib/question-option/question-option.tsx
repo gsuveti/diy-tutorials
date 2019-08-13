@@ -6,7 +6,6 @@ import {serializeAttributes} from '../utils';
 /* tslint:disable:no-empty-interface */
 export interface QuestionOptionProps {
   children?: ReactNode;
-  className?: string;
   attributes?: {
     uuid: string;
     name: string;
@@ -17,10 +16,10 @@ export interface QuestionOptionProps {
 
 export class QuestionOption extends Component<QuestionOptionProps> {
   render() {
-    const {children, className, attributes} = this.props;
+    const {children, attributes} = this.props;
 
     return (
-      <div className={`${className ? className : ''}`}
+      <div className={``}
            data-attributes={serializeAttributes(attributes)}>
         {children}
       </div>

@@ -1,5 +1,6 @@
 import React from 'react';
-import {DisplayCondition, generateUUID, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
+import {Content, DisplayCondition, generateUUID, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
+import i18n from './i18n/i18n';
 
 // @ts-ignore
 const {Toolbar, SelectControl} = wp.components;
@@ -14,7 +15,7 @@ const {withSelect} = window.wp.data;
 console.log("registerBlockType display condition");
 
 registerBlockType('irian/diy-display-condition', {
-  title: 'Conditie de afisare',
+  title: i18n.displayCondition.title,
   icon: 'admin-settings',
   category: 'common',
   keywords: [],
@@ -52,9 +53,9 @@ registerBlockType('irian/diy-display-condition', {
           <InspectorControls key='inspector'>
           </InspectorControls>,
           <DisplayCondition key='content'
-                            className={className}
                             attributes={attributes}
           >
+            <p className={'block-title'}>{i18n.displayCondition.title}</p>
             <div className={'d-flex'}>
               <SelectControl
                 className={"pr-sm m-0"}

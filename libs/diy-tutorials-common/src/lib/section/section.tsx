@@ -13,7 +13,6 @@ import {showProducts, TutorialActions} from '../tutorial/+state/tutorial.actions
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
-  className?: string;
   clientId?: string;
   attributes?: {
     uuid: string
@@ -56,7 +55,7 @@ export const Section = (props: SectionProps) => {
 
 
   return (
-    <div className={`${className} ${isVisible ? "show" : "hide"}`}
+    <div className={`${isVisible ? "show" : "hide"}`}
          data-attributes={serializeAttributes(attributes)}
     >
       {children}
@@ -70,7 +69,7 @@ export const Section = (props: SectionProps) => {
             {showSubmitFormButton ?
               <button type="button" className="my-md btn btn-outline-primary d-flex"
                       onClick={() => showProducts()}>
-               Afiseaza produsele necesare
+                Afiseaza produsele necesare
               </button>
               : null
             }

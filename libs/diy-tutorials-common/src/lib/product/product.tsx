@@ -9,7 +9,6 @@ import {AppState} from '../store';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
-  className?: string;
   children?: any;
   attributes?: {
     uuid: string;
@@ -40,12 +39,12 @@ export interface ProductState {
 }
 
 export const Product = (props: ProductProps) => {
-  const {className, children, attributes, isRenderedInEditor, quantity = 0, isVisible = true} = props;
-  const {price, imageUrl, headline} = attributes;
+  const {children, attributes, isRenderedInEditor, quantity = 0, isVisible = true} = props;
+  const {imageUrl, headline} = attributes;
 
   return (
     <div data-attributes={serializeAttributes(attributes)}
-         className={`${className} ${isVisible ? "show" : "hide"}`}>
+         className={`${isVisible ? "show" : "hide"}`}>
       {children}
       {
         isRenderedInEditor ? null :

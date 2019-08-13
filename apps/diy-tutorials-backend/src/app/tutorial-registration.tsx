@@ -1,6 +1,7 @@
 import React from 'react';
 import {generateUUID, ROOT_ID, Tutorial} from '@diy-tutorials/diy-tutorials-common';
 import {Icon} from './icon';
+import i18n from './i18n/i18n';
 
 // @ts-ignore
 const {registerBlockType} = window.wp.blocks;
@@ -16,7 +17,7 @@ console.log("registerBlockType tutorial");
 
 
 registerBlockType('irian/diy-tutorial', {
-  title: 'Reteta interactiva',
+  title: i18n.tutorial.title,
   icon: <Icon iconClassName={'fa fa-list-ol'}/>,
   category: 'common',
   keywords: [],
@@ -69,9 +70,9 @@ registerBlockType('irian/diy-tutorial', {
             <Tutorial
               id={ROOT_ID}
               attributes={attributes}
-              className={className} key='content'>
+              key='content'>
 
-              <h4 key={'tutorial'}>Tutorial</h4>
+              <p className={'block-title'} key={'tutorial'}>{i18n.tutorial.title}</p>
               <InnerBlocks
                 key={'innerBlocks'}
                 template={BLOCKS_TEMPLATE}
@@ -91,7 +92,6 @@ registerBlockType('irian/diy-tutorial', {
     return (
       <Tutorial
         id={ROOT_ID}
-        className={props.className}
         attributes={attributes}
         key='content'
       >

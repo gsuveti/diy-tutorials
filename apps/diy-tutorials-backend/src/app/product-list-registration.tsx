@@ -1,5 +1,6 @@
 import React from 'react';
 import {initBaseAttributes, ProductList, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
+import i18n from './i18n/i18n';
 
 // @ts-ignore
 const {TextControl} = wp.components;
@@ -13,7 +14,7 @@ const {withSelect} = window.wp.data;
 console.log("registerBlockType content");
 
 registerBlockType('irian/diy-product-list', {
-  title: 'Sectiune de produse',
+  title: i18n.productList.title,
   icon: 'slides',
   category: 'common',
   keywords: [],
@@ -47,8 +48,9 @@ registerBlockType('irian/diy-product-list', {
             </InspectorControls>,
 
             <ProductList
-              className={className}
-              attributes={attributes}>
+              attributes={attributes}
+              isRenderedInEditor={true}>
+              <p className={'block-title'}>{i18n.productList.title}</p>
               <InnerBlocks allowedBlocks={ALLOWED_BLOCKS}
               />
             </ProductList>
@@ -59,7 +61,7 @@ registerBlockType('irian/diy-product-list', {
   save: function (props: any) {
     const {attributes} = props;
     return (
-      <ProductList attributes={attributes}>
+      <ProductList attributes={attributes} isRenderedInEditor={true}>
         <InnerBlocks.Content/>
       </ProductList>
     );

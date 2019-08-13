@@ -1,5 +1,6 @@
 import React from 'react';
 import {Content, generateUUID} from '@diy-tutorials/diy-tutorials-common';
+import i18n from './i18n/i18n';
 
 // @ts-ignore
 const {TextControl} = wp.components;
@@ -24,7 +25,7 @@ console.log("registerBlockType content");
  */
 registerBlockType('irian/diy-content', {
   // Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
-  title: 'Continut', // Block title.
+  title: i18n.content.title, // Block title.
   icon: 'slides', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
   category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
   keywords: [],
@@ -72,7 +73,8 @@ registerBlockType('irian/diy-content', {
                        }}/>
 
         </InspectorControls>,
-        <Content className={props.className} key='content'>
+        <Content key='content'>
+          <p className={'block-title'}>{i18n.content.title}</p>
           <InnerBlocks
             attributes={attributes}
             template={BLOCKS_TEMPLATE} templateLock={false}
@@ -95,8 +97,7 @@ registerBlockType('irian/diy-content', {
     const {attributes} = props;
 
     return (
-      <Content className={props.className}
-               attributes={attributes}
+      <Content attributes={attributes}
       >
         <InnerBlocks.Content></InnerBlocks.Content>
       </Content>

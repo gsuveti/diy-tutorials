@@ -1,5 +1,6 @@
 import React from 'react';
 import {generateUUID, MeasurementForm, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
+import i18n from './i18n/i18n';
 
 // @ts-ignore
 const {TextControl, CheckboxControl, TextareaControl} = wp.components;
@@ -23,7 +24,7 @@ console.log("registerBlockType measurement form");
  *                             registered; otherwise `undefined`.
  */
 registerBlockType('irian/diy-measurement-form', {
-  title: 'Obiectiv de masurare', // Block title.
+  title: i18n.measurementForm.title, // Block title.
   icon: 'layout',
   category: 'common',
   keywords: [],
@@ -37,7 +38,7 @@ registerBlockType('irian/diy-measurement-form', {
 
 
   edit: function (props: any) {
-    const {attributes, clientId, setAttributes, name} = props;
+    const {attributes, className, setAttributes, name} = props;
     const {multipleInstances, uuid, formula, instancesCountQuestion, headline, description} = attributes;
 
     if (!uuid) {
@@ -64,6 +65,7 @@ registerBlockType('irian/diy-measurement-form', {
           attributes={attributes}
           isRenderedInEditor={true}
         >
+          <p className={'block-title'}>{i18n.measurementForm.title}</p>
           <TextControl
             label="Titlu"
             key={"headline"}
@@ -129,7 +131,7 @@ registerBlockType('irian/diy-measurement-form', {
    * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
    */
   save: function (props: any) {
-    const {attributes, clientId} = props;
+    const {attributes, className} = props;
 
     return (
       <MeasurementForm

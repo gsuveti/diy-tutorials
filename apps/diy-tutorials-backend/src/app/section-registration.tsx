@@ -1,5 +1,6 @@
 import React from 'react';
 import {initBaseAttributes, Section, SUBMIT_FORM, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
+import i18n from './i18n/i18n';
 
 // @ts-ignore
 const {Toolbar, SelectControl} = wp.components;
@@ -15,7 +16,7 @@ console.log("registerBlockType section");
 
 
 registerBlockType('irian/diy-section', {
-  title: 'Sectiune', // Block title.
+  title: i18n.section.title, // Block title.
   icon: 'layout', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
   category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
   keywords: [],
@@ -30,7 +31,7 @@ registerBlockType('irian/diy-section', {
 
     return {
       index: getSectionIndex(ownProps.attributes.uuid),
-      sectionOptions: getSectionOptions().concat({value: SUBMIT_FORM, label: "Finalizare"})
+      sectionOptions: getSectionOptions().concat({value: SUBMIT_FORM, label: "Sectiunea de produse"})
     };
   })(
     (props: any) => {
@@ -57,16 +58,15 @@ registerBlockType('irian/diy-section', {
           </InspectorControls>,
           <Section
             key='content'
-            className={props.className}
             clientId={clientId}
             attributes={attributes}
             isRenderedInEditor={true}
           >
             <div>
-              <p key={'title'}>Section: {index + 1} {submitForm ? "(Submit)" : null}</p>
+              <p className={'block-title'}>{i18n.section.title} {`(${index + 1})`}</p>
               <SelectControl
-                className={"pr-sm m-xl"}
                 key="nextSection"
+                label="Ce se afiseaza dupa aceasta sectiune?"
                 value={nextSection}
                 options={sectionOptions}
                 onChange={(section) => {
@@ -100,7 +100,6 @@ registerBlockType('irian/diy-section', {
     return (
       <Section
         key='content'
-        className={props.className}
         clientId={clientId}
         attributes={attributes}>
         <InnerBlocks.Content></InnerBlocks.Content>

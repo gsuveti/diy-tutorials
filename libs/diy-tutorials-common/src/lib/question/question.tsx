@@ -10,7 +10,6 @@ import {AppState} from '../store';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
-  className?: string;
   attributes?: {
     type: string,
     displayCondition?: string;
@@ -92,7 +91,7 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
   renderSelectOneQuestion() {
     const {response, options, attributes} = this.props;
     const {text} = attributes;
-    const value: string = response ? options.findIndex(option=>option.uuid===response.responseUUID).toString() : "";
+    const value: string = response ? options.findIndex(option => option.uuid === response.responseUUID).toString() : "";
 
     if (options) {
       return (
@@ -125,8 +124,7 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
 
 
     return (
-      <div className={className}
-           data-attributes={serializeAttributes(attributes)}>
+      <div data-attributes={serializeAttributes(attributes)}>
         {children}
 
 

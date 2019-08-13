@@ -15,7 +15,6 @@ import {ConnectedProduct} from '../product/product';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
-  className?: string;
   attributes?: {
     uuid: string
   };
@@ -50,7 +49,7 @@ const allowedComponents = {
 
 export const ProductList = (props: ProductListProps) => {
   const {
-    children, innerBlocks, className, attributes, isVisible = true, productRanges = [],
+    children, innerBlocks, attributes, isVisible = true, productRanges = [],
     isRenderedInEditor, addProductsToCart, productsByProductRange
   } = props;
   const {uuid} = attributes;
@@ -70,7 +69,7 @@ export const ProductList = (props: ProductListProps) => {
       .reduce((sum, product) => sum + product.price * product.quantity, 0);
 
     return (
-      <div key={productRange.uuid} className={'col-sm'}>
+      <div key={productRange.uuid} className={'col-sm px-0'}>
         <div className={'row'}>
 
           <div className={'col-12'}>
@@ -91,15 +90,13 @@ export const ProductList = (props: ProductListProps) => {
   });
 
   return (
-    <div className={`${className ? className : 'product-list row'} ${isVisible ? "show" : "hide"}`}
+    <div className={`row no-gutters ${isVisible ? "show" : "hide"} ${isRenderedInEditor ? 'flex-column' : ''}`}
          data-attributes={serializeAttributes(attributes)}>
       {content}
       {
         isRenderedInEditor ? null :
-          <div className={'col-12'}>
-            <div className={'row'}>
-              {productRangesSummary}
-            </div>
+          <div className={'row'}>
+            {productRangesSummary}
           </div>
       }
     </div>

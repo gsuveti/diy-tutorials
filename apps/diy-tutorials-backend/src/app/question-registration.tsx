@@ -1,5 +1,6 @@
 import React from 'react';
 import {generateUUID, Question, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
+import i18n from './i18n/i18n';
 
 // @ts-ignore
 const {TextControl, Button, SelectControl, TextareaControl, CheckboxControl, IconButton} = wp.components;
@@ -26,7 +27,7 @@ console.log("registerBlockType question");
  */
 registerBlockType('irian/diy-question', {
   // Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
-  title: 'Intrebare', // Block title.
+  title: i18n.question.title, // Block title.
   icon: 'forms', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
   category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
   keywords: [],
@@ -70,11 +71,11 @@ registerBlockType('irian/diy-question', {
           <InspectorControls key='inspector'>
 
           </InspectorControls>,
-          <Question className={className}
-                    attributes={attributes}
+          <Question attributes={attributes}
                     key='content'
                     isRenderedInEditor={true}>
             <div>
+              <p className={'block-title'}>{i18n.question.title}</p>
               <TextControl
                 label="Intrebare"
                 key={"question"}
@@ -133,7 +134,6 @@ registerBlockType('irian/diy-question', {
 
     return (
       <Question
-        className={props.className}
         attributes={attributes} key='content'
       >
         <InnerBlocks.Content/>

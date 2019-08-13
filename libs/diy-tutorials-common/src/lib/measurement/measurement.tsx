@@ -10,7 +10,6 @@ import {BlockAttributes} from '../models/block-attributes.model';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
-  className?: string;
   children?: any;
   isRenderedInEditor?: boolean;
   attributes: BlockAttributes & {
@@ -37,13 +36,13 @@ export interface MeasurementState {
 
 export const Measurement = (props: MeasurementProps, state: MeasurementState) => {
   const {
-    className, children, isRenderedInEditor, attributes,
+    children, isRenderedInEditor, attributes,
     addMeasurement, measuredValue, instanceIndex
   } = props;
   const {property, uuid, parentBlockUUID} = attributes;
 
   return (
-    <div className={`${className} `}
+    <div className={``}
          data-attributes={serializeAttributes(attributes)}>
       {isRenderedInEditor ? children :
         <div>

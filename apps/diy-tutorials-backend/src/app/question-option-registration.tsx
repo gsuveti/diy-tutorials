@@ -1,10 +1,6 @@
 import React from 'react';
-import {
-  generateUUID,
-  initBaseAttributes,
-  QuestionOption,
-  withBaseAttributes
-} from '@diy-tutorials/diy-tutorials-common';
+import {initBaseAttributes, QuestionOption, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
+import i18n from './i18n/i18n';
 
 // @ts-ignore
 const {TextControl, Button, SelectControl, TextareaControl, CheckboxControl, IconButton} = wp.components;
@@ -19,7 +15,7 @@ const {withSelect} = window.wp.data;
 console.log("registerBlockType question option");
 
 registerBlockType('irian/diy-question-option', {
-  title: 'Varianta de raspuns',
+  title: i18n.questionOption.title,
   icon: 'editor-ul',
   category: 'common',
   keywords: [],
@@ -36,7 +32,7 @@ registerBlockType('irian/diy-question-option', {
     };
   })(
     (props: any) => {
-      const {className, attributes, clientId, setAttributes, name, index, sectionOptions} = props;
+      const {className, attributes, clientId, setAttributes, name, sectionOptions} = props;
       const {uuid, value, nextSection} = attributes;
 
 
@@ -49,11 +45,11 @@ registerBlockType('irian/diy-question-option', {
           </InspectorControls>,
           <QuestionOption
             key='content'
-            className={className}
             attributes={attributes}>
+            <p className={'block-title'}>{i18n.questionOption.title}</p>
             <div className={'d-flex'}>
               <TextControl
-                placeholder={`Option ${index + 1}`}
+                placeholder={`Varianta de raspuns`}
                 className={"pr-sm m-0"}
                 key={"option"}
                 value={value}

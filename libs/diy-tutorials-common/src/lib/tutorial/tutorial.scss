@@ -1,19 +1,5 @@
-@import "../vars";
-//@import "~bootstrap/scss/functions";
-//@import "~bootstrap/scss/variables";
-//@import "~bootstrap/scss/mixins/breakpoints";
-//@import "~bootstrap/scss/mixins/grid";
-//@import "~bootstrap/scss/mixins/grid-framework";
-//@import "~bootstrap/scss/grid";
-//@import "~bootstrap/scss/utilities/display";
-//@import "~bootstrap/scss/utilities/flex";
-//@import "~bootstrap/scss/utilities/spacing";
+@import "../style/utils";
 @import "~bootstrap/scss/bootstrap";
-
-.wp-block-irian-diy-tutorial {
-  $margin: -14px;
-  padding: $margin 0;
-}
 
 /* fallback */
 @font-face {
@@ -42,14 +28,6 @@
 }
 
 
-.wp-admin select {
-  height: 30px !important;
-  padding: 0;
-  margin: 0;
-  box-sizing: content-box;
-}
-
 .font-size-small {
   font-size: 14px;
 }
-

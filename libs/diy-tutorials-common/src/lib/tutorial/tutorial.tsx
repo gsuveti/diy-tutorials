@@ -11,7 +11,6 @@ import {ConnectedProductList} from '../product-list/product-list';
 export interface TutorialProps {
   id?: string;
   uuid?: string;
-  className?: string;
   children?: any;
   innerBlocks?: Block[];
   attributes?: {
@@ -81,7 +80,7 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
 
   render(): React.ReactNode {
 
-    const {id, attributes, className, innerBlocks = [], children} = this.props;
+    const {id, attributes, innerBlocks = [], children} = this.props;
 
     const content = children ?
       children
@@ -95,7 +94,6 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
 
     return (
       <div id={id}
-           className={className}
            data-attributes={serializeAttributes(attributes)}
       >
         {content}

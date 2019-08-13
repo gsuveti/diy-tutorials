@@ -1,5 +1,6 @@
 import React from 'react';
 import {initBaseAttributes, ProductType, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
+import i18n from './i18n/i18n';
 
 // @ts-ignore
 const {TextControl, SelectControl} = wp.components;
@@ -13,7 +14,7 @@ const {withSelect} = window.wp.data;
 console.log("registerBlockType content");
 
 registerBlockType('irian/diy-product-type', {
-  title: 'Tip de produs',
+  title: i18n.productType.title,
   icon: 'excerpt-view',
   category: 'common',
   keywords: [],
@@ -42,6 +43,7 @@ registerBlockType('irian/diy-product-type', {
 
         <ProductType attributes={attributes}>
           <div>
+            <p className={'block-title'}>{i18n.productType.title}</p>
             <TextControl
               label="Tip produs"
               key={"headline"}

@@ -1,5 +1,6 @@
 import React from 'react';
 import {initBaseAttributes, ProductRange, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
+import i18n from './i18n/i18n';
 
 // @ts-ignore
 const {TextControl, TextareaControl} = wp.components;
@@ -11,8 +12,8 @@ const {BlockControls, InspectorControls, InnerBlocks} = window.wp.editor;
 console.log("registerBlockType content");
 
 registerBlockType('irian/diy-product-range', {
-  title: 'Gama produse',
-  icon: 'list-view',
+  title: i18n.productRange.title,
+  icon: <strong>GP</strong>,
   category: 'common',
   keywords: [],
   attributes: withBaseAttributes({
@@ -36,9 +37,9 @@ registerBlockType('irian/diy-product-range', {
 
         </InspectorControls>,
         <ProductRange
-          className={className}
           attributes={attributes}
           isRenderedInEditor={true}>
+          <p className={'block-title'}>{i18n.productRange.title}</p>
           <TextControl
             label="Gama"
             key={"headline"}

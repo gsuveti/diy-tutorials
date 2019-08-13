@@ -1,5 +1,6 @@
 import React from 'react';
 import {generateUUID, Measurement, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
+import i18n from './i18n/i18n';
 
 // @ts-ignore
 const {TextControl, CheckboxControl, Toolbar, DropdownMenu} = wp.components;
@@ -25,7 +26,7 @@ console.log("registerBlockType measurement");
  *                             registered; otherwise `undefined`.
  */
 registerBlockType('irian/diy-measurement', {
-  title: 'Proprietate masurabila', // Block title.
+  title: i18n.measurement.title, // Block title.
   icon: 'layout',
   category: 'common',
   keywords: [],
@@ -60,9 +61,10 @@ registerBlockType('irian/diy-measurement', {
         <Measurement
           isRenderedInEditor={true}
           attributes={attributes}>
+          <p className={'block-title'}>{`${i18n.measurement.title} (A${index + 1})`}</p>
           <div>
             <TextControl
-              label={`Proprietate masurabila (A${index + 1})`}
+              label={`Denumirea proprietatii`}
               key={"property"}
               value={property}
               onChange={(value) => {

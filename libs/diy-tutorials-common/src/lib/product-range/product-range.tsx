@@ -12,7 +12,6 @@ import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 
 /* tslint:disable:no-empty-interface */
 export interface OwnProps {
-  className?: string;
   attributes?: {
     uuid: string;
     name: string;
@@ -42,7 +41,7 @@ const allowedComponents = {
 };
 
 export const ProductRange = (props: ProductRangeProps, state: ProductRangeState) => {
-  const {children, innerBlocks, className, attributes, isRenderedInEditor, addProductsToCart} = props;
+  const {children, innerBlocks, attributes, isRenderedInEditor, addProductsToCart} = props;
   const {headline, description, uuid} = attributes;
   const content = children ?
     children
@@ -54,7 +53,7 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
   ;
 
   return (
-    <div className={`${className ? className : ''} col-sm py-sm`}
+    <div className={`col-sm px-0`}
          data-attributes={serializeAttributes(attributes)}>
 
       {

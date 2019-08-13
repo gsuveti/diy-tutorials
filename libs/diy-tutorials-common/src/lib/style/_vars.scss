@@ -1,5 +1,6 @@
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
+
 $spacer: 1em;
 
 $spacers: map-merge(
@@ -19,3 +20,6 @@ $spacers: map-merge(
     ),
     $spacers
 );
+
+
+$margin: -12px;

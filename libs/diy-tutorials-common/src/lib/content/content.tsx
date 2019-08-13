@@ -6,7 +6,6 @@ import {serializeAttributes} from '../utils';
 
 /* tslint:disable:no-empty-interface */
 export interface ContentProps {
-  className?: string;
   clientId?: string;
   children?: any;
   attributes?: {
@@ -17,7 +16,7 @@ export interface ContentProps {
 }
 
 export const Content = (props: ContentProps) => {
-  const {className, clientId, html, children, attributes} = props;
+  const {clientId, html, children, attributes} = props;
   const content = children ?
     <div>
       {children}
@@ -26,9 +25,9 @@ export const Content = (props: ContentProps) => {
     <RawHTML html={html}/>;
 
   return (
-    <div className={className}
-         data-client_id={clientId}
-         data-attributes={serializeAttributes(attributes)}
+    <div
+      data-client_id={clientId}
+      data-attributes={serializeAttributes(attributes)}
     >
       {content}
     </div>

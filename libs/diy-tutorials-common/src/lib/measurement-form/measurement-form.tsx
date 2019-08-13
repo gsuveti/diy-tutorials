@@ -12,7 +12,6 @@ import {changeInstancesCount, TutorialActions} from '../tutorial/+state/tutorial
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
-  className?: string;
   children?: ReactNode;
   innerBlocks?: Block[];
   attributes?: {
@@ -49,7 +48,7 @@ const allowedComponents = {
 
 export const MeasurementForm = (props: MeasurementFormProps) => {
   const {
-    children, className, attributes, innerBlocks = [], instancesCount, changeInstancesCount, value,
+    children, attributes, innerBlocks = [], instancesCount, changeInstancesCount, value,
     isRenderedInEditor
   } = props;
   const {uuid, multipleInstances, instancesCountQuestion, headline, description} = attributes;
@@ -78,8 +77,7 @@ export const MeasurementForm = (props: MeasurementFormProps) => {
     });
 
   return (
-    <div className={`${className ? className : ''} mt-md`}
-         data-attributes={serializeAttributes(attributes)}>
+    <div data-attributes={serializeAttributes(attributes)}>
       {children}
       {
         isRenderedInEditor ?

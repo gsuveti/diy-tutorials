@@ -1,5 +1,6 @@
 import React from 'react';
 import {initBaseAttributes, Product, withBaseAttributes} from '@diy-tutorials/diy-tutorials-common';
+import i18n from './i18n/i18n';
 
 // @ts-ignore
 const {TextControl, Button, SelectControl, TextareaControl, CheckboxControl, IconButton} = wp.components;
@@ -13,7 +14,7 @@ const {withSelect} = window.wp.data;
 console.log("registerBlockType content");
 
 registerBlockType('irian/diy-product', {
-  title: 'Produs',
+  title: i18n.product.title,
   icon: 'cart',
   category: 'common',
   keywords: [],
@@ -52,6 +53,7 @@ registerBlockType('irian/diy-product', {
           <Product
             isRenderedInEditor={true}
             attributes={attributes}>
+            <p className={'block-title'}>{i18n.product.title}</p>
             <TextControl
               label="Denumire"
               key={"headline"}
