@@ -36,14 +36,12 @@ registerStore('diy-tutorial', {
         const sections = filterBlocksByName(blockAttributesList, BlockNames.Section);
 
         const sectionsOrder = sections.map(attributes => attributes.uuid);
-        const sectionOptions = [{value: "", label: "-- Urmatoarea sectiune --"}].concat(
-          sections.map((attributes, index) => {
-            return {
-              value: attributes.uuid,
-              label: `Section ${index + 1}`
-            };
-          })
-        );
+        const sectionOptions = sections.map((attributes, index) => {
+          return {
+            value: attributes.uuid,
+            label: `Section ${index + 1}`
+          };
+        });
 
         const measurementFormsOrder = filterBlocksByName(blockAttributesList, BlockNames.MeasurementForm)
           .map(attributes => attributes.uuid);

@@ -28,7 +28,7 @@ registerBlockType('irian/diy-question-option', {
     const {getSectionOptions} = select("diy-tutorial");
 
     return {
-      sectionOptions: getSectionOptions()
+      sectionOptions: [{value: "", label: "-- Alege o sectiune --"}, ...getSectionOptions()]
     };
   })(
     (props: any) => {

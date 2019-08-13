@@ -31,7 +31,11 @@ registerBlockType('irian/diy-section', {
 
     return {
       index: getSectionIndex(ownProps.attributes.uuid),
-      sectionOptions: getSectionOptions().concat({value: SUBMIT_FORM, label: "Sectiunea de produse"})
+      sectionOptions: [
+        {value: "", label: "-- Urmatoarea sectiune --"},
+        ...getSectionOptions(),
+        {value: SUBMIT_FORM, label: "Sectiunea de produse"}
+      ]
     };
   })(
     (props: any) => {
