@@ -6,6 +6,7 @@ export enum TutorialActionTypes {
   AddResponse = '[Tutorial] Add response',
   ShowProducts = '[Tutorial] Show products',
   AddProductsToCart = '[Tutorial] Add products to cart',
+  SelectProductRange = '[Tutorial] Select product range',
   AddMeasurement = '[Tutorial] Add measurement',
   ChangeInstancesCount = '[Tutorial] ChangeInstancesCount',
 }
@@ -77,4 +78,15 @@ export interface AddProductsToCart extends Action<string> {
 export const addProductsToCart: ActionCreator<AddProductsToCart> = (products: any[]) => action(
   TutorialActionTypes.AddProductsToCart, {products});
 
-export type TutorialActions = AddResponse | AddMeasurement | ChangeInstancesCount | ShowProducts | AddProductsToCart;
+export interface SelectProductRange extends Action<string> {
+  type: typeof TutorialActionTypes.SelectProductRange
+  payload: {
+    productRangeUUID: string
+  }
+}
+
+export const selectProductRange: ActionCreator<SelectProductRange> = (productRangeUUID: string) => action(
+  TutorialActionTypes.SelectProductRange, {productRangeUUID});
+
+export type TutorialActions = AddResponse | AddMeasurement
+  | ChangeInstancesCount | ShowProducts | AddProductsToCart | SelectProductRange;

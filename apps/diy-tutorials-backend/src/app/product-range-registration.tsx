@@ -66,7 +66,9 @@ registerBlockType('irian/diy-product-range', {
     const {attributes} = props;
 
     return (
-      <ProductRange attributes={attributes}>
+      <ProductRange
+        attributes={attributes}
+        isRenderedInEditor={true}>
         <InnerBlocks.Content/>
       </ProductRange>
     );

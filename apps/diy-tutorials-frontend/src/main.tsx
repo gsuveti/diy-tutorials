@@ -27,7 +27,12 @@ if (rootElement) {
   const measurementForms = filterBlocksByName(blocks, BlockNames.MeasurementForm);
   const measurementFormsOrder = measurementForms.map(attributes => attributes.uuid);
 
+  const productListUUID = filterBlocksByName(blocks, BlockNames.ProductList)[0].uuid;
   const products = filterBlocksByName(blocks, BlockNames.Product);
+  const productListProducts = products.filter(product => product.parentBlockUUID === productListUUID);
+  const optionalProducts = productListProducts.filter(product => product.optional);
+  const commonProducts = productListProducts.filter(product => !product.optional);
+
   const productRanges = filterBlocksByName(blocks, BlockNames.ProductRange);
 
   const displayedSections = [sections[0].uuid];
@@ -68,6 +73,8 @@ if (rootElement) {
         measurementForms,
         measurementFormsOrder,
         products,
+        optionalProducts,
+        commonProducts,
         productRanges,
         showProducts: false,
         productQuantities,

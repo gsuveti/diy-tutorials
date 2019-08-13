@@ -6,11 +6,11 @@ import {groupBy, serializeAttributes} from '../utils';
 import {Block} from '../models/block.model';
 import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {ConnectedProductRange} from '../product-range/product-range';
-import {addProductsToCart, showProducts, TutorialActions} from '../tutorial/+state/tutorial.actions';
+import {selectProductRange, showProducts, TutorialActions} from '../tutorial/+state/tutorial.actions';
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
-import {ConnectedProduct} from '../product/product';
+import {ConnectedProduct, Product} from '../product/product';
 
 
 /* tslint:disable:no-empty-interface */
@@ -26,11 +26,13 @@ interface OwnProps {
 
 interface DispatchProps {
   showProducts?: typeof showProducts;
-  addProductsToCart?: typeof addProductsToCart;
+  selectProductRange?: typeof selectProductRange;
 }
 
 interface StateProps {
   isVisible?: boolean;
+  selectedProductRange?: string;
+  optionalProducts?: BlockAttributes[];
   productRanges?: BlockAttributes;
   productsByProductRange?: BlockAttributes;
 }
@@ -50,7 +52,7 @@ const allowedComponents = {
 export const ProductList = (props: ProductListProps) => {
   const {
     children, innerBlocks, attributes, isVisible = true, productRanges = [],
-    isRenderedInEditor, addProductsToCart, productsByProductRange
+    isRenderedInEditor, selectProductRange, selectedProductRange, productsByProductRange, optionalProducts = []
   } = props;
   const {uuid} = attributes;
 
@@ -68,19 +70,24 @@ export const ProductList = (props: ProductListProps) => {
     const total = products
       .reduce((sum, product) => sum + product.price * product.quantity, 0);
 
-    return (
-      <div key={productRange.uuid} className={'col-sm px-0'}>
-        <div className={'row'}>
+    const isSelected = selectedProductRange === productRange.uuid;
 
+    return (
+      <div key={productRange.uuid}
+           className={`product-range-summary col-12 col-md-4 border
+               ${isSelected ? 'border-primary' : 'border-secondary'}
+               ${isRenderedInEditor ? 'px-0' : 'px-sm'}
+          `}>
+        <div className={'row no-gutters p-sm'}>
           <div className={'col-12'}>
             <p className={'m-0 pt-xs'}>{productRange.headline}: {total} lei</p>
           </div>
           <div className={'col-12'}>
             <button type="button" className="btn btn-outline-primary d-flex"
                     onClick={() => {
-                      addProductsToCart(products);
+                      selectProductRange(productRange.uuid);
                     }}>
-              <span className={'material-icons'}>shopping_cart</span>Adauga in cos
+              Selecteaza
             </button>
           </div>
         </div>
@@ -89,16 +96,36 @@ export const ProductList = (props: ProductListProps) => {
     );
   });
 
+  const optionalProductsContent = optionalProducts.map((attributes: any) => {
+    return <div className={'col-sm px-0'}>
+      <div className={'row no-gutters'}>
+        <Product key={attributes.uuid}
+                 attributes={attributes}
+        />
+      </div>
+    </div>;
+  });
+
   return (
-    <div className={`row no-gutters ${isVisible ? "show" : "hide"} ${isRenderedInEditor ? 'flex-column' : ''}`}
-         data-attributes={serializeAttributes(attributes)}>
+    <div
+      className={`product-list row no-gutters ${isVisible ? "show" : "hide"} ${isRenderedInEditor ? 'flex-column' : ''}`}
+      data-attributes={serializeAttributes(attributes)}>
       {content}
       {
         isRenderedInEditor ? null :
-          <div className={'row'}>
-            {productRangesSummary}
+          <div className={'col-12'}>
+            <div className={'row no-gutters'}>
+              {productRangesSummary}
+            </div>
+
+            <h4 className={'my-sm'}>Produse optionale</h4>
+
+            <div className={'row no-gutters'}>
+              {optionalProductsContent}
+            </div>
           </div>
       }
+
     </div>
   );
 };
@@ -129,6 +156,8 @@ function mapStateToProps(state: AppState, ownProps: ProductListProps, ownState: 
   return {
     isVisible: state.tutorial.showProducts,
     productRanges: state.tutorial.productRanges,
+    selectedProductRange: state.tutorial.selectedProductRange,
+    optionalProducts: state.tutorial.optionalProducts,
     productsByProductRange: productsByProductRange,
   };
 }
@@ -136,7 +165,7 @@ function mapStateToProps(state: AppState, ownProps: ProductListProps, ownState: 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators<TutorialActions, ActionCreatorsMapObject<TutorialActions> & DispatchProps>({
     showProducts,
-    addProductsToCart,
+    selectProductRange
   }, dispatch);
 
 

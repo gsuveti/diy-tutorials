@@ -1,8 +1,8 @@
 import {
   AddMeasurement,
-  AddProductsToCart,
   AddResponse,
   ChangeInstancesCount,
+  SelectProductRange,
   ShowProducts,
   TutorialActionTypes
 } from './tutorial.actions';
@@ -23,7 +23,10 @@ export interface TutorialState {
   measurements: BlockAttributes[],
   measurementForms: BlockAttributes[],
   measurementFormsOrder: string[],
+  selectedProductRange?: string,
   products: BlockAttributes[],
+  commonProducts: BlockAttributes[],
+  optionalProducts: BlockAttributes[],
   productRanges: BlockAttributes[],
   showProducts: boolean,
   productQuantities: { [uuid: string]: number };
@@ -47,7 +50,10 @@ export const initialTutorialState: TutorialState = {
   measurementFormsOrder: [],
   showProducts: false,
   productRanges: [],
+  selectedProductRange: null,
   products: [],
+  optionalProducts: [],
+  commonProducts: [],
   productQuantities: {},
   responses: {},
   measuredValues: {},
@@ -123,9 +129,9 @@ export const tutorialReducer = createReducer(initialTutorialState, {
 
     return state;
   },
-  [TutorialActionTypes.AddProductsToCart]: (state: TutorialState, action: AddProductsToCart) => {
-    const {products} = action.payload;
-    console.log(products);
+  [TutorialActionTypes.SelectProductRange]: (state: TutorialState, action: SelectProductRange) => {
+    const {productRangeUUID} = action.payload;
+    state.selectedProductRange = productRangeUUID;
     return state;
   }
 });

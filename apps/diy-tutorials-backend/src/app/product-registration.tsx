@@ -38,7 +38,7 @@ registerBlockType('irian/diy-product', {
   })(
     (props: any) => {
       const {setAttributes, attributes, productRangeOptions, productTypeOptions} = props;
-      const {headline, imageUrl, price, quantityFormula, productType} = attributes;
+      const {headline, imageUrl, price, quantityFormula, productType, optional} = attributes;
 
       initBaseAttributes(props);
 
@@ -82,6 +82,7 @@ registerBlockType('irian/diy-product', {
               onChange={(value) => {
                 setAttributes({quantityFormula: value});
               }}/>
+
             <SelectControl
               className={"pr-sm m-0"}
               key="productType"
@@ -89,6 +90,14 @@ registerBlockType('irian/diy-product', {
               options={productTypeOptions}
               onChange={(value) => {
                 props.setAttributes({productType: value});
+              }}
+            />
+            <CheckboxControl
+              key={"optional"}
+              label="Optional"
+              checked={optional}
+              onChange={(isChecked) => {
+                props.setAttributes({optional: isChecked});
               }}
             />
           </Product>

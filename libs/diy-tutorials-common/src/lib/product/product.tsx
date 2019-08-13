@@ -18,6 +18,7 @@ interface OwnProps {
     productType: string;
     price: number;
     quantityFormula: string;
+    optional: boolean;
   };
   isRenderedInEditor?: boolean;
 }
@@ -40,17 +41,30 @@ export interface ProductState {
 
 export const Product = (props: ProductProps) => {
   const {children, attributes, isRenderedInEditor, quantity = 0, isVisible = true} = props;
-  const {imageUrl, headline} = attributes;
+  const {imageUrl, headline, optional} = attributes;
 
   return (
     <div data-attributes={serializeAttributes(attributes)}
-         className={`${isVisible ? "show" : "hide"}`}>
+         className={`product col-12 px-0 ${isVisible ? "show" : "hide"}`}>
       {children}
       {
         isRenderedInEditor ? null :
           <div>
-            <p className={'m-0'}>{headline}</p>
-            <span className="badge badge-light badge-pill">{quantity} buc</span>
+            <div className={'d-flex align-items-baseline'}>
+              {
+                optional ?
+                  <input
+                    className="mr-sm"
+                    type="checkbox"
+                    aria-label="Checkbox for following text input"/>
+                  :
+                  null
+              }
+              <p className={'m-0'}>{headline}
+                <span className="badge badge-light badge-pill">{quantity} buc</span>
+              </p>
+            </div>
+
             <img src={imageUrl}/>
           </div>
       }

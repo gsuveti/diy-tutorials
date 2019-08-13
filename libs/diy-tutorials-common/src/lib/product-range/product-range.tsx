@@ -3,12 +3,13 @@ import {connect} from 'react-redux';
 
 import './product-range.scss';
 import {serializeAttributes} from '../utils';
-import {ConnectedProduct} from '../product/product';
+import {ConnectedProduct, Product} from '../product/product';
 import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {Block} from '../models/block.model';
 import {addProductsToCart, TutorialActions} from '../tutorial/+state/tutorial.actions';
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
+import {BlockAttributes} from '../models/block-attributes.model';
 
 /* tslint:disable:no-empty-interface */
 export interface OwnProps {
@@ -28,6 +29,8 @@ interface DispatchProps {
 }
 
 interface StateProps {
+  commonProducts?: BlockAttributes[];
+  isSelected?: boolean;
 }
 
 export type ProductRangeProps = StateProps & DispatchProps & OwnProps;
@@ -41,7 +44,7 @@ const allowedComponents = {
 };
 
 export const ProductRange = (props: ProductRangeProps, state: ProductRangeState) => {
-  const {children, innerBlocks, attributes, isRenderedInEditor, addProductsToCart} = props;
+  const {children, innerBlocks, attributes, isRenderedInEditor, isSelected, commonProducts = []} = props;
   const {headline, description, uuid} = attributes;
   const content = children ?
     children
@@ -52,10 +55,20 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
     />
   ;
 
-  return (
-    <div className={`col-sm px-0`}
-         data-attributes={serializeAttributes(attributes)}>
+  const commonProductsContent = commonProducts.map((attributes: any) => {
+    return <Product key={attributes.uuid}
+                    attributes={attributes}
+    />;
+  });
 
+
+  return (
+    <div
+      className={`product-range col-12 col-md-4 px-0
+          ${isSelected ? 'border-primary' : 'border-secondary'}
+          ${isRenderedInEditor ? 'px-0' : 'px-sm border'}
+              `}
+      data-attributes={serializeAttributes(attributes)}>
       {
         isRenderedInEditor ? null :
           <div>
@@ -64,6 +77,7 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
           </div>
       }
       {content}
+      {commonProductsContent}
       {
         isRenderedInEditor ? null :
           <div>
@@ -76,7 +90,10 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
 
 
 function mapStateToProps(state: AppState, ownProps: ProductRangeProps, ownState: ProductRangeState): StateProps {
-  return {};
+  return {
+    commonProducts: state.tutorial.commonProducts,
+    isSelected: state.tutorial.selectedProductRange === ownProps.attributes.uuid
+  };
 }
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>

@@ -9,6 +9,7 @@ export enum BlockNames {
   ProductRange = 'irian/diy-product-range',
   ProductType = 'irian/diy-product-type',
   Product = 'irian/diy-product',
+  ProductList = 'irian/diy-product-list',
   QuestionOption = 'irian/diy-question-option',
   DisplayCondition = 'irian/diy-display-condition',
 }
