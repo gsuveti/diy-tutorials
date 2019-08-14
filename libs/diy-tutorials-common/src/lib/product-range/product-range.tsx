@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 
 import './product-range.scss';
 import {serializeAttributes} from '../utils';
-import {ConnectedProduct, Product} from '../product/product';
+import {ConnectedProduct} from '../product/product';
 import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {Block} from '../models/block.model';
 import {addProductsToCart, TutorialActions} from '../tutorial/+state/tutorial.actions';
@@ -56,17 +56,17 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
   ;
 
   const commonProductsContent = commonProducts.map((attributes: any) => {
-    return <Product key={attributes.uuid}
-                    attributes={attributes}
+    return <ConnectedProduct key={attributes.uuid}
+                             attributes={attributes}
     />;
   });
 
 
   return (
     <div
-      className={`product-range col-12 col-md-4 px-0
+      className={`product-range
           ${isSelected ? 'border-primary' : 'border-secondary'}
-          ${isRenderedInEditor ? 'px-0' : 'px-sm border'}
+          ${isRenderedInEditor ? 'px-0' : 'col-12 col-md-4 px-sm border'}
               `}
       data-attributes={serializeAttributes(attributes)}>
       {

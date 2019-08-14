@@ -2,9 +2,12 @@ import {
   AddMeasurement,
   AddResponse,
   ChangeInstancesCount,
+  GetUserData,
+  SelectProduct,
   SelectProductRange,
   ShowProducts,
-  TutorialActionTypes
+  TutorialActionTypes,
+  UserDataFetched
 } from './tutorial.actions';
 import {createReducer} from 'redux-starter-kit'
 import {Response} from '../../models/response.model';
@@ -15,6 +18,7 @@ import {BlockNames, SUBMIT_FORM} from '../../constants';
 const FormulaParser = require('hot-formula-parser').Parser;
 
 export interface TutorialState {
+  userUID?: string;
   blocks: BlockAttributes[];
   sections: BlockAttributes[],
   sectionsWithRedirect: string[],
@@ -23,23 +27,27 @@ export interface TutorialState {
   measurements: BlockAttributes[],
   measurementForms: BlockAttributes[],
   measurementFormsOrder: string[],
-  selectedProductRange?: string,
   products: BlockAttributes[],
   commonProducts: BlockAttributes[],
   optionalProducts: BlockAttributes[],
   productRanges: BlockAttributes[],
-  showProducts: boolean,
   productQuantities: { [uuid: string]: number };
-  responses: { [uuid: string]: Response };
-  measuredValues: { [uuid: string]: { [instanceIndex: string]: string } };
-  measuredFormValues: { [uuid: string]: number };
-  instancesCountByMeasurementForm: { [uuid: string]: number };
   questionOptions: { [uuid: string]: any };
   displayedConditions: { [uuid: string]: any };
   displayedProductTypes: { [uuid: string]: boolean };
+  //
+
+  responses: { [uuid: string]: Response };
+  measuredValues: { [uuid: string]: { [instanceIndex: string]: string } };
+  instancesCountByMeasurementForm: { [uuid: string]: number };
+  measuredFormValues: { [uuid: string]: number };
+  showProducts: boolean,
+  selectedProducts: string[],
+  selectedProductRange: string,
 }
 
 export const initialTutorialState: TutorialState = {
+  userUID: null,
   blocks: [],
   sections: [],
   sectionsWithRedirect: [],
@@ -51,6 +59,7 @@ export const initialTutorialState: TutorialState = {
   showProducts: false,
   productRanges: [],
   selectedProductRange: null,
+  selectedProducts: [],
   products: [],
   optionalProducts: [],
   commonProducts: [],
@@ -79,7 +88,7 @@ export const tutorialReducer = createReducer(initialTutorialState, {
 
     JSON.parse(JSON.stringify(state.questions)).map(question => {
       if (history.indexOf(question.parentBlockUUID) < 0) {
-        state.responses[question.uuid] = undefined;
+        state.responses[question.uuid] = null;
       }
     });
 
@@ -132,6 +141,40 @@ export const tutorialReducer = createReducer(initialTutorialState, {
   [TutorialActionTypes.SelectProductRange]: (state: TutorialState, action: SelectProductRange) => {
     const {productRangeUUID} = action.payload;
     state.selectedProductRange = productRangeUUID;
+    return state;
+  },
+  [TutorialActionTypes.SelectProduct]: (state: TutorialState, action: SelectProduct) => {
+    const {productUUID} = action.payload;
+    if (state.selectedProducts.indexOf(productUUID) < 0) {
+      state.selectedProducts.push(productUUID)
+    }
+    return state;
+  },
+  [TutorialActionTypes.RemoveProduct]: (state: TutorialState, action: SelectProduct) => {
+    const {productUUID} = action.payload;
+    const index = state.selectedProducts.indexOf(productUUID);
+    if (index > -1) {
+      state.selectedProducts.splice(index, 1);
+    }
+    return state;
+  },
+  [TutorialActionTypes.GetUserData]: (state: TutorialState, action: GetUserData) => {
+    const {userUID} = action.payload;
+    state.userUID = userUID;
+    return state;
+  },
+  [TutorialActionTypes.UserDataFetched]: (state: TutorialState, action: UserDataFetched) => {
+    const {data} = action.payload;
+    console.log("UserDataFetched");
+
+    state = {
+      ...state,
+      ...data
+    };
+    return state;
+  },
+  [TutorialActionTypes.UserDataSaved]: (state: TutorialState, action: UserDataFetched) => {
+    console.log("UserDataSaved");
     return state;
   }
 });

@@ -10,7 +10,7 @@ import {selectProductRange, showProducts, TutorialActions} from '../tutorial/+st
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
-import {ConnectedProduct, Product} from '../product/product';
+import {ConnectedProduct} from '../product/product';
 
 
 /* tslint:disable:no-empty-interface */
@@ -97,13 +97,15 @@ export const ProductList = (props: ProductListProps) => {
   });
 
   const optionalProductsContent = optionalProducts.map((attributes: any) => {
-    return <div className={'col-sm px-0'}>
-      <div className={'row no-gutters'}>
-        <Product key={attributes.uuid}
-                 attributes={attributes}
-        />
+    return (
+      <div className={'col-sm px-0'} key={attributes.uuid}>
+        <div className={'row no-gutters'}>
+          <ConnectedProduct
+            attributes={attributes}
+          />
+        </div>
       </div>
-    </div>;
+    );
   });
 
   return (

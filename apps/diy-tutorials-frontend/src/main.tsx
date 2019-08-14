@@ -13,6 +13,8 @@ import {
   Tutorial
 } from '@diy-tutorials/diy-tutorials-common';
 import {serialize} from '@wordpress/blocks';
+import * as firebase from 'firebase';
+import {getUserData} from '../../../libs/diy-tutorials-common/src/lib/tutorial/+state/tutorial.actions';
 
 const rootElement = document.getElementById(ROOT_ID);
 if (rootElement) {
@@ -61,32 +63,70 @@ if (rootElement) {
     }
   }, {});
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyD285HeMOqIYGUtbxtqReraee3wGYJDoyM",
+    authDomain: "diy-tutorials-ro.firebaseapp.com",
+    databaseURL: "https://diy-tutorials-ro.firebaseio.com",
+    projectId: "diy-tutorials-ro",
+    storageBucket: "",
+    messagingSenderId: "755597193306",
+    appId: "1:755597193306:web:a6746b5e60b01885"
+  };
+
+
+  const app = firebase.initializeApp(firebaseConfig);
+
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(function () {
+      firebase.auth().signInAnonymously()
+        .catch(function (error) {
+          console.error(error);
+        });
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+
+
+  const store = configureStore({
+    tutorial: {
+      blocks,
+      sections,
+      sectionsWithRedirect,
+      displayedSections,
+      questions,
+      measurements,
+      measurementForms,
+      measurementFormsOrder,
+      products,
+      selectedProductRange: null,
+      selectedProducts: [],
+      optionalProducts,
+      commonProducts,
+      productRanges,
+      showProducts: false,
+      productQuantities,
+      responses: {},
+      measuredValues: {},
+      measuredFormValues: {},
+      instancesCountByMeasurementForm,
+      questionOptions,
+      displayedConditions,
+      displayedProductTypes: {}
+    }
+  });
+
+
+  firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+      store.dispatch(getUserData(user.uid));
+    } else {
+      // User is signed out.
+    }
+  });
+
   ReactDOM.render(
-    <Provider store={configureStore({
-      tutorial: {
-        blocks,
-        sections,
-        sectionsWithRedirect,
-        displayedSections,
-        questions,
-        measurements,
-        measurementForms,
-        measurementFormsOrder,
-        products,
-        optionalProducts,
-        commonProducts,
-        productRanges,
-        showProducts: false,
-        productQuantities,
-        responses: {},
-        measuredValues: {},
-        measuredFormValues: {},
-        instancesCountByMeasurementForm,
-        questionOptions,
-        displayedConditions,
-        displayedProductTypes: {}
-      }
-    })}>
+    <Provider store={store}>
       <Tutorial
         attributes={attributes}
         innerBlocks={innerBlocks}>
