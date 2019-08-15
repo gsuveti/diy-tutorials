@@ -3,17 +3,21 @@ import {
   AddResponse,
   ChangeInstancesCount,
   GetUserData,
+  HideProducts,
+  ResetResponses,
   SelectProduct,
   SelectProductRange,
   ShowProducts,
   TutorialActionTypes,
+  UpdateDisplayedProductTypes,
+  UpdateDisplayedSections,
+  UpdateMeasurementFormValue,
+  UpdateProductQuantities,
   UserDataFetched
 } from './tutorial.actions';
 import {createReducer} from 'redux-starter-kit'
 import {Response} from '../../models/response.model';
 import {BlockAttributes} from '../../models/block-attributes.model';
-import {filterBlocksByName} from '../../utils';
-import {BlockNames, SUBMIT_FORM} from '../../constants';
 
 const FormulaParser = require('hot-formula-parser').Parser;
 
@@ -35,8 +39,11 @@ export interface TutorialState {
   questionOptions: { [uuid: string]: any };
   displayedConditions: { [uuid: string]: any };
   displayedProductTypes: { [uuid: string]: boolean };
-  //
 
+
+  // data that is saved in firebase
+  // todo
+  //  extract in other state
   responses: { [uuid: string]: Response };
   measuredValues: { [uuid: string]: { [instanceIndex: string]: string } };
   instancesCountByMeasurementForm: { [uuid: string]: number };
@@ -78,27 +85,9 @@ export const tutorialReducer = createReducer(initialTutorialState, {
     const {answer} = action.payload;
     const {questionUUID} = answer;
 
-    const parentBlockUUID = state.questions.find(attributes => attributes.uuid === questionUUID).parentBlockUUID;
 
-    state.responses[answer.questionUUID] = answer;
+    state.responses[questionUUID] = answer;
 
-
-    const historyEnd = state.displayedSections.indexOf(parentBlockUUID) + 1;
-    const history = state.displayedSections.slice(0, historyEnd);
-
-    JSON.parse(JSON.stringify(state.questions)).map(question => {
-      if (history.indexOf(question.parentBlockUUID) < 0) {
-        state.responses[question.uuid] = null;
-      }
-    });
-
-    state.displayedProductTypes = calculateDisplayedProductTypes(state);
-
-    if (answer.goToNextSection) {
-      const nextSection = answer.nextSection;
-      state.displayedSections = [...history, ...getSectionsPath(state, nextSection)];
-      state.showProducts = false;
-    }
 
     return state;
   },
@@ -119,16 +108,20 @@ export const tutorialReducer = createReducer(initialTutorialState, {
     return state;
   },
 
+  [TutorialActionTypes.HideProducts]: (state: TutorialState, action: HideProducts) => {
+    state.showProducts = false;
+    state.selectedProductRange = null;
+    state.selectedProducts = [];
+    return state;
+  },
+
   [TutorialActionTypes.AddMeasurement]: (state: TutorialState, action: AddMeasurement) => {
-    const {uuid, value, parentBlockUUID, instanceIndex} = action.payload;
+    const {uuid, value, instanceIndex} = action.payload;
 
     state.measuredValues[uuid] = {
       ...state.measuredValues[uuid],
       [instanceIndex]: value
     };
-
-    state.measuredFormValues[parentBlockUUID] = calculateMeasuredFormValue(state, parentBlockUUID);
-    state.productQuantities = calculateProductQuantities(state);
 
     return state;
   },
@@ -176,85 +169,32 @@ export const tutorialReducer = createReducer(initialTutorialState, {
   [TutorialActionTypes.UserDataSaved]: (state: TutorialState, action: UserDataFetched) => {
     console.log("UserDataSaved");
     return state;
+  },
+  [TutorialActionTypes.UpdateDisplayedProductTypes]: (state: TutorialState, action: UpdateDisplayedProductTypes) => {
+    const {displayedProductTypes} = action.payload;
+    state.displayedProductTypes = displayedProductTypes;
+    return state;
+  },
+  [TutorialActionTypes.UpdateDisplayedSections]: (state: TutorialState, action: UpdateDisplayedSections) => {
+    const {displayedSections} = action.payload;
+    state.displayedSections = displayedSections;
+    return state;
+  },
+  [TutorialActionTypes.ResetResponses]: (state: TutorialState, action: ResetResponses) => {
+    const {questions} = action.payload;
+    questions.map(uuid => {
+      state.responses[uuid] = {};
+    });
+    return state;
+  },
+  [TutorialActionTypes.UpdateMeasurementFormValue]: (state: TutorialState, action: UpdateMeasurementFormValue) => {
+    const {uuid, value} = action.payload;
+    state.measuredFormValues[uuid] = value;
+    return state;
+  },
+  [TutorialActionTypes.UpdateProductQuantities]: (state: TutorialState, action: UpdateProductQuantities) => {
+    const {productQuantities} = action.payload;
+    state.productQuantities = productQuantities;
+    return state;
   }
 });
-
-function getSectionsPath(state: TutorialState, sectionUUID: string): string[] {
-  if (!sectionUUID) {
-    return [];
-  }
-  if (state.sectionsWithRedirect.indexOf(sectionUUID) < 0) {
-    const sectionIndex = state.sections.findIndex(section => section.uuid === sectionUUID);
-    const section = state.sections[sectionIndex];
-    const nextSection = state.sections[sectionIndex + 1];
-    const nextSectionUUID = (section.nextSection != SUBMIT_FORM ? section.nextSection : undefined) || ((nextSection && !nextSection.submitForm) ? nextSection.uuid : undefined);
-    return [sectionUUID, ...getSectionsPath(state, nextSectionUUID)];
-  } else {
-    return [sectionUUID];
-  }
-}
-
-function calculateMeasuredFormValue(state: TutorialState, parentBlockUUID) {
-  const measurementFormBlock = state.blocks.find(block => block.uuid === parentBlockUUID);
-  const measurementsByProperty = state.measurements.filter(block => block.parentBlockUUID === parentBlockUUID)
-    .map(block => {
-      const measuredValues = state.measuredValues[block.uuid];
-      return measuredValues ? Object.values(measuredValues) : []
-    });
-
-  const measurementsByInstance = transposeArray(measurementsByProperty);
-
-  const instancesCount = state.instancesCountByMeasurementForm[parentBlockUUID];
-
-  return new Array(instancesCount).fill(1).reduce((sum, value, index) => {
-    const parser = new FormulaParser();
-    parser.on('callCellValue', function (cellCoord, done) {
-      done(measurementsByInstance[index][cellCoord.row.index]);
-    });
-    return sum + parser.parse(measurementFormBlock.formula).result || 0;
-  }, 0);
-}
-
-function calculateProductQuantities(state: TutorialState) {
-
-  const measuredFormValues = state.measurementFormsOrder.map(uuid => state.measuredFormValues[uuid]);
-
-  return state.products.reduce((productQuantities, block) => {
-    const parser = new FormulaParser();
-    parser.on('callCellValue', function (cellCoord, done) {
-      done(measuredFormValues[cellCoord.row.index]);
-    });
-
-    const parsedObject = parser.parse(block.quantityFormula);
-    const quantity = parsedObject.error ? 0 : parsedObject.result;
-
-    return {
-      ...productQuantities,
-      [block.uuid]: Math.ceil(quantity)
-    }
-
-  }, {});
-
-}
-
-function calculateDisplayedProductTypes(state: TutorialState) {
-
-  return filterBlocksByName(state.blocks, BlockNames.ProductType)
-    .reduce((displayedProductTypes, {uuid}) => {
-      return {
-        [uuid]: isDisplayed(state, state.displayedConditions[uuid]),
-        ...displayedProductTypes
-      };
-    }, {});
-}
-
-function isDisplayed(state: TutorialState, displayedConditions: { question: string, response: string }[] = []): boolean {
-  return displayedConditions.reduce((displayed, condition) => {
-    return displayed && (state.responses[condition.question].responseUUID === condition.response);
-  }, true);
-}
-
-
-function transposeArray(array) {
-  return array[0].map((col, i) => array.map(row => row[i]));
-}
