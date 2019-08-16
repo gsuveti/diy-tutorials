@@ -22,6 +22,7 @@ import {BlockAttributes} from '../../models/block-attributes.model';
 const FormulaParser = require('hot-formula-parser').Parser;
 
 export interface TutorialState {
+  uuid?: string;
   userUID?: string;
   blocks: BlockAttributes[];
   sections: BlockAttributes[],
@@ -54,6 +55,7 @@ export interface TutorialState {
 }
 
 export const initialTutorialState: TutorialState = {
+  uuid: null,
   userUID: null,
   blocks: [],
   sections: [],

@@ -21,7 +21,7 @@ export interface AppState {
 }
 
 const epicMiddleware = createEpicMiddleware();
-const devMiddlewares = (window && (window as any).__REDUX_DEVTOOLS_EXTENSION__) ? [(window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()] : [];
+const reduxDevtoolsExtension = (window && (window as any).__REDUX_DEVTOOLS_EXTENSION__) ? [(window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()] : [];
 
 
 export const rootEpic = combineEpics(
@@ -44,7 +44,7 @@ export function configureStore(initialState: AppState = {
     initialState,
     compose(
       applyMiddleware(epicMiddleware),
-      ...devMiddlewares
+      ...reduxDevtoolsExtension
     )
   );
   // @ts-ignore

@@ -15,6 +15,7 @@ import {
 import {serialize} from '@wordpress/blocks';
 import * as firebase from 'firebase';
 import {getUserData} from '../../../libs/diy-tutorials-common/src/lib/tutorial/+state/tutorial.actions';
+import {setAuthPersistence} from '../../../libs/diy-tutorials-common/src/lib/authentication.service';
 
 const rootElement = document.getElementById(ROOT_ID);
 if (rootElement) {
@@ -75,21 +76,11 @@ if (rootElement) {
 
 
   const app = firebase.initializeApp(firebaseConfig);
-
-  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .then(function () {
-      firebase.auth().signInAnonymously()
-        .catch(function (error) {
-          console.error(error);
-        });
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
-
+  setAuthPersistence();
 
   const store = configureStore({
     tutorial: {
+      uuid: attributes.uuid,
       blocks,
       sections,
       sectionsWithRedirect,
@@ -119,11 +110,13 @@ if (rootElement) {
 
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
+      console.log(user.uid);
       store.dispatch(getUserData(user.uid));
     } else {
       // User is signed out.
     }
   });
+
 
   ReactDOM.render(
     <Provider store={store}>
@@ -136,5 +129,3 @@ if (rootElement) {
   );
 
 }
-
-

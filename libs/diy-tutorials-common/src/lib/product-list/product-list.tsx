@@ -11,6 +11,8 @@ import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
 import {ConnectedProduct} from '../product/product';
+import {loginWithFacebook, loginWithGoogle} from '../authentication.service';
+import * as firebase from 'firebase';
 
 
 /* tslint:disable:no-empty-interface */
@@ -108,6 +110,8 @@ export const ProductList = (props: ProductListProps) => {
     );
   });
 
+  const isAnonymous = firebase.auth().currentUser && firebase.auth().currentUser.isAnonymous;
+
   return (
     <div
       className={`product-list row no-gutters ${isVisible ? "show" : "hide"} ${isRenderedInEditor ? 'flex-column' : ''}`}
@@ -125,6 +129,21 @@ export const ProductList = (props: ProductListProps) => {
             <div className={'row no-gutters'}>
               {optionalProductsContent}
             </div>
+
+            {
+              isAnonymous ?
+                <div>
+                  <button type="button" className="btn btn-outline-primary d-flex" onClick={loginWithGoogle}>
+                    Login with Google
+                  </button>
+
+                  <button type="button" className="btn btn-outline-primary d-flex" onClick={loginWithFacebook}>
+                    Login with Facebook
+                  </button>
+                </div>
+                : null
+            }
+
           </div>
       }
 
