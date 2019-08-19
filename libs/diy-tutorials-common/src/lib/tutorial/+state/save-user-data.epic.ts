@@ -1,4 +1,4 @@
-import {from, Observable} from 'rxjs';
+import {from, Observable, of} from 'rxjs';
 import {AnyAction} from 'redux';
 import {ofType, StateObservable} from 'redux-observable';
 import {TutorialActionTypes, userDataSaved} from './tutorial.actions';
@@ -23,8 +23,19 @@ export const saveUserDataEpic = (action$: Observable<AnyAction>, state$: StateOb
     ),
     debounceTime(1000),
     switchMap(action => {
+      const currentUser = firebase.auth().currentUser;
+      console.log(currentUser);
+
+      if (!currentUser) {
+        return from(firebase.auth().signInAnonymously()).pipe(
+          map(userCredentials => userCredentials.user)
+        );
+      }
+      return of(currentUser);
+    }),
+    switchMap(currentUser => {
       const tutorialState = state$.value.tutorial;
-      const {uuid: tutorialUUID, userUID, responses} = tutorialState;
+      const {uuid: tutorialUUID, responses} = tutorialState;
       const {measuredValues, instancesCountByMeasurementForm, displayedSections} = tutorialState;
       const {showProducts, selectedProducts, selectedProductRange} = tutorialState;
 
@@ -37,7 +48,7 @@ export const saveUserDataEpic = (action$: Observable<AnyAction>, state$: StateOb
         selectedProducts,
         selectedProductRange
       };
-      return from(firebase.firestore().collection(`responses`).doc(`${userUID}/tutorials/${tutorialUUID}`).set(data));
+      return from(firebase.firestore().collection(`responses`).doc(`${currentUser.uid}/tutorials/${tutorialUUID}`).set(data));
     }),
     map(() => userDataSaved())
   );

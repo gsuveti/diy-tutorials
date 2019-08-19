@@ -11,6 +11,7 @@
 
 @import url(https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css);
 
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -30,4 +31,31 @@
 
 .font-size-small {
   font-size: 14px;
+}
+
+@media print {
+  .container {
+    margin: 0;
+    padding: 0;
+    max-width: unset;
+
+    .wp-bp-content-width {
+      width: 100%;
+      max-width: unset;
+      flex-basis: 100%;
+      flex-grow: 1;
+    }
+
+    .wp-bp-sidebar-width {
+      display: none;
+    }
+  }
+
+  .site-header, .entry-footer, .comments-area, .site-footer {
+    display: none;
+  }
+
+  .post {
+    width: 100%;
+  }
 }

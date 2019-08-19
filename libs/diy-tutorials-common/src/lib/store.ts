@@ -13,6 +13,7 @@ import {
   calculateMeasurementFormValueEpic
 } from './tutorial/+state/calculate-measurement-form-value.epic';
 import {calculateProductQuantitiesEpic} from './tutorial/+state/calculate-product-quantities.epic';
+import {loginWithProviderEpic} from './tutorial/+state/login-with-provider.epic';
 
 
 export interface AppState {
@@ -27,6 +28,7 @@ const reduxDevtoolsExtension = (window && (window as any).__REDUX_DEVTOOLS_EXTEN
 export const rootEpic = combineEpics(
   getUserDataEpic,
   saveUserDataEpic,
+  loginWithProviderEpic,
   calculateMeasurementFormValueEpic,
   calculateAllMeasurementFormValuesEpic,
   calculateProductQuantitiesEpic,

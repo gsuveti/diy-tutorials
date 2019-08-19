@@ -6,12 +6,17 @@ import {groupBy, serializeAttributes} from '../utils';
 import {Block} from '../models/block.model';
 import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {ConnectedProductRange} from '../product-range/product-range';
-import {selectProductRange, showProducts, TutorialActions} from '../tutorial/+state/tutorial.actions';
+import {
+  loginWithFacebook,
+  loginWithGoogle,
+  selectProductRange,
+  showProducts,
+  TutorialActions
+} from '../tutorial/+state/tutorial.actions';
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
 import {ConnectedProduct} from '../product/product';
-import {loginWithFacebook, loginWithGoogle} from '../authentication.service';
 import * as firebase from 'firebase';
 
 
@@ -29,9 +34,12 @@ interface OwnProps {
 interface DispatchProps {
   showProducts?: typeof showProducts;
   selectProductRange?: typeof selectProductRange;
+  loginWithGoogle?: typeof loginWithGoogle;
+  loginWithFacebook?: typeof loginWithFacebook;
 }
 
 interface StateProps {
+  user?: firebase.User;
   isVisible?: boolean;
   selectedProductRange?: string;
   optionalProducts?: BlockAttributes[];
@@ -51,104 +59,135 @@ const allowedComponents = {
   'irian/diy-product': ConnectedProduct,
 };
 
-export const ProductList = (props: ProductListProps) => {
-  const {
-    children, innerBlocks, attributes, isVisible = true, productRanges = [],
-    isRenderedInEditor, selectProductRange, selectedProductRange, productsByProductRange, optionalProducts = []
-  } = props;
-  const {uuid} = attributes;
+export class ProductList extends React.Component<ProductListProps, ProductListState> {
 
-  const content = children ?
-    children
-    :
-    <InnerBlocksContent
-      innerBlocks={innerBlocks}
-      allowedComponents={allowedComponents}
-    />
-  ;
+  constructor(props) {
+    super(props);
+  }
 
-  const productRangesSummary = productRanges.map(productRange => {
-    const products = productsByProductRange[productRange.uuid] || [];
-    const total = products
-      .reduce((sum, product) => sum + product.price * product.quantity, 0);
+  render() {
+    const {
+      children, innerBlocks, attributes, isVisible = true, productRanges = [],
+      isRenderedInEditor, selectProductRange, selectedProductRange, productsByProductRange, optionalProducts = [],
+      user, loginWithGoogle, loginWithFacebook
+    } = this.props;
+    const {uuid} = attributes;
 
-    const isSelected = selectedProductRange === productRange.uuid;
+    const content = children ?
+      children
+      :
+      <InnerBlocksContent
+        innerBlocks={innerBlocks}
+        allowedComponents={allowedComponents}
+      />
+    ;
 
-    return (
-      <div key={productRange.uuid}
-           className={`product-range-summary col-12 col-md-4 border
+    const productRangesSummary = productRanges.map(productRange => {
+      const products = productsByProductRange[productRange.uuid] || [];
+      const total = products
+        .reduce((sum, product) => sum + product.price * product.quantity, 0);
+
+      const isSelected = selectedProductRange === productRange.uuid;
+
+      return (
+        <div key={productRange.uuid}
+             className={`product-range-summary col-12 col-md-4 border
                ${isSelected ? 'border-primary' : 'border-secondary'}
                ${isRenderedInEditor ? 'px-0' : 'px-sm'}
           `}>
-        <div className={'row no-gutters p-sm'}>
-          <div className={'col-12'}>
-            <p className={'m-0 pt-xs'}>{productRange.headline}: {total} lei</p>
+          <div className={'row no-gutters p-sm'}>
+            <div className={'col-12'}>
+              <p className={'m-0 pt-xs'}>{productRange.headline}: {total} lei</p>
+            </div>
+            <div className={'col-12'}>
+              <button type="button" className="btn btn-outline-primary d-flex"
+                      onClick={() => {
+                        selectProductRange(productRange.uuid);
+                      }}>
+                Selecteaza
+              </button>
+            </div>
           </div>
-          <div className={'col-12'}>
-            <button type="button" className="btn btn-outline-primary d-flex"
-                    onClick={() => {
-                      selectProductRange(productRange.uuid);
-                    }}>
-              Selecteaza
-            </button>
+
+        </div>
+      );
+    });
+
+    const optionalProductsContent = optionalProducts.map((attributes: any) => {
+      return (
+        <div className={'col-sm px-0'} key={attributes.uuid}>
+          <div className={'row no-gutters'}>
+            <ConnectedProduct
+              attributes={attributes}
+            />
           </div>
         </div>
+      );
+    });
 
-      </div>
-    );
-  });
 
-  const optionalProductsContent = optionalProducts.map((attributes: any) => {
     return (
-      <div className={'col-sm px-0'} key={attributes.uuid}>
-        <div className={'row no-gutters'}>
-          <ConnectedProduct
-            attributes={attributes}
-          />
-        </div>
+      <div
+        className={`product-list row no-gutters ${isVisible ? "show" : "hide"} ${isRenderedInEditor ? 'flex-column' : ''}`}
+        data-attributes={serializeAttributes(attributes)}>
+        {content}
+        {
+          isRenderedInEditor ? null :
+            <div className={'col-12'}>
+              <div className={'row no-gutters'}>
+                {productRangesSummary}
+              </div>
+
+              <h4 className={'my-sm'}>Produse optionale</h4>
+
+              <div className={'row no-gutters'}>
+                {optionalProductsContent}
+              </div>
+
+
+              {
+                user ?
+                  <div className={'d-print-none'}>
+                    {
+                      user.isAnonymous ?
+                        <div className={'mt-xl pt-xl border-top'}>
+                          <p>Vrei sa descarci tutorialul in format pdf? Autentifica-te prin una dintre metodele de mai
+                            jos!</p>
+                          <div className={'d-flex flex-column align-items-center'}>
+                            <button type="button" className="mb-sm social-btn btn btn-outline-primary d-flex"
+                                    onClick={loginWithGoogle}>
+                              Google
+                            </button>
+                            <button type="button" className="mb-sm social-btn btn btn-outline-primary d-flex"
+                                    onClick={loginWithFacebook}>
+                              Facebook
+                            </button>
+                          </div>
+                        </div>
+                        :
+                        <div className={'mt-xl pt-xl border-top d-flex flex-column align-items-center'}>
+                          <button type="button" className="mb-sm social-btn btn btn-outline-primary d-flex"
+                                  onClick={() => {
+                                    window.print()
+                                  }}>
+                            Descarca PDF
+                          </button>
+
+                          {/*<button type="button" className="mt-xl btn btn-link" onClick={logout}>*/}
+                          {/*Logout*/}
+                          {/*</button>*/}
+                        </div>
+                    }
+                  </div>
+                  : null
+              }
+
+            </div>
+        }
+
       </div>
     );
-  });
-
-  const isAnonymous = firebase.auth().currentUser && firebase.auth().currentUser.isAnonymous;
-
-  return (
-    <div
-      className={`product-list row no-gutters ${isVisible ? "show" : "hide"} ${isRenderedInEditor ? 'flex-column' : ''}`}
-      data-attributes={serializeAttributes(attributes)}>
-      {content}
-      {
-        isRenderedInEditor ? null :
-          <div className={'col-12'}>
-            <div className={'row no-gutters'}>
-              {productRangesSummary}
-            </div>
-
-            <h4 className={'my-sm'}>Produse optionale</h4>
-
-            <div className={'row no-gutters'}>
-              {optionalProductsContent}
-            </div>
-
-            {
-              isAnonymous ?
-                <div>
-                  <button type="button" className="btn btn-outline-primary d-flex" onClick={loginWithGoogle}>
-                    Login with Google
-                  </button>
-
-                  <button type="button" className="btn btn-outline-primary d-flex" onClick={loginWithFacebook}>
-                    Login with Facebook
-                  </button>
-                </div>
-                : null
-            }
-
-          </div>
-      }
-
-    </div>
-  );
+  }
 };
 
 
@@ -175,6 +214,7 @@ function mapStateToProps(state: AppState, ownProps: ProductListProps, ownState: 
 
 
   return {
+    user: state.tutorial.user,
     isVisible: state.tutorial.showProducts,
     productRanges: state.tutorial.productRanges,
     selectedProductRange: state.tutorial.selectedProductRange,
@@ -186,7 +226,9 @@ function mapStateToProps(state: AppState, ownProps: ProductListProps, ownState: 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators<TutorialActions, ActionCreatorsMapObject<TutorialActions> & DispatchProps>({
     showProducts,
-    selectProductRange
+    selectProductRange,
+    loginWithGoogle,
+    loginWithFacebook
   }, dispatch);
 
 

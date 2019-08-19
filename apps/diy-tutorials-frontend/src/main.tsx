@@ -108,13 +108,8 @@ if (rootElement) {
   });
 
 
-  firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
-      console.log(user.uid);
-      store.dispatch(getUserData(user.uid));
-    } else {
-      // User is signed out.
-    }
+  firebase.auth().onAuthStateChanged(function (user: firebase.User) {
+    store.dispatch(getUserData(user));
   });
 
 

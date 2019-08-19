@@ -1,6 +1,7 @@
 import {Action, ActionCreator, AnyAction} from 'redux';
 import {Response} from '../../models/response.model';
 import {action, createAction} from 'typesafe-actions';
+import * as firebase from 'firebase';
 
 export enum TutorialActionTypes {
   AddResponse = '[Tutorial] Add response',
@@ -20,6 +21,8 @@ export enum TutorialActionTypes {
   ResetResponses = '[Tutorial] Reset Responses',
   UpdateMeasurementFormValue = '[Tutorial] Update Measurement Form Value',
   UpdateProductQuantities = '[Tutorial] Update Product Quantities',
+  LoginWithGoogle = '[Tutorial] Login With Google',
+  LoginWithFacebook = '[Tutorial] Login With Facebook',
 }
 
 
@@ -136,12 +139,12 @@ export const selectProductRange: ActionCreator<SelectProductRange> = (productRan
 
 export interface GetUserData extends Action<string> {
   type: typeof TutorialActionTypes.GetUserData
-  payload: { userUID: string }
+  payload: { user: firebase.User }
 }
 
-export const getUserData: ActionCreator<GetUserData> = (userUID: string) => action(
+export const getUserData: ActionCreator<GetUserData> = (user: firebase.User) => action(
   TutorialActionTypes.GetUserData, {
-    userUID
+    user
   });
 
 export interface UserDataFetched extends AnyAction, Action<string> {
@@ -195,16 +198,15 @@ export const resetResponses: ActionCreator<ResetResponses> = (questions: string[
   TutorialActionTypes.ResetResponses, {questions});
 
 
-
 export interface UpdateMeasurementFormValue extends AnyAction, Action<string> {
   type: typeof TutorialActionTypes.UpdateMeasurementFormValue
   payload: {
     value: number,
-    uuid:string,
+    uuid: string,
   }
 }
 
-export const updateMeasurementFormValue: ActionCreator<UpdateMeasurementFormValue> = (uuid: string, value:number) => action(
+export const updateMeasurementFormValue: ActionCreator<UpdateMeasurementFormValue> = (uuid: string, value: number) => action(
   TutorialActionTypes.UpdateMeasurementFormValue, {uuid, value});
 
 
@@ -215,10 +217,17 @@ export interface UpdateProductQuantities extends AnyAction, Action<string> {
   }
 }
 
-export const updateProductQuantities: ActionCreator<UpdateProductQuantities> = ( productQuantities: { [uuid: string]: number }) => action(
+export const updateProductQuantities: ActionCreator<UpdateProductQuantities> = (productQuantities: { [uuid: string]: number }) => action(
   TutorialActionTypes.UpdateProductQuantities, {productQuantities});
+
+export const loginWithGoogle: ActionCreator<Action> = () => action(
+  TutorialActionTypes.LoginWithGoogle, {});
+
+export const loginWithFacebook: ActionCreator<Action> = () => action(
+  TutorialActionTypes.LoginWithFacebook, {});
 
 
 export type TutorialActions = AddResponse | AddMeasurement
   | ChangeInstancesCount | ShowProducts | AddProductsToCart | SelectProductRange
-  | SelectProduct | RemoveProduct | UpdateDisplayedProductTypes;
+  | SelectProduct | RemoveProduct | UpdateDisplayedProductTypes
+  | Action<TutorialActionTypes.LoginWithGoogle> | Action<TutorialActionTypes.LoginWithFacebook>;

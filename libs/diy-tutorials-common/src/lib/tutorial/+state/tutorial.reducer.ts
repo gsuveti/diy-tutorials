@@ -18,12 +18,13 @@ import {
 import {createReducer} from 'redux-starter-kit'
 import {Response} from '../../models/response.model';
 import {BlockAttributes} from '../../models/block-attributes.model';
+import * as firebase from 'firebase';
 
 const FormulaParser = require('hot-formula-parser').Parser;
 
 export interface TutorialState {
   uuid?: string;
-  userUID?: string;
+  user?: firebase.User;
   blocks: BlockAttributes[];
   sections: BlockAttributes[],
   sectionsWithRedirect: string[],
@@ -56,7 +57,7 @@ export interface TutorialState {
 
 export const initialTutorialState: TutorialState = {
   uuid: null,
-  userUID: null,
+  user: null,
   blocks: [],
   sections: [],
   sectionsWithRedirect: [],
@@ -154,8 +155,8 @@ export const tutorialReducer = createReducer(initialTutorialState, {
     return state;
   },
   [TutorialActionTypes.GetUserData]: (state: TutorialState, action: GetUserData) => {
-    const {userUID} = action.payload;
-    state.userUID = userUID;
+    const {user} = action.payload;
+    state.user = user;
     return state;
   },
   [TutorialActionTypes.UserDataFetched]: (state: TutorialState, action: UserDataFetched) => {
