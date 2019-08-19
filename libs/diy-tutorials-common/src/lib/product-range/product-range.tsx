@@ -65,8 +65,8 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
   return (
     <div
       className={`product-range
-          ${isSelected ? 'border-primary' : 'border-secondary'}
-          ${isRenderedInEditor ? 'px-0' : 'col-12 col-md-4 px-sm border'}
+          ${isSelected ? 'product-range-selected border-primary' : 'border-secondary'}
+          ${isRenderedInEditor ? 'px-0' : 'col-12 col-md-4 p-md border'}
               `}
       data-attributes={serializeAttributes(attributes)}>
       {

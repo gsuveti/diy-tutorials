@@ -92,21 +92,17 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
       return (
         <div key={productRange.uuid}
              className={`product-range-summary col-12 col-md-4 border
-               ${isSelected ? 'border-primary' : 'border-secondary'}
-               ${isRenderedInEditor ? 'px-0' : 'px-sm'}
+               ${isSelected ? 'product-range-selected border-primary' : 'border-secondary'}
+               ${isRenderedInEditor ? 'px-0' : 'p-md'}
           `}>
-          <div className={'row no-gutters p-sm'}>
-            <div className={'col-12'}>
-              <p className={'m-0 pt-xs'}>{productRange.headline}: {total} lei</p>
-            </div>
-            <div className={'col-12'}>
-              <button type="button" className="btn btn-outline-primary d-flex"
-                      onClick={() => {
-                        selectProductRange(productRange.uuid);
-                      }}>
-                Selecteaza
-              </button>
-            </div>
+          <div className={'d-flex flex-column align-items-center'}>
+            <p className={'m-0 pt-xs'}>{productRange.headline}: {total} lei</p>
+            <button type="button" className="btn btn-outline-primary d-flex mt-sm"
+                    onClick={() => {
+                      selectProductRange(productRange.uuid);
+                    }}>
+              Selecteaza
+            </button>
           </div>
 
         </div>
