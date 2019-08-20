@@ -7,7 +7,7 @@ export const App = () => {
   return (
     <div>
       <header style={{textAlign: 'center'}}>
-        <h1>Welcome to diy-tutorials</h1>
+        <h1>Welcome to diy-tutorials!</h1>
         <img
           width="450"
           src="https://raw.githubusercontent.com/nrwl/nx/master/nx-logo.png"
