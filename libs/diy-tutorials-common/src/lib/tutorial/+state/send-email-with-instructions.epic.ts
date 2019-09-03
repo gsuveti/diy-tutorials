@@ -13,7 +13,7 @@ export const sendEmailWithInstructionsEpic = (action$: Observable<AnyAction>, st
     tap((action: AddResponse) => {
       const {
         user, products, displayedProducts, selectedProductRange, productQuantities,
-        productRangePrices, commonProducts, optionalProducts, selectedProducts,
+        productRangePrices, commonProducts, optionalProducts, selectedProducts: selectedProductsUUIDs,
         commonProductsTotalPrice
       } = state$.value.tutorial;
 
@@ -26,24 +26,22 @@ export const sendEmailWithInstructionsEpic = (action$: Observable<AnyAction>, st
 
         const total = productRangePrices[selectedProductRange] + commonProductsTotalPrice;
 
-        const productsContent = products
+        const selectedProducts = products
           .filter(product => product.parentBlockUUID === selectedProductRange)
-          .filter(product => displayedProducts[product.uuid])
+          .filter(product => displayedProducts[product.uuid]);
+
+        const selectedCommonProducts = commonProducts
+          .filter(product => displayedProducts[product.uuid]);
+
+        const productsContent = selectedProducts.concat(selectedCommonProducts)
           .reduce((html, product) => {
             const quantity = productQuantities[product.uuid];
             return html + getHtmlForProduct(product, quantity);
           }, `<h2>Produse necesare (${total} lei)</h2>`);
 
-        const commonProductsContent = commonProducts
-          .filter(product => displayedProducts[product.uuid])
-          .reduce((html, product) => {
-            const quantity = productQuantities[product.uuid];
-            return html + getHtmlForProduct(product, quantity);
-          }, "");
-
         const selectedOptionalProducts = optionalProducts
           .filter(product => displayedProducts[product.uuid])
-          .filter(product => selectedProducts.indexOf(product.uuid) >= 0);
+          .filter(product => selectedProductsUUIDs.indexOf(product.uuid) >= 0);
 
         const selectedOptionalProductsTotal = selectedOptionalProducts
           .reduce((total, product) => {
@@ -59,10 +57,13 @@ export const sendEmailWithInstructionsEpic = (action$: Observable<AnyAction>, st
 
 
         const html = title + content + displayedSections
-          + productsContent + commonProductsContent + optionalProductsContent;
+          + productsContent + optionalProductsContent;
 
         const data = {
-          html, email
+          html,
+          email,
+          products: selectedProducts.concat(selectedOptionalProducts),
+          optionalProducts
         };
 
         return firebase.firestore().collection(`emails`).add(data);
