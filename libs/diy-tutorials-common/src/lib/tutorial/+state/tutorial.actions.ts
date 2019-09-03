@@ -26,6 +26,7 @@ export enum TutorialActionTypes {
   LoginWithFacebook = '[Tutorial] Login With Facebook',
   UpdatePriceForProductRanges = '[Tutorial] Update price for product ranges',
   UpdateCommonProductsTotalPrice = '[Tutorial] Update common products total price',
+  SendEmailWithInstructions = '[Tutorial] Send email with instructions',
 }
 
 
@@ -249,7 +250,7 @@ export const updatePriceForProductRanges: ActionCreator<UpdatePriceForProductRan
 export interface UpdateCommonProductsTotalPrice extends AnyAction, Action<string> {
   type: typeof TutorialActionTypes.UpdateCommonProductsTotalPrice
   payload: {
-    commonProductsTotalPrice:  number,
+    commonProductsTotalPrice: number,
   }
 }
 
@@ -263,8 +264,12 @@ export const loginWithGoogle: ActionCreator<Action> = () => action(
 export const loginWithFacebook: ActionCreator<Action> = () => action(
   TutorialActionTypes.LoginWithFacebook, {});
 
+export const sendEmailWithInstructions: ActionCreator<Action> = () => action(
+  TutorialActionTypes.SendEmailWithInstructions, {});
+
 
 export type TutorialActions = AddResponse | AddMeasurement
   | ChangeInstancesCount | ShowProducts | AddProductsToCart | SelectProductRange
   | SelectProduct | RemoveProduct | UpdateDisplayedProductTypes
-  | Action<TutorialActionTypes.LoginWithGoogle> | Action<TutorialActionTypes.LoginWithFacebook>;
+  | Action<TutorialActionTypes.LoginWithGoogle> | Action<TutorialActionTypes.LoginWithFacebook>
+  | Action<TutorialActionTypes.SendEmailWithInstructions>;

@@ -8,7 +8,8 @@ import {
   SelectProduct,
   SelectProductRange,
   ShowProducts,
-  TutorialActionTypes, UpdateCommonProductsTotalPrice,
+  TutorialActionTypes,
+  UpdateCommonProductsTotalPrice,
   UpdateDisplayedProducts,
   UpdateDisplayedProductTypes,
   UpdateDisplayedSections,
@@ -45,7 +46,7 @@ export interface TutorialState {
   displayedProductTypes: { [uuid: string]: boolean };
   displayedProducts: { [uuid: string]: boolean };
   productRangePrices: { [uuid: string]: number };
-  commonProductsTotalPrice: number ;
+  commonProductsTotalPrice: number;
 
 
   // data that is saved in firebase
@@ -96,13 +97,9 @@ export const tutorialReducer = createReducer(initialTutorialState, {
     const {answer} = action.payload;
     const {questionUUID} = answer;
 
-
     state.responses[questionUUID] = answer;
-
-
     return state;
   },
-
   [TutorialActionTypes.ShowProducts]: (state: TutorialState, action: ShowProducts) => {
     const measurementFormWithoutValue = state.measurementForms.find(measurementForm => {
       return !state.measuredFormValues[measurementForm.uuid];
@@ -125,7 +122,6 @@ export const tutorialReducer = createReducer(initialTutorialState, {
     state.selectedProducts = [];
     return state;
   },
-
   [TutorialActionTypes.AddMeasurement]: (state: TutorialState, action: AddMeasurement) => {
     const {uuid, value, instanceIndex} = action.payload;
 
