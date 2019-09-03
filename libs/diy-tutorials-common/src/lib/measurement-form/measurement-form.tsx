@@ -9,6 +9,8 @@ import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {changeInstancesCount, TutorialActions} from '../tutorial/+state/tutorial.actions';
+import HideInEmail from '../hide-in-email/hide-in-email';
+import ShowInEmail from '../show-in-email/show-in-email';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
@@ -63,16 +65,17 @@ export const MeasurementForm = (props: MeasurementFormProps) => {
       });
 
       return (
-        <li className="list-group-item d-flex justify-content-between align-items-start" key={index}>
+        <div className="list-group-item d-flex justify-content-between align-items-start" key={index}>
           <div>
             <InnerBlocksContent
               innerBlocks={alteredBlocks}
               allowedComponents={allowedComponents}
             />
           </div>
-          <span className="badge badge-primary badge-pill">{index + 1}</span>
-
-        </li>
+          <HideInEmail>
+            <span className="badge badge-primary badge-pill">{index + 1}</span>
+          </HideInEmail>
+        </div>
       );
     });
 
@@ -88,27 +91,38 @@ export const MeasurementForm = (props: MeasurementFormProps) => {
 
             {multipleInstances ?
               <div className="form-group">
-                <label id={`${uuid}-label`} htmlFor={uuid}>{instancesCountQuestion}</label>
-                <input id={uuid} type="number" min={1} max={10} className="form-control"
-                       aria-label={instancesCountQuestion}
-                       value={instancesCount}
-                       aria-describedby="basic-addon1"
-                       onChange={(event: FormEvent<HTMLInputElement>) => {
-                         changeInstancesCount(
-                           uuid,
-                           Math.min(10, Number.parseInt(event.currentTarget.value))
-                         );
-                       }}/>
+                <label id={`${uuid}-label`} htmlFor={uuid}>
+                  {instancesCountQuestion}
+                  <ShowInEmail>
+                    <span>
+                      <strong>
+                    {instancesCount}
+                      </strong>
+                    </span>
+                  </ShowInEmail>
+                </label>
+                <HideInEmail>
+                  <input id={uuid} type="number" min={1} max={10} className="form-control"
+                         aria-label={instancesCountQuestion}
+                         value={instancesCount}
+                         aria-describedby="basic-addon1"
+                         onChange={(event: FormEvent<HTMLInputElement>) => {
+                           changeInstancesCount(
+                             uuid,
+                             Math.min(10, Number.parseInt(event.currentTarget.value))
+                           );
+                         }}/>
+                </HideInEmail>
               </div>
               : null
             }
 
-            <ul className="list-group">
+            <div className="list-group">
               {measurements}
-              <li className="list-group-item d-flex justify-content-between align-items-start" key="total">
-                Sum: {value}
-              </li>
-            </ul>
+              {/*<HideInEmail className={"list-group-item d-flex justify-content-between align-items-start"} key="total">*/}
+                {/*Sum: {value}*/}
+              {/*</HideInEmail>*/}
+            </div>
 
           </div>
       }

@@ -7,6 +7,8 @@ import {Response} from '../models/response.model';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {addResponse, TutorialActions} from '../tutorial/+state/tutorial.actions';
 import {AppState} from '../store';
+import HideInEmail from '../hide-in-email/hide-in-email';
+import ShowInEmail from '../show-in-email/show-in-email';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
@@ -97,21 +99,27 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
       return (
         <div className="form-group">
           <label>{text}</label>
-          <select className="custom-select"
-                  value={value}
-                  onChange={(event) => {
-                    const index: number = Number.parseInt(event.currentTarget.value);
-                    if (index >= 0) {
-                      const option = options[index];
-                      this.submitResponse(option.value, option.uuid, option.nextSection, true);
-                    }
-                  }}
-          >
-            {[{uuid: "", value: '-- Alege un raspuns --'}].concat(options).map(({value, uuid}, index) => (
-                <option key={index} value={index - 1}>{value}</option>
-              )
-            )}
-          </select>
+
+          <HideInEmail>
+            <select className="custom-select"
+                    value={value}
+                    onChange={(event) => {
+                      const index: number = Number.parseInt(event.currentTarget.value);
+                      if (index >= 0) {
+                        const option = options[index];
+                        this.submitResponse(option.value, option.uuid, option.nextSection, true);
+                      }
+                    }}
+            >
+              {[{uuid: "", value: '-- Alege un raspuns --'}].concat(options).map(({value, uuid}, index) => (
+                  <option key={index} value={index - 1}>{value}</option>
+                )
+              )}
+            </select>
+          </HideInEmail>
+          <ShowInEmail>
+            <span><strong>{response ? response.value : undefined}</strong></span>
+          </ShowInEmail>
         </div>
       );
     }

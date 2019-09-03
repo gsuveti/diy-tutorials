@@ -8,10 +8,12 @@ import {
   SelectProduct,
   SelectProductRange,
   ShowProducts,
-  TutorialActionTypes,
+  TutorialActionTypes, UpdateCommonProductsTotalPrice,
+  UpdateDisplayedProducts,
   UpdateDisplayedProductTypes,
   UpdateDisplayedSections,
   UpdateMeasurementFormValue,
+  UpdatePriceForProductRanges,
   UpdateProductQuantities,
   UserDataFetched
 } from './tutorial.actions';
@@ -41,6 +43,9 @@ export interface TutorialState {
   questionOptions: { [uuid: string]: any };
   displayedConditions: { [uuid: string]: any };
   displayedProductTypes: { [uuid: string]: boolean };
+  displayedProducts: { [uuid: string]: boolean };
+  productRangePrices: { [uuid: string]: number };
+  commonProductsTotalPrice: number ;
 
 
   // data that is saved in firebase
@@ -81,6 +86,9 @@ export const initialTutorialState: TutorialState = {
   questionOptions: {},
   displayedConditions: {},
   displayedProductTypes: {},
+  displayedProducts: {},
+  productRangePrices: {},
+  commonProductsTotalPrice: null
 };
 
 export const tutorialReducer = createReducer(initialTutorialState, {
@@ -198,6 +206,21 @@ export const tutorialReducer = createReducer(initialTutorialState, {
   [TutorialActionTypes.UpdateProductQuantities]: (state: TutorialState, action: UpdateProductQuantities) => {
     const {productQuantities} = action.payload;
     state.productQuantities = productQuantities;
+    return state;
+  },
+  [TutorialActionTypes.UpdateDisplayedProducts]: (state: TutorialState, action: UpdateDisplayedProducts) => {
+    const {displayedProducts} = action.payload;
+    state.displayedProducts = displayedProducts;
+    return state;
+  },
+  [TutorialActionTypes.UpdatePriceForProductRanges]: (state: TutorialState, action: UpdatePriceForProductRanges) => {
+    const {productRangePrices} = action.payload;
+    state.productRangePrices = productRangePrices;
+    return state;
+  },
+  [TutorialActionTypes.UpdateCommonProductsTotalPrice]: (state: TutorialState, action: UpdateCommonProductsTotalPrice) => {
+    const {commonProductsTotalPrice} = action.payload;
+    state.commonProductsTotalPrice = commonProductsTotalPrice;
     return state;
   }
 });

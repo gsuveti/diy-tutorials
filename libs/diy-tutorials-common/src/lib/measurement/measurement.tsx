@@ -7,6 +7,8 @@ import {AppState} from '../store';
 import {addMeasurement, TutorialActions} from '../tutorial/+state/tutorial.actions';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
+import HideInEmail from '../hide-in-email/hide-in-email';
+import ShowInEmail from '../show-in-email/show-in-email';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
@@ -47,18 +49,26 @@ export const Measurement = (props: MeasurementProps, state: MeasurementState) =>
       {isRenderedInEditor ? children :
         <div>
           <div className="form-group">
-            <label htmlFor={uuid}>{property}</label>
-            <input id={uuid} type="number" step="0.01" min={1} className="form-control" aria-label={property}
-                   value={measuredValue || ""}
-                   aria-describedby="measurementHelp"
-                   onChange={(event: FormEvent<HTMLInputElement>) => {
-                     addMeasurement(
-                       uuid,
-                       parentBlockUUID,
-                       instanceIndex,
-                       Number.parseInt(event.currentTarget.value),
-                     );
-                   }}/>
+            <label htmlFor={uuid}>
+              {property}
+              <ShowInEmail>
+                <span><strong>{measuredValue}</strong></span>
+              </ShowInEmail>
+            </label>
+            <HideInEmail>
+              <input id={uuid} type="number" step="0.01" min={1} className="form-control" aria-label={property}
+                     value={measuredValue || ""}
+                     aria-describedby="measurementHelp"
+                     onChange={(event: FormEvent<HTMLInputElement>) => {
+                       addMeasurement(
+                         uuid,
+                         parentBlockUUID,
+                         instanceIndex,
+                         Number.parseInt(event.currentTarget.value),
+                       );
+                     }}/>
+            </HideInEmail>
+
           </div>
         </div>
       }

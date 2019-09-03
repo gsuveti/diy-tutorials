@@ -14,6 +14,9 @@ import {
 } from './tutorial/+state/calculate-measurement-form-value.epic';
 import {calculateProductQuantitiesEpic} from './tutorial/+state/calculate-product-quantities.epic';
 import {loginWithProviderEpic} from './tutorial/+state/login-with-provider.epic';
+import {updateDisplayedProductsEpic} from './tutorial/+state/update-displayed-products.epic';
+import {updateCommonProductsTotalPriceEpic} from './tutorial/+state/update-common-products-total-price.epic';
+import {updatePriceForProductRangesEpic} from './tutorial/+state/update-price-for-product-ranges.epic';
 
 
 export interface AppState {
@@ -34,7 +37,10 @@ export const rootEpic = combineEpics(
   calculateProductQuantitiesEpic,
   hideProductsEpic,
   updateDisplayedProductTypesEpic,
+  updateDisplayedProductsEpic,
   updateDisplayedSectionsEpic,
+  updatePriceForProductRangesEpic,
+  updateCommonProductsTotalPriceEpic,
   resetResponsesEpic
 );
 

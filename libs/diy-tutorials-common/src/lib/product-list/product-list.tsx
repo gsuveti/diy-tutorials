@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import './product-list.scss';
-import {groupBy, serializeAttributes} from '../utils';
+import {serializeAttributes} from '../utils';
 import {Block} from '../models/block.model';
 import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {ConnectedProductRange} from '../product-range/product-range';
@@ -45,6 +45,8 @@ interface StateProps {
   optionalProducts?: BlockAttributes[];
   productRanges?: BlockAttributes;
   productsByProductRange?: BlockAttributes;
+  productRangePrices?: { [uuid: string]: number };
+  commonProductsTotalPrice?: number;
 }
 
 type ProductListProps = StateProps & DispatchProps & OwnProps;
@@ -63,13 +65,36 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
 
   constructor(props) {
     super(props);
+    this.sendEmail = this.sendEmail.bind(this);
+  }
+
+  sendEmail() {
+    const {email} = this.props.user;
+
+    const title = document.querySelector('.post .entry-title').outerHTML;
+    const content = Array.from(document.querySelectorAll('.entry-content > :not(#root)'))
+      .reduce((acc, item) => {
+        return acc + item.outerHTML
+      }, '');
+
+    const displayedSections = Array.from(document.querySelectorAll('#root>div>.show:not(.product-list)'))
+      .reduce((acc, item) => {
+        return acc + item.outerHTML
+      }, '');
+
+    const html = title + content + displayedSections;
+
+    const data = {
+      html, email
+    };
+    return firebase.firestore().collection(`emails`).add(data);
   }
 
   render() {
     const {
       children, innerBlocks, attributes, isVisible = true, productRanges = [],
       isRenderedInEditor, selectProductRange, selectedProductRange, productsByProductRange, optionalProducts = [],
-      user, loginWithGoogle, loginWithFacebook
+      user, loginWithGoogle, loginWithFacebook, productRangePrices, commonProductsTotalPrice
     } = this.props;
     const {uuid} = attributes;
 
@@ -83,11 +108,9 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
     ;
 
     const productRangesSummary = productRanges.map(productRange => {
-      const products = productsByProductRange[productRange.uuid] || [];
-      const total = products
-        .reduce((sum, product) => sum + product.price * product.quantity, 0);
-
       const isSelected = selectedProductRange === productRange.uuid;
+
+      const total = productRangePrices[productRange.uuid] + commonProductsTotalPrice;
 
       return (
         <div key={productRange.uuid}
@@ -162,11 +185,10 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                         </div>
                         :
                         <div className={'mt-xl pt-xl border-top d-flex flex-column align-items-center'}>
+                          <p>Vrei sa primesti un email cu instructiunile la adresa {user.email} ?</p>
                           <button type="button" className="mb-sm social-btn btn btn-outline-primary d-flex"
-                                  onClick={() => {
-                                    window.print()
-                                  }}>
-                            Descarca PDF
+                                  onClick={this.sendEmail}>
+                            Trimite email
                           </button>
 
                           {/*<button type="button" className="mt-xl btn btn-link" onClick={logout}>*/}
@@ -184,30 +206,10 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
       </div>
     );
   }
-};
+}
 
 
 function mapStateToProps(state: AppState, ownProps: ProductListProps, ownState: ProductListState): StateProps {
-  const {attributes} = ownProps;
-  const {uuid} = attributes;
-  const productQuantities = state.tutorial.productQuantities;
-  const displayedProductTypes = state.tutorial.displayedProductTypes;
-
-
-  const productsByProductRange = groupBy(
-    state.tutorial.products
-      .filter(product => {
-        if (product.productType) {
-          return displayedProductTypes[product.productType];
-        }
-        return true;
-      })
-      .map(product => {
-        return {...product, quantity: productQuantities[product.uuid]};
-      }),
-    "parentBlockUUID"
-  );
-
 
   return {
     user: state.tutorial.user,
@@ -215,7 +217,8 @@ function mapStateToProps(state: AppState, ownProps: ProductListProps, ownState: 
     productRanges: state.tutorial.productRanges,
     selectedProductRange: state.tutorial.selectedProductRange,
     optionalProducts: state.tutorial.optionalProducts,
-    productsByProductRange: productsByProductRange,
+    productRangePrices: state.tutorial.productRangePrices,
+    commonProductsTotalPrice: state.tutorial.commonProductsTotalPrice,
   };
 }
 

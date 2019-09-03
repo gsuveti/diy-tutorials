@@ -17,12 +17,15 @@ export enum TutorialActionTypes {
   UserDataFetched = '[Tutorial] User Data Fetched',
   UserDataSaved = '[Tutorial] User Data Saved',
   UpdateDisplayedProductTypes = '[Tutorial] Update Displayed Product Types',
+  UpdateDisplayedProducts = '[Tutorial] Update Displayed Products',
   UpdateDisplayedSections = '[Tutorial] Update Displayed Sections',
   ResetResponses = '[Tutorial] Reset Responses',
   UpdateMeasurementFormValue = '[Tutorial] Update Measurement Form Value',
   UpdateProductQuantities = '[Tutorial] Update Product Quantities',
   LoginWithGoogle = '[Tutorial] Login With Google',
   LoginWithFacebook = '[Tutorial] Login With Facebook',
+  UpdatePriceForProductRanges = '[Tutorial] Update price for product ranges',
+  UpdateCommonProductsTotalPrice = '[Tutorial] Update common products total price',
 }
 
 
@@ -187,6 +190,17 @@ export const updateDisplayedProductTypes: ActionCreator<UpdateDisplayedProductTy
   TutorialActionTypes.UpdateDisplayedProductTypes, {displayedProductTypes});
 
 
+export interface UpdateDisplayedProducts extends AnyAction, Action<string> {
+  type: typeof TutorialActionTypes.UpdateDisplayedProducts
+  payload: {
+    displayedProducts: { [uuid: string]: boolean }
+  }
+}
+
+export const updateDisplayedProducts: ActionCreator<UpdateDisplayedProducts> = (displayedProducts: { [uuid: string]: boolean }) => action(
+  TutorialActionTypes.UpdateDisplayedProducts, {displayedProducts});
+
+
 export interface ResetResponses extends AnyAction, Action<string> {
   type: typeof TutorialActionTypes.ResetResponses
   payload: {
@@ -219,6 +233,29 @@ export interface UpdateProductQuantities extends AnyAction, Action<string> {
 
 export const updateProductQuantities: ActionCreator<UpdateProductQuantities> = (productQuantities: { [uuid: string]: number }) => action(
   TutorialActionTypes.UpdateProductQuantities, {productQuantities});
+
+
+export interface UpdatePriceForProductRanges extends AnyAction, Action<string> {
+  type: typeof TutorialActionTypes.UpdatePriceForProductRanges
+  payload: {
+    productRangePrices: { [uuid: string]: number },
+  }
+}
+
+export const updatePriceForProductRanges: ActionCreator<UpdatePriceForProductRanges> = (productRangePrices: { [uuid: string]: number }) => action(
+  TutorialActionTypes.UpdatePriceForProductRanges, {productRangePrices});
+
+
+export interface UpdateCommonProductsTotalPrice extends AnyAction, Action<string> {
+  type: typeof TutorialActionTypes.UpdateCommonProductsTotalPrice
+  payload: {
+    commonProductsTotalPrice:  number,
+  }
+}
+
+export const updateCommonProductsTotalPrice: ActionCreator<UpdateCommonProductsTotalPrice> = (commonProductsTotalPrice: number) => action(
+  TutorialActionTypes.UpdateCommonProductsTotalPrice, {commonProductsTotalPrice});
+
 
 export const loginWithGoogle: ActionCreator<Action> = () => action(
   TutorialActionTypes.LoginWithGoogle, {});

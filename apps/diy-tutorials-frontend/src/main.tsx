@@ -23,6 +23,7 @@ if (rootElement) {
 
   const attributes = deserializeAttributes(rootElement.dataset.attributes);
   const innerBlocks = getInnerBlocks(rootElement, attributes.uuid);
+
   const blocks = getBlockAttributesList(innerBlocks);
   const sections = filterBlocksByName(blocks, BlockNames.Section);
   const questions = filterBlocksByName(blocks, BlockNames.Question);
@@ -103,7 +104,10 @@ if (rootElement) {
       instancesCountByMeasurementForm,
       questionOptions,
       displayedConditions,
-      displayedProductTypes: {}
+      displayedProductTypes: {},
+      displayedProducts: {},
+      productRangePrices: {},
+      commonProductsTotalPrice: 0
     }
   });
 
