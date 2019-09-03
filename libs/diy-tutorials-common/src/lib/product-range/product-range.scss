@@ -1,0 +1,7 @@
+.product-range {
+  > .product {
+    &:last-child {
+      border: none !important;
+    }
+  }
+}

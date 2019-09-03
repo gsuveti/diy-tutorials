@@ -69,15 +69,16 @@ export class Product extends React.Component<ProductProps, ProductState> {
 
     return (
       <div data-attributes={serializeAttributes(attributes)}
-           className={`product col-12 px-0 ${isVisible ? "show" : "hide"}`}>
+           className={`product pb-md mb-md border-bottom col-12 px-0 ${isVisible ? "show" : "hide"}`}>
         {children}
         {
           isRenderedInEditor ? null :
             <div>
-              <div className={'d-flex align-items-baseline'}>
+              <div style={{position: 'relative'}}>
                 {
                   optional ?
                     <input
+                      style={{position: 'relative', top: '-2px'}}
                       className="mr-sm"
                       type="checkbox"
                       aria-label="Checkbox for following text input"
@@ -87,12 +88,16 @@ export class Product extends React.Component<ProductProps, ProductState> {
                     :
                     null
                 }
-                <p className={'m-0'}>
-                  <a target="_blank" href={url}>{headline}</a>
+                <span className={'m-0'}>
+                  <a target="_blank" href={url}>
+                    <span className={'headline'}>{headline}</span>
+                  </a>
                   <span className="badge badge-light badge-pill">{quantity} buc</span>
-                </p>
+                </span>
               </div>
-              <img src={imageUrl}/>
+              <div className={'image-wrapper'}>
+                <img src={imageUrl}/>
+              </div>
             </div>
         }
       </div>

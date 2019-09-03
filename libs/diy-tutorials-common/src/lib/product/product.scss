@@ -1,0 +1,24 @@
+.product {
+  .headline {
+    font-size: 14px;
+    line-height: 20px;
+    height: 42px;
+    max-height: 42px;
+    font-weight: 700;
+    overflow: hidden;
+    display: block;
+  }
+
+  .image-wrapper {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+
+    img {
+      width: auto;
+      height: 150px;
+    }
+  }
+}

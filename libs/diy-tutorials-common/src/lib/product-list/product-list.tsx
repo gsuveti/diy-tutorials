@@ -46,7 +46,6 @@ interface StateProps {
   selectedProductRange?: string;
   optionalProducts?: BlockAttributes[];
   productRanges?: BlockAttributes;
-  productsByProductRange?: BlockAttributes;
   productRangePrices?: { [uuid: string]: number };
   commonProductsTotalPrice?: number;
 }
@@ -72,7 +71,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
   render() {
     const {
       children, innerBlocks, attributes, isVisible = true, productRanges = [],
-      isRenderedInEditor, selectProductRange, selectedProductRange, productsByProductRange, optionalProducts = [],
+      isRenderedInEditor, selectProductRange, selectedProductRange, optionalProducts = [],
       user, loginWithGoogle, loginWithFacebook, productRangePrices, commonProductsTotalPrice, sendEmailWithInstructions
     } = this.props;
     const {uuid} = attributes;
@@ -98,7 +97,8 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                ${isRenderedInEditor ? 'px-0' : 'p-md'}
           `}>
           <div className={'d-flex flex-column align-items-center'}>
-            <p className={'m-0 pt-xs'}>{productRange.headline}: {total} lei</p>
+            <p className={'m-0 pt-xs'}>{productRange.headline}</p>
+            <p className={'m-0 '}><strong>{total} lei</strong></p>
             <button type="button" className="btn btn-outline-primary d-flex mt-sm"
                     onClick={() => {
                       selectProductRange(productRange.uuid);
@@ -113,7 +113,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
 
     const optionalProductsContent = optionalProducts.map((attributes: any) => {
       return (
-        <div className={'col-sm px-0'} key={attributes.uuid}>
+        <div className={'optional-products col-sm px-0'} key={attributes.uuid}>
           <div className={'row no-gutters'}>
             <ConnectedProduct
               attributes={attributes}

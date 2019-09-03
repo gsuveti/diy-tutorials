@@ -78,12 +78,6 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
       }
       {content}
       {commonProductsContent}
-      {
-        isRenderedInEditor ? null :
-          <div>
-
-          </div>
-      }
     </div>
   );
 };
