@@ -17,12 +17,12 @@ script:
 
 before_deploy:
   - cd ${TRAVIS_BUILD_DIR}/wp-content/plugins/
-  - tar -zcf diy-tutorials-${TRAVIS_BUILD_NUMBER}.tar.gz diy-tutorials
+  - zip -r diy-tutorials-${TRAVIS_BUILD_NUMBER}.zip diy-tutorials
 
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
-  file: diy-tutorials-${TRAVIS_BUILD_NUMBER}.tar.gz
+  file: diy-tutorials-${TRAVIS_BUILD_NUMBER}.zip
   skip_cleanup: true
   on:
     tags: false
