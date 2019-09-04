@@ -13,7 +13,6 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
-
 /**
  * Enqueue Gutenberg block assets for both frontend + backend.
  *
@@ -32,32 +31,45 @@ function diy_tutorials_block_assets()
 { // phpcs:ignore
 
   $folder = '/dist/diy-tutorials-backend/';
+
   $jsFiles = getJSFiles($folder);
   $jsFileNames = array_map('getFileName', $jsFiles);
+
 
   $orderedJsFileNames = [
     "runtime-es5",
     "polyfills-es5",
-    "main-es5",
     "styles-es5",
+    "main-es5",
     "vendor-es5"
   ];
-
 
   foreach ($orderedJsFileNames as $name) {
     $key = array_search($name, $jsFileNames);
     $fullName = $jsFiles[$key];
+    $scriptName = str_replace("-", "_", $name);
 
-    wp_register_script($name,
-      plugins_url($folder . $fullName, dirname(__FILE__)), null, null, true);
+    wp_register_script(
+      $scriptName,
+      plugins_url($folder . $fullName, dirname(__FILE__)),
+      array('wp-blocks', 'wp-element', 'wp-editor'),
+      null,
+      true
+    );
   }
-
 
   register_block_type(
     'irian/diy-tutorial', array(
-      'editor_script' => $orderedJsFileNames
+      'editor_script' => array(
+        'runtime_es5',
+        'polyfills_es5',
+        'styles_es5',
+        'main_es5',
+        'vendor_es5'
+      )
     )
   );
+
 
 }
 
@@ -89,7 +101,7 @@ function frontend_enqueue_scripts()
 
   $folder = '/dist/diy-tutorials-frontend/';
 
-  $jsFiles = getJSFiles();
+  $jsFiles = getJSFiles($folder);
   $jsFileNames = array_map('getFileName', $jsFiles);
 
 
