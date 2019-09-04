@@ -13,6 +13,7 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
+
 /**
  * Enqueue Gutenberg block assets for both frontend + backend.
  *
@@ -30,107 +31,66 @@ if (!defined('ABSPATH')) {
 function diy_tutorials_block_assets()
 { // phpcs:ignore
 
-  // Register block editor script for backend.
-  wp_register_script(
-    'diy_tutorials_block_main_js', // Handle.
-    plugins_url('/dist/diy-tutorials-backend/main-es5.js', dirname(__FILE__)),
-    array('wp-blocks', 'wp-element', 'wp-editor'),
-    null,
-    true
-  );
+  $folder = '/dist/diy-tutorials-backend/';
+  $jsFiles = getJSFiles($folder);
+  $jsFileNames = array_map('getFileName', $jsFiles);
 
-  // Register block editor script for backend.
-  wp_register_script(
-    'diy_tutorials_block_polyfills_js', // Handle.
-    plugins_url('/dist/diy-tutorials-backend/polyfills-es5.js', dirname(__FILE__)),
-    array('wp-blocks', 'wp-element', 'wp-editor'),
-    null,
-    true
-  );
+  $orderedJsFileNames = [
+    "runtime-es5",
+    "polyfills-es5",
+    "main-es5",
+    "styles-es5",
+    "vendor-es5"
+  ];
 
-  // Register block editor script for backend.
-  wp_register_script(
-    'diy_tutorials_block_runtime_js', // Handle.
-    plugins_url('/dist/diy-tutorials-backend/runtime-es5.js', dirname(__FILE__)),
-    array('wp-blocks', 'wp-element', 'wp-editor'),
-    null,
-    true
-  );
 
-  // Register block editor script for backend.
-  wp_register_script(
-    'diy_tutorials_block_styles_js', // Handle.
-    plugins_url('/dist/diy-tutorials-backend/styles-es5.js', dirname(__FILE__)),
-    array('wp-blocks', 'wp-element', 'wp-editor'),
-    null,
-    true
-  );
+  foreach ($orderedJsFileNames as $name) {
+    $key = array_search($name, $jsFileNames);
+    $fullName = $jsFiles[$key];
 
-  // Register block editor script for backend.
-  wp_register_script(
-    'diy_tutorials_block_vendor_js', // Handle.
-    plugins_url('/dist/diy-tutorials-backend/vendor-es5.js', dirname(__FILE__)),
-    array('wp-blocks', 'wp-element', 'wp-editor'),
-    null,
-    true
-  );
+    wp_register_script($name,
+      plugins_url($folder . $fullName, dirname(__FILE__)), null, null, true);
+  }
 
-  /**
-   * Register Gutenberg block on server-side.
-   *
-   * Register the block on server-side to ensure that the block
-   * scripts and styles for both frontend and backend are
-   * enqueued when the editor loads.
-   *
-   * @link https://wordpress.org/gutenberg/handbook/blocks/writing-your-first-block-type#enqueuing-block-scripts
-   * @since 1.16.0
-   */
-
-  register_block_type('irian/diy-content');
-  register_block_type('irian/diy-question');
-  register_block_type('irian/diy-measurement');
-  register_block_type('irian/diy-measurement-form');
-  register_block_type('irian/diy-section');
-  register_block_type('irian/diy-product-list');
-  register_block_type('irian/diy-product');
-  register_block_type('irian/diy-product-range');
-  register_block_type('irian/diy-product-range');
-  register_block_type('irian/diy-display-condition');
-  register_block_type('irian/diy-question-option');
 
   register_block_type(
     'irian/diy-tutorial', array(
-      'editor_script' => array(
-        'diy_tutorials_block_runtime_js',
-        'diy_tutorials_block_polyfills_js',
-        'diy_tutorials_block_styles_js',
-        'diy_tutorials_block_main_js',
-        'diy_tutorials_block_vendor_js'
-      )
+      'editor_script' => $orderedJsFileNames
     )
   );
 
+}
+
+function getJSFiles($folder)
+{
+  $root = dirname(__FILE__, 2);
+  $dirJS = new DirectoryIterator($root . $folder);
+  $jsFiles = [];
+
+
+  foreach ($dirJS as $file) {
+    if (pathinfo($file, PATHINFO_EXTENSION) === 'js') {
+      $fullName = basename($file);
+      array_push($jsFiles, $fullName);
+    }
+  }
+
+  return $jsFiles;
+
+}
+
+function getFileName($fullName)
+{
+  return substr(basename($fullName), 0, strpos(basename($fullName), '.'));
 }
 
 function frontend_enqueue_scripts()
 {
 
   $folder = '/dist/diy-tutorials-frontend/';
-  $root = dirname(__FILE__, 2);
-  $dirJS = new DirectoryIterator($root . $folder);
-  $jsFiles = [];
-  $jsFileNames = [];
 
-
-  foreach ($dirJS as $file) {
-    if (pathinfo($file, PATHINFO_EXTENSION) === 'js') {
-      $fullName = basename($file);
-      $name = substr(basename($fullName), 0, strpos(basename($fullName), '.'));
-
-      array_push($jsFiles, $fullName);
-      array_push($jsFileNames, $name);
-    }
-  }
+  $jsFiles = getJSFiles();
+  $jsFileNames = array_map('getFileName', $jsFiles);
 
 
   $orderedJsFileNames = [
@@ -148,9 +108,8 @@ function frontend_enqueue_scripts()
     wp_enqueue_script($name,
       plugins_url($folder . $fullName, dirname(__FILE__)), null, null, true);
   }
-
-
 }
+
 
 // Hook: Block assets.
 add_action('init', 'diy_tutorials_block_assets');
