@@ -14,3 +14,16 @@ before_script:
 script:
   - ng build diy-tutorials-frontend
   - ng build diy-tutorials-backend
+
+before_deploy
+- tar -zcf diy-tutorials-${TRAVIS_BUILD_NUMBER}.tar.gz ${REPO}/wp-content/plugins/diy-tutorials
+
+deploy:
+  # GitHub - Add zip to release
+  - provider: releases
+    api_key:
+      secure: $GITHUB_TOKEN
+    file: diy-tutorials-${TRAVIS_BUILD_NUMBER}.tar.gz
+    skip_cleanup: true
+    on:
+      tags: true
