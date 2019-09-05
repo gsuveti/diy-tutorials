@@ -1,5 +1,5 @@
 import {Action, ActionCreator, AnyAction} from 'redux';
-import {Response} from '../../models/response.model';
+import {Response} from '../models/response.model';
 import {action, createAction} from 'typesafe-actions';
 import * as firebase from 'firebase';
 
@@ -27,6 +27,9 @@ export enum TutorialActionTypes {
   UpdatePriceForProductRanges = '[Tutorial] Update price for product ranges',
   UpdateCommonProductsTotalPrice = '[Tutorial] Update common products total price',
   SendEmailWithInstructions = '[Tutorial] Send email with instructions',
+  Logout = '[Tutorial] Logout',
+  ShowProductsOrScrollToMeasurements = '[Tutorial] Show products or scroll to measurements',
+  ResetUserContext = '[Tutorial] Reset user context',
 }
 
 
@@ -267,9 +270,20 @@ export const loginWithFacebook: ActionCreator<Action> = () => action(
 export const sendEmailWithInstructions: ActionCreator<Action> = () => action(
   TutorialActionTypes.SendEmailWithInstructions, {});
 
+export const logout: ActionCreator<Action> = () => action(
+  TutorialActionTypes.Logout, {});
+
+export const showProductsOrScrollToMeasurements: ActionCreator<Action> = () => action(
+  TutorialActionTypes.ShowProductsOrScrollToMeasurements, {});
+
+export const resetUserContext: ActionCreator<Action> = () => action(
+  TutorialActionTypes.ResetUserContext, {});
+
 
 export type TutorialActions = AddResponse | AddMeasurement
   | ChangeInstancesCount | ShowProducts | AddProductsToCart | SelectProductRange
   | SelectProduct | RemoveProduct | UpdateDisplayedProductTypes
   | Action<TutorialActionTypes.LoginWithGoogle> | Action<TutorialActionTypes.LoginWithFacebook>
+  | Action<TutorialActionTypes.Logout>
+  | Action<TutorialActionTypes.ResetUserContext>
   | Action<TutorialActionTypes.SendEmailWithInstructions>;

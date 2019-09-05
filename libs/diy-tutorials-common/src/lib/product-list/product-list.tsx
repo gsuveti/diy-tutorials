@@ -9,11 +9,12 @@ import {ConnectedProductRange} from '../product-range/product-range';
 import {
   loginWithFacebook,
   loginWithGoogle,
+  logout,
   selectProductRange,
   sendEmailWithInstructions,
   showProducts,
   TutorialActions
-} from '../tutorial/+state/tutorial.actions';
+} from '../+state/tutorial.actions';
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
@@ -72,7 +73,8 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
     const {
       children, innerBlocks, attributes, isVisible = true, productRanges = [],
       isRenderedInEditor, selectProductRange, selectedProductRange, optionalProducts = [],
-      user, loginWithGoogle, loginWithFacebook, productRangePrices, commonProductsTotalPrice, sendEmailWithInstructions
+      user, loginWithGoogle, loginWithFacebook, productRangePrices, commonProductsTotalPrice,
+      sendEmailWithInstructions, logout
     } = this.props;
     const {uuid} = attributes;
 
@@ -170,9 +172,9 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                             Trimite email
                           </button>
 
-                          {/*<button type="button" className="mt-xl btn btn-link" onClick={logout}>*/}
-                          {/*Logout*/}
-                          {/*</button>*/}
+                          <button type="button" className="mt-xl btn btn-link" onClick={logout}>
+                            Logout
+                          </button>
                         </div>
                     }
                   </div>
@@ -191,18 +193,19 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
 function mapStateToProps(state: AppState, ownProps: ProductListProps, ownState: ProductListState): StateProps {
 
   return {
-    user: state.tutorial.user,
-    isVisible: state.tutorial.showProducts,
+    user: state.userContext.user,
+    isVisible: state.userContext.showProducts,
     productRanges: state.tutorial.productRanges,
-    selectedProductRange: state.tutorial.selectedProductRange,
+    selectedProductRange: state.userContext.selectedProductRange,
     optionalProducts: state.tutorial.optionalProducts,
-    productRangePrices: state.tutorial.productRangePrices,
-    commonProductsTotalPrice: state.tutorial.commonProductsTotalPrice,
+    productRangePrices: state.userContext.productRangePrices,
+    commonProductsTotalPrice: state.userContext.commonProductsTotalPrice,
   };
 }
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators<TutorialActions, ActionCreatorsMapObject<TutorialActions> & DispatchProps>({
+    logout,
     showProducts,
     selectProductRange,
     loginWithGoogle,

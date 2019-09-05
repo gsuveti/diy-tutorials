@@ -1,7 +1,7 @@
 import {Observable} from 'rxjs';
 import {AnyAction} from 'redux';
 import {ofType, StateObservable} from 'redux-observable';
-import {AddResponse, TutorialActionTypes, updatePriceForProductRanges} from './tutorial.actions';
+import {AddResponse, TutorialActionTypes, updatePriceForProductRanges} from '../tutorial.actions';
 import {map} from 'rxjs/operators';
 import {AppState} from '../../store';
 
@@ -9,8 +9,9 @@ export const updatePriceForProductRangesEpic = (action$: Observable<AnyAction>, 
   return action$.pipe(
     ofType(TutorialActionTypes.UpdateDisplayedProducts),
     map((action: AddResponse) => {
-      const state = state$.value.tutorial;
-      const {products, displayedProducts, productRanges, productQuantities} = state;
+      const state = state$.value;
+      const {products, productRanges} = state.tutorial;
+      const {displayedProducts, productQuantities} = state.userContext;
 
       return productRanges.reduce((prices, productRange) => {
         const total = products

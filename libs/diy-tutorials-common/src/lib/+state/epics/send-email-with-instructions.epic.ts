@@ -1,7 +1,7 @@
 import {Observable} from 'rxjs';
 import {AnyAction} from 'redux';
 import {ofType, StateObservable} from 'redux-observable';
-import {AddResponse, TutorialActionTypes} from './tutorial.actions';
+import {AddResponse, TutorialActionTypes} from '../tutorial.actions';
 import {ignoreElements, tap} from 'rxjs/operators';
 import {AppState} from '../../store';
 import * as firebase from 'firebase';
@@ -11,11 +11,13 @@ export const sendEmailWithInstructionsEpic = (action$: Observable<AnyAction>, st
   return action$.pipe(
     ofType(TutorialActionTypes.SendEmailWithInstructions),
     tap((action: AddResponse) => {
+      const {products, commonProducts, optionalProducts} = state$.value.tutorial;
+
       const {
-        user, products, displayedProducts, selectedProductRange, productQuantities,
-        productRangePrices, commonProducts, optionalProducts, selectedProducts: selectedProductsUUIDs,
+        user, displayedProducts, selectedProductRange, productQuantities,
+        productRangePrices, selectedProducts: selectedProductsUUIDs,
         commonProductsTotalPrice
-      } = state$.value.tutorial;
+      } = state$.value.userContext;
 
       if (selectedProductRange) {
         const {email} = user;

@@ -8,7 +8,7 @@ import {serializeAttributes} from '../utils';
 import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
-import {changeInstancesCount, TutorialActions} from '../tutorial/+state/tutorial.actions';
+import {changeInstancesCount, TutorialActions} from '../+state/tutorial.actions';
 import HideInEmail from '../hide-in-email/hide-in-email';
 import ShowInEmail from '../show-in-email/show-in-email';
 
@@ -120,7 +120,7 @@ export const MeasurementForm = (props: MeasurementFormProps) => {
             <div className="list-group">
               {measurements}
               {/*<HideInEmail className={"list-group-item d-flex justify-content-between align-items-start"} key="total">*/}
-                {/*Sum: {value}*/}
+              {/*Sum: {value}*/}
               {/*</HideInEmail>*/}
             </div>
 
@@ -133,8 +133,8 @@ export const MeasurementForm = (props: MeasurementFormProps) => {
 
 function mapStateToProps(state: AppState, ownProps: MeasurementFormProps, ownState: MeasurementFormState): StateProps {
   return {
-    instancesCount: state.tutorial.instancesCountByMeasurementForm[ownProps.attributes.uuid],
-    value: state.tutorial.measuredFormValues[ownProps.attributes.uuid]
+    instancesCount: state.userContext.instancesCountByMeasurementForm[ownProps.attributes.uuid] || 1,
+    value: state.userContext.measuredFormValues[ownProps.attributes.uuid]
   };
 }
 

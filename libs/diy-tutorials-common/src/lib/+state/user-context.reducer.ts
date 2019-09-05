@@ -19,27 +19,12 @@ import {
   UserDataFetched
 } from './tutorial.actions';
 import {createReducer} from 'redux-starter-kit'
-import {Response} from '../../models/response.model';
-import {BlockAttributes} from '../../models/block-attributes.model';
+import {Response} from '../models/response.model';
 import * as firebase from 'firebase';
 
-const FormulaParser = require('hot-formula-parser').Parser;
-
-export interface TutorialState {
+export interface UserContextState {
   uuid?: string;
   user?: firebase.User;
-  blocks: BlockAttributes[];
-  sections: BlockAttributes[],
-  sectionsWithRedirect: string[],
-  displayedSections: string[],
-  questions: BlockAttributes[],
-  measurements: BlockAttributes[],
-  measurementForms: BlockAttributes[],
-  measurementFormsOrder: string[],
-  products: BlockAttributes[],
-  commonProducts: BlockAttributes[],
-  optionalProducts: BlockAttributes[],
-  productRanges: BlockAttributes[],
   productQuantities: { [uuid: string]: number };
   questionOptions: { [uuid: string]: any };
   displayedConditions: { [uuid: string]: any };
@@ -47,11 +32,8 @@ export interface TutorialState {
   displayedProducts: { [uuid: string]: boolean };
   productRangePrices: { [uuid: string]: number };
   commonProductsTotalPrice: number;
+  displayedSections: string[],
 
-
-  // data that is saved in firebase
-  // todo
-  //  extract in other state
   responses: { [uuid: string]: Response };
   measuredValues: { [uuid: string]: { [instanceIndex: string]: string } };
   instancesCountByMeasurementForm: { [uuid: string]: number };
@@ -61,24 +43,12 @@ export interface TutorialState {
   selectedProductRange: string,
 }
 
-export const initialTutorialState: TutorialState = {
+export const initialUserContextState: UserContextState = {
   uuid: null,
   user: null,
-  blocks: [],
-  sections: [],
-  sectionsWithRedirect: [],
-  displayedSections: [],
-  questions: [],
-  measurements: [],
-  measurementForms: [],
-  measurementFormsOrder: [],
   showProducts: false,
-  productRanges: [],
   selectedProductRange: null,
   selectedProducts: [],
-  products: [],
-  optionalProducts: [],
-  commonProducts: [],
   productQuantities: {},
   responses: {},
   measuredValues: {},
@@ -89,40 +59,31 @@ export const initialTutorialState: TutorialState = {
   displayedProductTypes: {},
   displayedProducts: {},
   productRangePrices: {},
+  displayedSections: [],
   commonProductsTotalPrice: null
+
 };
 
-export const tutorialReducer = createReducer(initialTutorialState, {
-  [TutorialActionTypes.AddResponse]: (state: TutorialState, action: AddResponse) => {
+export const userContextReducer = createReducer(initialUserContextState, {
+  [TutorialActionTypes.AddResponse]: (state: UserContextState, action: AddResponse) => {
     const {answer} = action.payload;
     const {questionUUID} = answer;
 
     state.responses[questionUUID] = answer;
     return state;
   },
-  [TutorialActionTypes.ShowProducts]: (state: TutorialState, action: ShowProducts) => {
-    const measurementFormWithoutValue = state.measurementForms.find(measurementForm => {
-      return !state.measuredFormValues[measurementForm.uuid];
-    });
-
-    if (measurementFormWithoutValue) {
-      document.getElementById(measurementFormWithoutValue.uuid).scrollIntoView({
-        behavior: 'smooth'
-      });
-    } else {
-      state.showProducts = true;
-    }
-
+  [TutorialActionTypes.ShowProducts]: (state: UserContextState, action: ShowProducts) => {
+    state.showProducts = true;
     return state;
   },
 
-  [TutorialActionTypes.HideProducts]: (state: TutorialState, action: HideProducts) => {
+  [TutorialActionTypes.HideProducts]: (state: UserContextState, action: HideProducts) => {
     state.showProducts = false;
     state.selectedProductRange = null;
     state.selectedProducts = [];
     return state;
   },
-  [TutorialActionTypes.AddMeasurement]: (state: TutorialState, action: AddMeasurement) => {
+  [TutorialActionTypes.AddMeasurement]: (state: UserContextState, action: AddMeasurement) => {
     const {uuid, value, instanceIndex} = action.payload;
 
     state.measuredValues[uuid] = {
@@ -132,25 +93,25 @@ export const tutorialReducer = createReducer(initialTutorialState, {
 
     return state;
   },
-  [TutorialActionTypes.ChangeInstancesCount]: (state: TutorialState, action: ChangeInstancesCount) => {
+  [TutorialActionTypes.ChangeInstancesCount]: (state: UserContextState, action: ChangeInstancesCount) => {
     const {uuid, count} = action.payload;
     state.instancesCountByMeasurementForm[uuid] = count;
 
     return state;
   },
-  [TutorialActionTypes.SelectProductRange]: (state: TutorialState, action: SelectProductRange) => {
+  [TutorialActionTypes.SelectProductRange]: (state: UserContextState, action: SelectProductRange) => {
     const {productRangeUUID} = action.payload;
     state.selectedProductRange = productRangeUUID;
     return state;
   },
-  [TutorialActionTypes.SelectProduct]: (state: TutorialState, action: SelectProduct) => {
+  [TutorialActionTypes.SelectProduct]: (state: UserContextState, action: SelectProduct) => {
     const {productUUID} = action.payload;
     if (state.selectedProducts.indexOf(productUUID) < 0) {
       state.selectedProducts.push(productUUID)
     }
     return state;
   },
-  [TutorialActionTypes.RemoveProduct]: (state: TutorialState, action: SelectProduct) => {
+  [TutorialActionTypes.RemoveProduct]: (state: UserContextState, action: SelectProduct) => {
     const {productUUID} = action.payload;
     const index = state.selectedProducts.indexOf(productUUID);
     if (index > -1) {
@@ -158,12 +119,12 @@ export const tutorialReducer = createReducer(initialTutorialState, {
     }
     return state;
   },
-  [TutorialActionTypes.GetUserData]: (state: TutorialState, action: GetUserData) => {
+  [TutorialActionTypes.GetUserData]: (state: UserContextState, action: GetUserData) => {
     const {user} = action.payload;
     state.user = user;
     return state;
   },
-  [TutorialActionTypes.UserDataFetched]: (state: TutorialState, action: UserDataFetched) => {
+  [TutorialActionTypes.UserDataFetched]: (state: UserContextState, action: UserDataFetched) => {
     const {data} = action.payload;
     console.log("UserDataFetched");
 
@@ -173,50 +134,72 @@ export const tutorialReducer = createReducer(initialTutorialState, {
     };
     return state;
   },
-  [TutorialActionTypes.UserDataSaved]: (state: TutorialState, action: UserDataFetched) => {
+  [TutorialActionTypes.UserDataSaved]: (state: UserContextState, action: UserDataFetched) => {
     console.log("UserDataSaved");
     return state;
   },
-  [TutorialActionTypes.UpdateDisplayedProductTypes]: (state: TutorialState, action: UpdateDisplayedProductTypes) => {
+  [TutorialActionTypes.UpdateDisplayedProductTypes]: (state: UserContextState, action: UpdateDisplayedProductTypes) => {
     const {displayedProductTypes} = action.payload;
     state.displayedProductTypes = displayedProductTypes;
     return state;
   },
-  [TutorialActionTypes.UpdateDisplayedSections]: (state: TutorialState, action: UpdateDisplayedSections) => {
+  [TutorialActionTypes.UpdateDisplayedSections]: (state: UserContextState, action: UpdateDisplayedSections) => {
     const {displayedSections} = action.payload;
     state.displayedSections = displayedSections;
     return state;
   },
-  [TutorialActionTypes.ResetResponses]: (state: TutorialState, action: ResetResponses) => {
+  [TutorialActionTypes.ResetResponses]: (state: UserContextState, action: ResetResponses) => {
     const {questions} = action.payload;
     questions.map(uuid => {
       state.responses[uuid] = {};
     });
     return state;
   },
-  [TutorialActionTypes.UpdateMeasurementFormValue]: (state: TutorialState, action: UpdateMeasurementFormValue) => {
+  [TutorialActionTypes.UpdateMeasurementFormValue]: (state: UserContextState, action: UpdateMeasurementFormValue) => {
     const {uuid, value} = action.payload;
     state.measuredFormValues[uuid] = value;
     return state;
   },
-  [TutorialActionTypes.UpdateProductQuantities]: (state: TutorialState, action: UpdateProductQuantities) => {
+  [TutorialActionTypes.UpdateProductQuantities]: (state: UserContextState, action: UpdateProductQuantities) => {
     const {productQuantities} = action.payload;
     state.productQuantities = productQuantities;
     return state;
   },
-  [TutorialActionTypes.UpdateDisplayedProducts]: (state: TutorialState, action: UpdateDisplayedProducts) => {
+  [TutorialActionTypes.UpdateDisplayedProducts]: (state: UserContextState, action: UpdateDisplayedProducts) => {
     const {displayedProducts} = action.payload;
     state.displayedProducts = displayedProducts;
     return state;
   },
-  [TutorialActionTypes.UpdatePriceForProductRanges]: (state: TutorialState, action: UpdatePriceForProductRanges) => {
+  [TutorialActionTypes.UpdatePriceForProductRanges]: (state: UserContextState, action: UpdatePriceForProductRanges) => {
     const {productRangePrices} = action.payload;
     state.productRangePrices = productRangePrices;
     return state;
   },
-  [TutorialActionTypes.UpdateCommonProductsTotalPrice]: (state: TutorialState, action: UpdateCommonProductsTotalPrice) => {
+  [TutorialActionTypes.UpdateCommonProductsTotalPrice]: (state: UserContextState, action: UpdateCommonProductsTotalPrice) => {
     const {commonProductsTotalPrice} = action.payload;
     state.commonProductsTotalPrice = commonProductsTotalPrice;
     return state;
+  },
+  [TutorialActionTypes.ResetUserContext]: (state: UserContextState, action: UpdateCommonProductsTotalPrice) => {
+
+    const displayedSections = state.displayedSections.slice(0, 1);
+    const instancesCountByMeasurementForm = {};
+    const productQuantities = {};
+
+    Object.keys(state.instancesCountByMeasurementForm).map(key => {
+      instancesCountByMeasurementForm[key] = 1;
+    });
+    Object.keys(state.productQuantities).map(key => {
+      productQuantities[key] = 0;
+    });
+    state = {
+      ...initialUserContextState,
+      displayedSections,
+      instancesCountByMeasurementForm,
+      productQuantities
+    };
+
+    return state;
   }
+
 });

@@ -6,7 +6,7 @@ import {serializeAttributes} from '../utils';
 import {ConnectedProduct} from '../product/product';
 import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {Block} from '../models/block.model';
-import {addProductsToCart, TutorialActions} from '../tutorial/+state/tutorial.actions';
+import {addProductsToCart, TutorialActions} from '../+state/tutorial.actions';
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
@@ -86,7 +86,7 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
 function mapStateToProps(state: AppState, ownProps: ProductRangeProps, ownState: ProductRangeState): StateProps {
   return {
     commonProducts: state.tutorial.commonProducts,
-    isSelected: state.tutorial.selectedProductRange === ownProps.attributes.uuid
+    isSelected: state.userContext.selectedProductRange === ownProps.attributes.uuid
   };
 }
 

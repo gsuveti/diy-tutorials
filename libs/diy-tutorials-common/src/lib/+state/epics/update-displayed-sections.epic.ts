@@ -1,10 +1,10 @@
 import {Observable} from 'rxjs';
 import {AnyAction} from 'redux';
 import {ofType, StateObservable} from 'redux-observable';
-import {AddResponse, TutorialActionTypes, updateDisplayedSections} from './tutorial.actions';
+import {AddResponse, TutorialActionTypes, updateDisplayedSections} from '../tutorial.actions';
 import {filter, map} from 'rxjs/operators';
 import {AppState} from '../../store';
-import {TutorialState} from './tutorial.reducer';
+import {TutorialState} from '../tutorial.reducer';
 import {SUBMIT_FORM} from '../../constants';
 
 export const updateDisplayedSectionsEpic = (action$: Observable<AnyAction>, state$: StateObservable<AppState>) => {
@@ -15,16 +15,22 @@ export const updateDisplayedSectionsEpic = (action$: Observable<AnyAction>, stat
       return answer.goToNextSection;
     }),
     map((action: AddResponse) => {
-      const state = state$.value.tutorial;
+      const state = state$.value;
+      const tutorialState = state.tutorial;
+      const userContextState = state.userContext;
+
       const {answer} = action.payload;
       const {questionUUID} = answer;
 
-      const parentBlockUUID = state.questions.find(attributes => attributes.uuid === questionUUID).parentBlockUUID;
-      const historyEnd = state.displayedSections.indexOf(parentBlockUUID) + 1;
-      const history = state.displayedSections.slice(0, historyEnd);
+      const {questions} = tutorialState;
+      const {displayedSections} = userContextState;
+
+      const parentBlockUUID = questions.find(attributes => attributes.uuid === questionUUID).parentBlockUUID;
+      const historyEnd = displayedSections.indexOf(parentBlockUUID) + 1;
+      const history = displayedSections.slice(0, historyEnd);
 
       const nextSection = answer.nextSection;
-      return [...history, ...getSectionsPath(state, nextSection)];
+      return [...history, ...getSectionsPath(tutorialState, nextSection)];
     }),
     map(displayedSections => updateDisplayedSections(displayedSections))
   );

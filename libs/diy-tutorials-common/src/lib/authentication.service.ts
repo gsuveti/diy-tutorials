@@ -1,4 +1,5 @@
 import * as firebase from 'firebase';
+import {getUserData} from './+state/tutorial.actions';
 
 export function logout() {
   firebase.auth().signOut()
@@ -13,5 +14,14 @@ export function setAuthPersistence() {
     .catch(function (error) {
       console.log("Unable to set auth persistence to LOCAL");
     });
+}
+
+
+export function watchAuthState(store) {
+
+  firebase.auth().onAuthStateChanged(function (user: firebase.User) {
+    store.dispatch(getUserData(user));
+  });
+
 }
 

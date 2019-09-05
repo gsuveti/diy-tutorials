@@ -5,7 +5,7 @@ import './question.scss';
 import {serializeAttributes} from '../utils';
 import {Response} from '../models/response.model';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
-import {addResponse, TutorialActions} from '../tutorial/+state/tutorial.actions';
+import {addResponse, TutorialActions} from '../+state/tutorial.actions';
 import {AppState} from '../store';
 import HideInEmail from '../hide-in-email/hide-in-email';
 import ShowInEmail from '../show-in-email/show-in-email';
@@ -127,7 +127,7 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
   };
 
   render(): React.ReactNode {
-    const {className, children, attributes, isRenderedInEditor} = this.props;
+    const {children, attributes, isRenderedInEditor} = this.props;
     const {text, type} = attributes;
 
 
@@ -162,7 +162,7 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
 
 function mapStateToProps(state: AppState, ownProps: QuestionProps, ownState: QuestionState): StateProps {
   return {
-    response: state.tutorial.responses[ownProps.attributes.uuid],
+    response: state.userContext.responses[ownProps.attributes.uuid],
     options: state.tutorial.questionOptions[ownProps.attributes.uuid]
   };
 }

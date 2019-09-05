@@ -1,7 +1,7 @@
 import {from, Observable, of} from 'rxjs';
 import {AnyAction} from 'redux';
 import {ofType, StateObservable} from 'redux-observable';
-import {TutorialActionTypes, userDataSaved} from './tutorial.actions';
+import {TutorialActionTypes, userDataSaved} from '../tutorial.actions';
 import {debounceTime, map, switchMap} from 'rxjs/operators';
 import * as firebase from 'firebase';
 import {AppState} from '@diy-tutorials/diy-tutorials-common';
@@ -34,10 +34,11 @@ export const saveUserDataEpic = (action$: Observable<AnyAction>, state$: StateOb
       return of(currentUser);
     }),
     switchMap(currentUser => {
-      const tutorialState = state$.value.tutorial;
-      const {uuid: tutorialUUID, responses} = tutorialState;
-      const {measuredValues, instancesCountByMeasurementForm, displayedSections} = tutorialState;
-      const {showProducts, selectedProducts, selectedProductRange} = tutorialState;
+      const userContextState = state$.value.userContext;
+
+      const {uuid: tutorialUUID, responses} = userContextState;
+      const {measuredValues, instancesCountByMeasurementForm, displayedSections} = userContextState;
+      const {showProducts, selectedProducts, selectedProductRange} = userContextState;
 
       const data = {
         responses,

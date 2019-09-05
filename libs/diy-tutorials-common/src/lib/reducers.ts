@@ -1,6 +1,8 @@
 import {combineReducers} from 'redux';
-import {tutorialReducer} from './tutorial/+state/tutorial.reducer';
+import {userContextReducer} from './+state/user-context.reducer';
+import {tutorialReducer} from './+state/tutorial.reducer';
 
 export const reducers = combineReducers({
-  tutorial: tutorialReducer
+  tutorial: tutorialReducer,
+  userContext: userContextReducer
 });

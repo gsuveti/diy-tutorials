@@ -16,3 +16,6 @@ export * from './lib/question-option/question-option';
 export * from './lib/constants';
 export * from './lib/utils';
 export * from './lib/store';
+export * from './lib/+state/tutorial.initial-state';
+export * from './lib/+state/user-context.initial-state';
+export * from './lib/authentication.service';

@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import './product.scss';
 import {serializeAttributes} from '../utils';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
-import {removeProduct, selectProduct, TutorialActions} from '../tutorial/+state/tutorial.actions';
+import {removeProduct, selectProduct, TutorialActions} from '../+state/tutorial.actions';
 import {AppState} from '../store';
 
 /* tslint:disable:no-empty-interface */
@@ -109,10 +109,11 @@ export class Product extends React.Component<ProductProps, ProductState> {
 function mapStateToProps(state: AppState, ownProps: ProductProps, ownState: ProductState): StateProps {
   const {attributes} = ownProps;
   const {uuid, productType} = attributes;
-  const quantity = state.tutorial.productQuantities[uuid];
+  const quantity = state.userContext.productQuantities[uuid];
+
   return {
-    isVisible: productType ? state.tutorial.displayedProductTypes[productType] : true,
-    isSelected: state.tutorial.selectedProducts.indexOf(uuid) > -1,
+    isVisible: productType ? state.userContext.displayedProductTypes[productType] : true,
+    isSelected: state.userContext.selectedProducts.indexOf(uuid) > -1,
     quantity,
   };
 }

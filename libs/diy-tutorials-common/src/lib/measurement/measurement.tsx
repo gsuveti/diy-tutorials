@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import './measurement.scss';
 import {serializeAttributes} from '../utils';
 import {AppState} from '../store';
-import {addMeasurement, TutorialActions} from '../tutorial/+state/tutorial.actions';
+import {addMeasurement, TutorialActions} from '../+state/tutorial.actions';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
 import HideInEmail from '../hide-in-email/hide-in-email';
@@ -80,7 +80,7 @@ export const Measurement = (props: MeasurementProps, state: MeasurementState) =>
 function mapStateToProps(state: AppState, ownProps: MeasurementProps, ownState: MeasurementState): StateProps {
   const {instanceIndex, attributes} = ownProps;
   const {uuid} = attributes;
-  const measuredValues = state.tutorial.measuredValues[uuid];
+  const measuredValues = state.userContext.measuredValues[uuid];
   return {
     measuredValue: measuredValues ? measuredValues[instanceIndex] : undefined
   };

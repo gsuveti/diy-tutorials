@@ -9,7 +9,7 @@ import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {ConnectedMeasurementForm} from '../measurement-form/measurement-form';
 import {AppState} from '../store';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
-import {showProducts, TutorialActions} from '../tutorial/+state/tutorial.actions';
+import {showProducts, TutorialActions} from '../+state/tutorial.actions';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
@@ -49,7 +49,7 @@ const allowedComponents = {
 
 export const Section = (props: SectionProps) => {
   const {
-    innerBlocks = [], children, className, attributes, isVisible = true,
+    innerBlocks = [], children, attributes, isVisible = true,
     showSubmitFormButton, showProducts, isRenderedInEditor
   } = props;
 
@@ -84,8 +84,8 @@ function mapStateToProps(state: AppState, ownProps: SectionProps, ownState: Sect
   const {attributes} = ownProps;
   const {uuid, submitForm} = attributes;
   return {
-    isVisible: state.tutorial.displayedSections.indexOf(uuid) >= 0,
-    showSubmitFormButton: submitForm && !state.tutorial.showProducts
+    isVisible: state.userContext.displayedSections.indexOf(uuid) >= 0,
+    showSubmitFormButton: submitForm && !state.userContext.showProducts
   };
 }
 

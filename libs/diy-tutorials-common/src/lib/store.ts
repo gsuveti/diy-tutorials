@@ -1,28 +1,31 @@
 import {AnyAction, applyMiddleware, compose, createStore, Store} from 'redux';
 import {reducers} from "./reducers";
 import {combineEpics, createEpicMiddleware} from 'redux-observable';
-import {initialTutorialState, TutorialState} from './tutorial/+state/tutorial.reducer';
-import {getUserDataEpic} from './tutorial/+state/get-user-data.epic';
-import {saveUserDataEpic} from './tutorial/+state/save-user-data.epic';
-import {updateDisplayedProductTypesEpic} from './tutorial/+state/update-displayed-product-types.epic';
-import {updateDisplayedSectionsEpic} from './tutorial/+state/update-displayed-sections.epic';
-import {resetResponsesEpic} from './tutorial/+state/reset-responses.epic';
-import {hideProductsEpic} from './tutorial/+state/hide-products.epic';
+import {showProductsOrScrollToMeasurementsEpic} from './+state/epics/show-products-or-scroll-to-measurements.epic';
 import {
   calculateAllMeasurementFormValuesEpic,
   calculateMeasurementFormValueEpic
-} from './tutorial/+state/calculate-measurement-form-value.epic';
-import {calculateProductQuantitiesEpic} from './tutorial/+state/calculate-product-quantities.epic';
-import {loginWithProviderEpic} from './tutorial/+state/login-with-provider.epic';
-import {updateDisplayedProductsEpic} from './tutorial/+state/update-displayed-products.epic';
-import {updateCommonProductsTotalPriceEpic} from './tutorial/+state/update-common-products-total-price.epic';
-import {updatePriceForProductRangesEpic} from './tutorial/+state/update-price-for-product-ranges.epic';
-import {sendEmailWithInstructionsEpic} from './tutorial/+state/send-email-with-instructions.epic';
+} from './+state/epics/calculate-measurement-form-value.epic';
+import {updatePriceForProductRangesEpic} from './+state/epics/update-price-for-product-ranges.epic';
+import {loginWithProviderEpic} from './+state/epics/login-with-provider.epic';
+import {updateDisplayedProductsEpic} from './+state/epics/update-displayed-products.epic';
+import {saveUserDataEpic} from './+state/epics/save-user-data.epic';
+import {resetResponsesEpic} from './+state/epics/reset-responses.epic';
+import {logoutEpic} from './+state/epics/logout.epic';
+import {updateDisplayedSectionsEpic} from './+state/epics/update-displayed-sections.epic';
+import {updateDisplayedProductTypesEpic} from './+state/epics/update-displayed-product-types.epic';
+import {hideProductsEpic} from './+state/epics/hide-products.epic';
+import {initialTutorialState, TutorialState} from './+state/tutorial.reducer';
+import {sendEmailWithInstructionsEpic} from './+state/epics/send-email-with-instructions.epic';
+import {calculateProductQuantitiesEpic} from './+state/epics/calculate-product-quantities.epic';
+import {getUserDataEpic} from './+state/epics/get-user-data.epic';
+import {updateCommonProductsTotalPriceEpic} from './+state/epics/update-common-products-total-price.epic';
+import {initialUserContextState, UserContextState} from './+state/user-context.reducer';
 
 
 export interface AppState {
   tutorial: TutorialState;
-  firestore?: any;
+  userContext: UserContextState;
 }
 
 const epicMiddleware = createEpicMiddleware();
@@ -43,11 +46,14 @@ export const rootEpic = combineEpics(
   updatePriceForProductRangesEpic,
   updateCommonProductsTotalPriceEpic,
   resetResponsesEpic,
-  sendEmailWithInstructionsEpic
+  sendEmailWithInstructionsEpic,
+  logoutEpic,
+  showProductsOrScrollToMeasurementsEpic
 );
 
 export function configureStore(initialState: AppState = {
-  tutorial: initialTutorialState
+  tutorial: initialTutorialState,
+  userContext: initialUserContextState
 }): Store<AppState, AnyAction> {
   const store = createStore(
     reducers,
@@ -59,6 +65,7 @@ export function configureStore(initialState: AppState = {
   );
   // @ts-ignore
   epicMiddleware.run(rootEpic);
+  
   return store;
 }
 
