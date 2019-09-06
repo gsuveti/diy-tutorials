@@ -3,7 +3,7 @@ import {AnyAction} from 'redux';
 import {ofType, StateObservable} from 'redux-observable';
 import {AddResponse, TutorialActionTypes, updatePriceForProductRanges} from '../tutorial.actions';
 import {map} from 'rxjs/operators';
-import {AppState} from '../../store';
+import {AppState} from '../app.state';
 
 export const updatePriceForProductRangesEpic = (action$: Observable<AnyAction>, state$: StateObservable<AppState>) => {
   return action$.pipe(

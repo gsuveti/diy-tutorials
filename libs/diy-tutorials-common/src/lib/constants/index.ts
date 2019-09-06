@@ -15,3 +15,5 @@ export enum BlockNames {
 }
 
 export const SUBMIT_FORM = 'SUBMIT_FORM';
+
+export const CREDENTIALS_ALREADY_IN_USE = "auth/credential-already-in-use";

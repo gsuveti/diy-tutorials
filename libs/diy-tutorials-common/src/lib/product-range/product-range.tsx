@@ -7,7 +7,7 @@ import {ConnectedProduct} from '../product/product';
 import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {Block} from '../models/block.model';
 import {addProductsToCart, TutorialActions} from '../+state/tutorial.actions';
-import {AppState} from '../store';
+import {AppState} from '../+state/app.state';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
 

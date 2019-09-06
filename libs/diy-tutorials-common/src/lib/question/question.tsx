@@ -6,7 +6,7 @@ import {serializeAttributes} from '../utils';
 import {Response} from '../models/response.model';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {addResponse, TutorialActions} from '../+state/tutorial.actions';
-import {AppState} from '../store';
+import {AppState} from '../+state/app.state';
 import HideInEmail from '../hide-in-email/hide-in-email';
 import ShowInEmail from '../show-in-email/show-in-email';
 

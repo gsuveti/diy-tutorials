@@ -36,6 +36,7 @@ export function getTutorialInitialState(uuid: string, innerBlocks: Block[]): Tut
 
 
   return {
+    uuid,
     blocks,
     sections,
     sectionsWithRedirect,

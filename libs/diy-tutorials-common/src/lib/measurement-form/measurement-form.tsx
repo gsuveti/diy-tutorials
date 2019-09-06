@@ -6,7 +6,7 @@ import {Block} from '../models/block.model';
 import {ConnectedMeasurement} from '../measurement/measurement';
 import {serializeAttributes} from '../utils';
 import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
-import {AppState} from '../store';
+import {AppState} from '../+state/app.state';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {changeInstancesCount, TutorialActions} from '../+state/tutorial.actions';
 import HideInEmail from '../hide-in-email/hide-in-email';

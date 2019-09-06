@@ -3,7 +3,7 @@ import {AnyAction} from 'redux';
 import {ofType, StateObservable} from 'redux-observable';
 import {AddResponse, TutorialActionTypes} from '../tutorial.actions';
 import {ignoreElements, tap} from 'rxjs/operators';
-import {AppState} from '../../store';
+import {AppState} from '../app.state';
 import * as firebase from 'firebase';
 
 

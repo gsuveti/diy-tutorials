@@ -3,7 +3,7 @@ import {AnyAction} from 'redux';
 import {ofType, StateObservable} from 'redux-observable';
 import {AddResponse, TutorialActionTypes, updateDisplayedProductTypes} from '../tutorial.actions';
 import {map} from 'rxjs/operators';
-import {AppState} from '../../store';
+import {AppState} from '../app.state';
 
 import {filterBlocksByName} from '../../utils';
 import {BlockNames} from '../../constants';

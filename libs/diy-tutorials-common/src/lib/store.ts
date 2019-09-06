@@ -15,18 +15,14 @@ import {logoutEpic} from './+state/epics/logout.epic';
 import {updateDisplayedSectionsEpic} from './+state/epics/update-displayed-sections.epic';
 import {updateDisplayedProductTypesEpic} from './+state/epics/update-displayed-product-types.epic';
 import {hideProductsEpic} from './+state/epics/hide-products.epic';
-import {initialTutorialState, TutorialState} from './+state/tutorial.reducer';
+import {initialTutorialState} from './+state/tutorial.reducer';
 import {sendEmailWithInstructionsEpic} from './+state/epics/send-email-with-instructions.epic';
 import {calculateProductQuantitiesEpic} from './+state/epics/calculate-product-quantities.epic';
 import {getUserDataEpic} from './+state/epics/get-user-data.epic';
 import {updateCommonProductsTotalPriceEpic} from './+state/epics/update-common-products-total-price.epic';
-import {initialUserContextState, UserContextState} from './+state/user-context.reducer';
+import {initialUserContextState} from './+state/user-context.reducer';
+import {AppState} from './+state/app.state';
 
-
-export interface AppState {
-  tutorial: TutorialState;
-  userContext: UserContextState;
-}
 
 const epicMiddleware = createEpicMiddleware();
 const reduxDevtoolsExtension = (window && (window as any).__REDUX_DEVTOOLS_EXTENSION__) ? [(window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()] : [];
@@ -65,7 +61,7 @@ export function configureStore(initialState: AppState = {
   );
   // @ts-ignore
   epicMiddleware.run(rootEpic);
-  
+
   return store;
 }
 

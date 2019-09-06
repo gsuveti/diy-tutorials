@@ -19,3 +19,4 @@ export * from './lib/store';
 export * from './lib/+state/tutorial.initial-state';
 export * from './lib/+state/user-context.initial-state';
 export * from './lib/authentication.service';
+export {AppState} from './lib/+state/app.state';

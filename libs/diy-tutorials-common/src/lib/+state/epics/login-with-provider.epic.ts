@@ -3,8 +3,9 @@ import {AnyAction} from 'redux';
 import {ofType, StateObservable} from 'redux-observable';
 import {TutorialActionTypes} from '../tutorial.actions';
 import {catchError, ignoreElements, map, switchMap} from 'rxjs/operators';
-import {AppState} from '@diy-tutorials/diy-tutorials-common';
+import {CREDENTIALS_ALREADY_IN_USE} from '../../constants';
 import * as firebase from 'firebase';
+import {AppState} from '../app.state';
 
 
 export const loginWithProviderEpic = (action$: Observable<AnyAction>, state$: StateObservable<AppState>) => {
@@ -18,21 +19,60 @@ export const loginWithProviderEpic = (action$: Observable<AnyAction>, state$: St
 
         return from(firebase.auth().currentUser.linkWithPopup(provider))
           .pipe(
-            catchError((err) => {
-              const credential = err.credential;
+            catchError((err: any) => {
+              const code = err.code;
 
-              const auth = firebase.auth();
-              const currentUser = auth.currentUser;
+              if (code === CREDENTIALS_ALREADY_IN_USE) {
+                console.log("User already exists!")
+                const credential = err.credential;
 
-              return from(currentUser.delete())
-                .pipe(
-                  map(() => {
-                    return auth.signInWithCredential(credential);
-                  })
-                );
+
+                const auth = firebase.auth();
+                const currentUser = auth.currentUser;
+                const oldUserUUID = currentUser.uid;
+                const tutorialUUID = state$.value.tutorial.uuid;
+
+                return from(currentUser.delete())
+                  .pipe(
+                    map(() => {
+                      return auth.signInWithCredential(credential).then((userCredentials) => {
+                        const newUserUUID = userCredentials.user.uid;
+                        moveDataToOtherUser(oldUserUUID, newUserUUID, tutorialUUID);
+                      });
+                    })
+                  );
+              }
             }));
       },
     ),
     ignoreElements()
   );
 };
+
+
+function moveDataToOtherUser(oldUserUUID: string, newUserUUID: string, tutorialUUID: string) {
+  firebase.firestore().collection(`responses`)
+    .doc(`${oldUserUUID}/tutorials/${tutorialUUID}`)
+    .get()
+    .then((snapshot) => {
+      const data = snapshot.data();
+
+      //save data to the new newUserUUID
+      return firebase.firestore()
+        .collection(`responses`)
+        .doc(`${newUserUUID}/tutorials/${tutorialUUID}`)
+        .set(data)
+        .then(() => {
+          console.log(`Data saved to new user(${newUserUUID})!`)
+
+          // delete data from oldUserUUID
+          return firebase.firestore()
+            .collection(`responses`)
+            .doc(oldUserUUID)
+            .delete()
+            .then(() => {
+              console.log(`Data from old user(${oldUserUUID}) deleted!`)
+            })
+        });
+    });
+}

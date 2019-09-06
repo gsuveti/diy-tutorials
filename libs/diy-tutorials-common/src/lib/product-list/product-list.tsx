@@ -15,7 +15,7 @@ import {
   showProducts,
   TutorialActions
 } from '../+state/tutorial.actions';
-import {AppState} from '../store';
+import {AppState} from '../+state/app.state';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
 import {ConnectedProduct} from '../product/product';
@@ -39,6 +39,7 @@ interface DispatchProps {
   loginWithGoogle?: typeof loginWithGoogle;
   loginWithFacebook?: typeof loginWithFacebook;
   sendEmailWithInstructions?: typeof sendEmailWithInstructions;
+  logout?: typeof logout;
 }
 
 interface StateProps {

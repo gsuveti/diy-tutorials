@@ -5,7 +5,7 @@ import './product.scss';
 import {serializeAttributes} from '../utils';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {removeProduct, selectProduct, TutorialActions} from '../+state/tutorial.actions';
-import {AppState} from '../store';
+import {AppState} from '../+state/app.state';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {

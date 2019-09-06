@@ -7,7 +7,7 @@ import {ConnectedQuestion} from '../question/question';
 import {serializeAttributes} from '../utils';
 import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {ConnectedMeasurementForm} from '../measurement-form/measurement-form';
-import {AppState} from '../store';
+import {AppState} from '../+state/app.state';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {showProducts, TutorialActions} from '../+state/tutorial.actions';
 

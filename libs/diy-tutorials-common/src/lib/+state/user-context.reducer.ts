@@ -23,7 +23,6 @@ import {Response} from '../models/response.model';
 import * as firebase from 'firebase';
 
 export interface UserContextState {
-  uuid?: string;
   user?: firebase.User;
   productQuantities: { [uuid: string]: number };
   questionOptions: { [uuid: string]: any };
@@ -44,7 +43,6 @@ export interface UserContextState {
 }
 
 export const initialUserContextState: UserContextState = {
-  uuid: null,
   user: null,
   showProducts: false,
   selectedProductRange: null,
@@ -127,6 +125,7 @@ export const userContextReducer = createReducer(initialUserContextState, {
   [TutorialActionTypes.UserDataFetched]: (state: UserContextState, action: UserDataFetched) => {
     const {data} = action.payload;
     console.log("UserDataFetched");
+    console.log(data);
 
     state = {
       ...state,

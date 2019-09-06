@@ -12,7 +12,9 @@ export const getUserDataEpic = (action$: Observable<AnyAction>, state$: StateObs
     filter((action: GetUserData) => !!action.payload.user),
     switchMap((action: GetUserData) => {
       const {user} = action.payload;
-      const {uuid: tutorialUUID} = state$.value.userContext;
+      const {uuid: tutorialUUID} = state$.value.tutorial;
+
+      console.log(`Going to fetch data for user: ${user.uid}`)
 
       return from(firebase.firestore().collection(`responses`).doc(`${user.uid}/tutorials/${tutorialUUID}`).get());
     }),

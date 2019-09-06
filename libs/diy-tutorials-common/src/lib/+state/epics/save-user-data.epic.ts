@@ -34,9 +34,11 @@ export const saveUserDataEpic = (action$: Observable<AnyAction>, state$: StateOb
       return of(currentUser);
     }),
     switchMap(currentUser => {
-      const userContextState = state$.value.userContext;
+      const state = state$.value;
+      const userContextState = state.userContext;
+      const tutorialState = state.tutorial;
 
-      const {uuid: tutorialUUID, responses} = userContextState;
+      const { responses} = userContextState;
       const {measuredValues, instancesCountByMeasurementForm, displayedSections} = userContextState;
       const {showProducts, selectedProducts, selectedProductRange} = userContextState;
 
@@ -49,7 +51,8 @@ export const saveUserDataEpic = (action$: Observable<AnyAction>, state$: StateOb
         selectedProducts,
         selectedProductRange
       };
-      return from(firebase.firestore().collection(`responses`).doc(`${currentUser.uid}/tutorials/${tutorialUUID}`).set(data));
+      return from(firebase.firestore().collection(`responses`)
+        .doc(`${currentUser.uid}/tutorials/${tutorialState.uuid}`).set(data));
     }),
     map(() => userDataSaved())
   );

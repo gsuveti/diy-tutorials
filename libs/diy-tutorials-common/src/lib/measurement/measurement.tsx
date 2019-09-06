@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 
 import './measurement.scss';
 import {serializeAttributes} from '../utils';
-import {AppState} from '../store';
+import {AppState} from '../+state/app.state';
 import {addMeasurement, TutorialActions} from '../+state/tutorial.actions';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';

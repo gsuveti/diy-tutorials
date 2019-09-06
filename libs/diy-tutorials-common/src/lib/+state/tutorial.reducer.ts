@@ -3,6 +3,7 @@ import {BlockAttributes} from '../models/block-attributes.model';
 
 
 export interface TutorialState {
+  uuid: string;
   blocks: BlockAttributes[];
   sections: BlockAttributes[],
   sectionsWithRedirect: string[],
@@ -22,6 +23,7 @@ export interface TutorialState {
 }
 
 export const initialTutorialState: TutorialState = {
+  uuid: null,
   blocks: [],
   sections: [],
   sectionsWithRedirect: [],
