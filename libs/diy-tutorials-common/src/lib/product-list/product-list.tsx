@@ -20,6 +20,7 @@ import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
 import {ConnectedProduct} from '../product/product';
 import * as firebase from 'firebase';
+import {getProductsToCartLink} from '../+state/selectors/tutorial.selectors';
 
 
 /* tslint:disable:no-empty-interface */
@@ -50,6 +51,7 @@ interface StateProps {
   productRanges?: BlockAttributes;
   productRangePrices?: { [uuid: string]: number };
   commonProductsTotalPrice?: number;
+  productToCartLink?: string;
 }
 
 type ProductListProps = StateProps & DispatchProps & OwnProps;
@@ -75,7 +77,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
       children, innerBlocks, attributes, isVisible = true, productRanges = [],
       isRenderedInEditor, selectProductRange, selectedProductRange, optionalProducts = [],
       user, loginWithGoogle, loginWithFacebook, productRangePrices, commonProductsTotalPrice,
-      sendEmailWithInstructions, logout
+      sendEmailWithInstructions, logout, productToCartLink
     } = this.props;
     const {uuid} = attributes;
 
@@ -152,7 +154,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                     {
                       user.isAnonymous ?
                         <div className={'mt-xl pt-xl border-top'}>
-                          <p>Vrei sa descarci tutorialul in format pdf? Autentifica-te prin una dintre metodele de mai
+                          <p>Vrei sa cumperi produsele selectate sau sa primesti instructiounile prim email? Autentifica-te prin una dintre metodele de mai
                             jos!</p>
                           <div className={'d-flex flex-column align-items-center'}>
                             <button type="button" className="mb-sm social-btn btn btn-outline-primary d-flex"
@@ -167,11 +169,17 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                         </div>
                         :
                         <div className={'mt-xl pt-xl border-top d-flex flex-column align-items-center'}>
+                          <p>Esti la un click distanta de cumpararea produselor necesare!</p>
+                          <a href={productToCartLink} target="_blank" rel="noopener noreferrer"
+                             className="mb-xl social-btn btn btn-outline-primary d-flex">
+                            Cumpara produsele
+                          </a>
                           <p>Vrei sa primesti un email cu instructiunile la adresa {user.email} ?</p>
                           <button type="button" className="mb-sm social-btn btn btn-outline-primary d-flex"
                                   onClick={sendEmailWithInstructions}>
                             Trimite email
                           </button>
+
 
                           <button type="button" className="mt-xl btn btn-link" onClick={logout}>
                             Logout
@@ -201,6 +209,7 @@ function mapStateToProps(state: AppState, ownProps: ProductListProps, ownState: 
     optionalProducts: state.tutorial.optionalProducts,
     productRangePrices: state.userContext.productRangePrices,
     commonProductsTotalPrice: state.userContext.commonProductsTotalPrice,
+    productToCartLink: getProductsToCartLink(state)
   };
 }
 

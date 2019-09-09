@@ -20,6 +20,7 @@ interface OwnProps {
     price: number;
     quantityFormula: string;
     optional: boolean;
+    externalId: string;
   };
   isRenderedInEditor?: boolean;
 }

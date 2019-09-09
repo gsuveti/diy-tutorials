@@ -5,12 +5,17 @@ import {AddResponse, TutorialActionTypes} from '../tutorial.actions';
 import {ignoreElements, tap} from 'rxjs/operators';
 import {AppState} from '../app.state';
 import * as firebase from 'firebase';
+import {
+  getDisplayedOptionalProducts,
+  getDisplayedProductsFromSelectedProductRange
+} from '../selectors/tutorial.selectors';
 
 
 export const sendEmailWithInstructionsEpic = (action$: Observable<AnyAction>, state$: StateObservable<AppState>) => {
   return action$.pipe(
     ofType(TutorialActionTypes.SendEmailWithInstructions),
     tap((action: AddResponse) => {
+      const state = state$.value;
       const {products, commonProducts, optionalProducts} = state$.value.tutorial;
 
       const {
@@ -28,22 +33,15 @@ export const sendEmailWithInstructionsEpic = (action$: Observable<AnyAction>, st
 
         const total = productRangePrices[selectedProductRange] + commonProductsTotalPrice;
 
-        const selectedProducts = products
-          .filter(product => product.parentBlockUUID === selectedProductRange)
-          .filter(product => displayedProducts[product.uuid]);
+        const selectedProducts = getDisplayedProductsFromSelectedProductRange(state);
 
-        const selectedCommonProducts = commonProducts
-          .filter(product => displayedProducts[product.uuid]);
-
-        const productsContent = selectedProducts.concat(selectedCommonProducts)
+        const productsContent = selectedProducts
           .reduce((html, product) => {
             const quantity = productQuantities[product.uuid];
             return html + getHtmlForProduct(product, quantity);
           }, `<h2>Produse necesare (${total} lei)</h2>`);
 
-        const selectedOptionalProducts = optionalProducts
-          .filter(product => displayedProducts[product.uuid])
-          .filter(product => selectedProductsUUIDs.indexOf(product.uuid) >= 0);
+        const selectedOptionalProducts = getDisplayedOptionalProducts(state);
 
         const selectedOptionalProductsTotal = selectedOptionalProducts
           .reduce((total, product) => {

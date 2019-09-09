@@ -19,6 +19,7 @@ registerBlockType('irian/diy-product', {
   category: 'common',
   keywords: [],
   attributes: withBaseAttributes({
+    externalId: {type: 'string'},
     headline: {type: 'string'},
     url: {type: 'string'},
     imageUrl: {type: 'string'},
@@ -38,8 +39,8 @@ registerBlockType('irian/diy-product', {
     };
   })(
     (props: any) => {
-      const {setAttributes, attributes, productRangeOptions, productTypeOptions} = props;
-      const {headline, imageUrl, price, quantityFormula, productType, optional, url} = attributes;
+      const {setAttributes, attributes, productTypeOptions} = props;
+      const {headline, imageUrl, price, quantityFormula, productType, optional, url, externalId} = attributes;
 
       initBaseAttributes(props);
 
@@ -55,6 +56,13 @@ registerBlockType('irian/diy-product', {
             isRenderedInEditor={true}
             attributes={attributes}>
             <p className={'block-title'}>{i18n.product.title}</p>
+            <TextControl
+              label="Id extern"
+              key={"externalId"}
+              value={externalId}
+              onChange={(value) => {
+                setAttributes({externalId: value});
+              }}/>
             <TextControl
               label="URL"
               key={"url"}
