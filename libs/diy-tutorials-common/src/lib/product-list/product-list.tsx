@@ -154,7 +154,8 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                     {
                       user.isAnonymous ?
                         <div className={'mt-xl pt-xl border-top'}>
-                          <p>Vrei sa cumperi produsele selectate sau sa primesti instructiounile prim email? Autentifica-te prin una dintre metodele de mai
+                          <p>Vrei sa cumperi produsele selectate sau sa primesti instructiounile prim email?
+                            Autentifica-te prin una dintre metodele de mai
                             jos!</p>
                           <div className={'d-flex flex-column align-items-center'}>
                             <button type="button" className="mb-sm social-btn btn btn-outline-primary d-flex"
@@ -182,7 +183,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
 
 
                           <button type="button" className="mt-xl btn btn-link" onClick={logout}>
-                            Logout
+                            <small>Logout</small>
                           </button>
                         </div>
                     }
