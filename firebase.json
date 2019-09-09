@@ -11,6 +11,9 @@
   },
   "hosting": {
     "public": "dist/apps/diy-tutorials",
+    "predeploy": [
+      "npm run build-prod"
+    ],
     "ignore": [
       "firebase.json",
       "**/.*",

@@ -6,6 +6,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build-prod": "ng build --prod diy-tutorials",
     "build-frontend": "ng build --prod diy-tutorials-frontend",
     "watch-frontend": "ng build --watch=true diy-tutorials-frontend",
     "watch-backend": "ng build --watch=true diy-tutorials-backend",
