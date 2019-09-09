@@ -79,7 +79,6 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
       user, loginWithGoogle, loginWithFacebook, productRangePrices, commonProductsTotalPrice,
       sendEmailWithInstructions, logout, productToCartLink
     } = this.props;
-    const {uuid} = attributes;
 
     const content = children ?
       children
