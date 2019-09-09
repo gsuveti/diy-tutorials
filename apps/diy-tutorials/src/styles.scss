@@ -1,1 +1,38 @@
-/* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
+$spacer: 1em;
+
+$spacers: map-merge(
+    (
+      0: 0,
+      1: ($spacer * .25),
+      2: ($spacer * .5),
+      3: $spacer,
+      4: ($spacer * 1.5),
+      none: 0,
+      xs: ($spacer * .25),
+      sm: ($spacer * .5),
+      "": $spacer,
+      md: $spacer,
+      lg: ($spacer * 1.5),
+      xl: ($spacer * 2)
+    ),
+    $spacers
+);
+
+
+$margin: -12px;
+
+
+@import "~bootstrap/scss/bootstrap";
+
+/* fallback */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/materialicons/v47/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
+}
+
+@import url(https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css);
