@@ -7,7 +7,7 @@ sudo: required
 branches:
   only:
     - master
-    - /v\d+\.\d+[a-z]/
+    - /\d+\.\d+\.\d+/
 
 
 before_script:
