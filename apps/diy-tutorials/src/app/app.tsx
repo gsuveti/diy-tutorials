@@ -2,14 +2,17 @@ import React from 'react';
 
 import * as firebase from 'firebase';
 import './app.scss';
+import {ProductModel} from './models/product.model';
+import {ImageModel} from './models/open-graph.model';
 
 
 interface AppProps {
 
 };
 
+
 interface AppState {
-  products: any[];
+  products: ProductModel[];
   user: any;
   displayName: string;
   newProductUrl?: string;
@@ -21,9 +24,9 @@ export class App extends React.Component<AppProps, AppState> {
   constructor(props) {
     super(props);
     this.state = {products: [], user: null, displayName: null};
+    this.newProductUrlInput = React.createRef();
     this.loginWithGoogle = this.loginWithGoogle.bind(this);
     this.addProduct = this.addProduct.bind(this);
-    this.newProductUrlInput = React.createRef();
 
   }
 
@@ -79,14 +82,23 @@ export class App extends React.Component<AppProps, AppState> {
     });
   }
 
-  deleteProduct(id) {
+  static deleteProduct(id) {
     firebase.firestore().collection('products').doc(id).delete().then(() => {
     });
   }
 
 
+  static getImageUrl(image: ImageModel | ImageModel[]) {
+    if (image instanceof Array) {
+      return image[0].url;
+    } else {
+      return image.url;
+    }
+  }
+
   render(): React.ReactNode {
     const {user, products, displayName} = this.state;
+
     return (
       <div className={'container mt-xl'}>
         {user ?
@@ -115,7 +127,7 @@ export class App extends React.Component<AppProps, AppState> {
                     <div className={'list-group-item d-flex flex-row'} key={index}>
                       <div className={'d-flex flex-column w-100'}>
                         <div>
-                          <a href={product.url}>
+                          <a href={product.url} target="_blank" rel="noopener noreferrer">
                             <small>{product.url}</small>
                           </a>
                           {
@@ -128,7 +140,7 @@ export class App extends React.Component<AppProps, AppState> {
                         </div>
                         <div className={'d-flex flex-row justify-content-end'}>
                           <button className={'btn btn-link'} onClick={() => {
-                            this.deleteProduct(product.id)
+                            App.deleteProduct(product.id)
                           }}>
                             <small>Sterge</small>
                           </button>
@@ -138,7 +150,8 @@ export class App extends React.Component<AppProps, AppState> {
                       <div style={{width: '300px'}}>
                         {
                           product.metadata ?
-                            <img className={'w-100 flex-shrink-1'} src={product.metadata.openGraph.image.url}
+                            <img className={'w-100 flex-shrink-1'}
+                                 src={App.getImageUrl(product.metadata.openGraph.image)}
                                  alt={product.metadata.general.description}/>
                             :
                             <div className={'w-100 d-flex justify-content-center align-items-center'}>
