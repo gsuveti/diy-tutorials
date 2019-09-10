@@ -47,4 +47,4 @@ Thumbs.db
 !/wp-content/themes/index.php
 !/wp-content/plugins/diy-tutorials/
 /wp-content/plugins/diy-tutorials/dist
-
+/.firebase
