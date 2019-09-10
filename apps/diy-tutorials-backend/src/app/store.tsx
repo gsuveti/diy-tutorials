@@ -12,7 +12,8 @@ const DEFAULT_STATE = {
   productRangeOptions: [],
   productTypeOptions: [],
   measurementFormsOrder: [],
-  measurementsOrder: {}
+  measurementsOrder: {},
+  commonOrOptionalProductUUIDs: []
 };
 
 export const actions = {
@@ -73,6 +74,16 @@ registerStore('diy-tutorial', {
           })
         );
 
+        const productLists = filterBlocksByName(blockAttributesList, BlockNames.ProductList);
+        let commonOrOptionalProductUUIDs = [];
+        if (productLists.length > 0) {
+          const productListUUID = productLists[0].uuid;
+          commonOrOptionalProductUUIDs = filterBlocksByName(blockAttributesList, BlockNames.Product)
+            .filter(product => product.parentBlockUUID === productListUUID)
+            .map(product => product.uuid);
+        }
+
+
         const productTypes = filterBlocksByName(blockAttributesList, BlockNames.ProductType);
         const productTypeOptions = [{value: "", label: "-- Alege un tip --"}].concat(
           productTypes.map(attributes => {
@@ -113,7 +124,8 @@ registerStore('diy-tutorial', {
           sectionOptions,
           productRangeOptions,
           productTypeOptions,
-          questionOptions
+          questionOptions,
+          commonOrOptionalProductUUIDs
         };
     }
 
@@ -146,6 +158,9 @@ registerStore('diy-tutorial', {
     },
     getProductTypeOptions(state) {
       return state.productTypeOptions;
+    },
+    isCommonOrOptionalProduct(state, uuid): boolean {
+      return state.commonOrOptionalProductUUIDs.indexOf(uuid) >= 0;
     },
   },
 

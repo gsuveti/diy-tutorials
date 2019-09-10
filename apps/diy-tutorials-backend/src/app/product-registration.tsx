@@ -32,17 +32,24 @@ registerBlockType('irian/diy-product', {
   edit: withSelect((select, ownProps) => {
     const {getProductRangeOptions} = select("diy-tutorial");
     const {getProductTypeOptions} = select("diy-tutorial");
+    const {isCommonOrOptionalProduct} = select("diy-tutorial");
 
     return {
       productRangeOptions: getProductRangeOptions(),
-      productTypeOptions: getProductTypeOptions()
+      productTypeOptions: getProductTypeOptions(),
+      isCommonOrOptionalProduct: isCommonOrOptionalProduct(ownProps.attributes.uuid)
     };
   })(
     (props: any) => {
-      const {setAttributes, attributes, productTypeOptions} = props;
+      const {setAttributes, attributes, productTypeOptions, isCommonOrOptionalProduct} = props;
       const {headline, imageUrl, price, quantityFormula, productType, optional, url, externalId} = attributes;
 
       initBaseAttributes(props);
+
+      const optionalOptions = [
+        {value: false, label: "Produs comun"},
+        {value: true, label: "Scula"}
+      ];
 
       return ([
           <BlockControls key='controls'>
@@ -108,14 +115,20 @@ registerBlockType('irian/diy-product', {
                 props.setAttributes({productType: value});
               }}
             />
-            <CheckboxControl
-              key={"optional"}
-              label="Optional"
-              checked={optional}
-              onChange={(isChecked) => {
-                props.setAttributes({optional: isChecked});
-              }}
-            />
+            {
+              isCommonOrOptionalProduct ?
+                <SelectControl
+                  key="optional"
+                  label="Produs comun sau scula?"
+                  value={optional}
+                  options={optionalOptions}
+                  onChange={(optional) => {
+                    setAttributes({optional: optional});
+                  }}
+                />
+                :
+                null
+            }
           </Product>
         ]
       );
