@@ -49,14 +49,14 @@ export const getProductsToCartLink = createSelector(
 
     const additionalParams = products.concat(optionalProducts)
       .reduce((params, product) => {
-        const {contentIds, numItems} = params;
-        contentIds.push(product.externalId);
-        numItems.push(productQuantities[product.uuid]);
+        const {content_ids, num_items} = params;
+        content_ids.push(product.externalId);
+        num_items.push(productQuantities[product.uuid]);
 
-        return {contentIds, numItems};
+        return {content_ids, num_items};
       }, {
-        contentIds: [],
-        numItems: []
+        content_ids: [],
+        num_items: []
       });
 
     const url = new domurl('https://sorelamigo.ro/index.php?route=checkout/cart');
