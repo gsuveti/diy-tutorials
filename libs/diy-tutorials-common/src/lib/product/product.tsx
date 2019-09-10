@@ -90,7 +90,9 @@ export class Product extends React.Component<ProductProps, ProductState> {
                     null
                 }
                 <span className={'m-0'}>
-                  <a target="_blank" href={url} rel="noopener noreferrer">
+
+                  <a data-tooltip data-title={headline} title={headline} target="_blank" href={url}
+                     rel="noopener noreferrer">
                     <span className={'headline'}>{headline}</span>
                   </a>
                   <span className="badge badge-light badge-pill">{quantity} buc</span>

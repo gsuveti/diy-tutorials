@@ -59,3 +59,13 @@
     width: 100%;
   }
 }
+
+[data-tooltip="true"] {
+  &:hover {
+    &:before {
+      content: attr(data-title);
+      position: absolute;
+      background: white;
+    }
+  }
+}
