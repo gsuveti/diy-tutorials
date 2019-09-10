@@ -21,7 +21,6 @@ export function getUserContextInitialState(tutorialState: TutorialState): UserCo
     displayedSections,
     instancesCountByMeasurementForm,
     productQuantities,
-    user: null,
     showProducts: false,
     selectedProductRange: null,
     selectedProducts: [],

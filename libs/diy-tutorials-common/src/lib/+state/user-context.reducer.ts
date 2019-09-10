@@ -23,7 +23,6 @@ import {Response} from '../models/response.model';
 import * as firebase from 'firebase';
 
 export interface UserContextState {
-  user?: firebase.User;
   productQuantities: { [uuid: string]: number };
   questionOptions: { [uuid: string]: any };
   displayedConditions: { [uuid: string]: any };
@@ -43,7 +42,6 @@ export interface UserContextState {
 }
 
 export const initialUserContextState: UserContextState = {
-  user: null,
   showProducts: false,
   selectedProductRange: null,
   selectedProducts: [],
@@ -115,11 +113,6 @@ export const userContextReducer = createReducer(initialUserContextState, {
     if (index > -1) {
       state.selectedProducts.splice(index, 1);
     }
-    return state;
-  },
-  [TutorialActionTypes.GetUserData]: (state: UserContextState, action: GetUserData) => {
-    const {user} = action.payload;
-    state.user = user;
     return state;
   },
   [TutorialActionTypes.UserDataFetched]: (state: UserContextState, action: UserDataFetched) => {

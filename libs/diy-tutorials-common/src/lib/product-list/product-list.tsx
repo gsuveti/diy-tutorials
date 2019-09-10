@@ -10,6 +10,7 @@ import {
   loginWithFacebook,
   loginWithGoogle,
   logout,
+  resetUserContext,
   selectProductRange,
   sendEmailWithInstructions,
   showProducts,
@@ -19,8 +20,8 @@ import {AppState} from '../+state/app.state';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {BlockAttributes} from '../models/block-attributes.model';
 import {ConnectedProduct} from '../product/product';
-import * as firebase from 'firebase';
 import {getProductsToCartLink} from '../+state/selectors/tutorial.selectors';
+import {UserState} from '../+state/user.reducer';
 
 
 /* tslint:disable:no-empty-interface */
@@ -41,10 +42,11 @@ interface DispatchProps {
   loginWithFacebook?: typeof loginWithFacebook;
   sendEmailWithInstructions?: typeof sendEmailWithInstructions;
   logout?: typeof logout;
+  resetUserContext?: typeof resetUserContext;
 }
 
 interface StateProps {
-  user?: firebase.User;
+  user?: UserState;
   isVisible?: boolean;
   selectedProductRange?: string;
   optionalProducts?: BlockAttributes[];
@@ -77,7 +79,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
       children, innerBlocks, attributes, isVisible = true, productRanges = [],
       isRenderedInEditor, selectProductRange, selectedProductRange, optionalProducts = [],
       user, loginWithGoogle, loginWithFacebook, productRangePrices, commonProductsTotalPrice,
-      sendEmailWithInstructions, logout, productToCartLink
+      sendEmailWithInstructions, logout, productToCartLink, resetUserContext
     } = this.props;
 
     const content = children ?
@@ -153,9 +155,8 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                     {
                       user.isAnonymous ?
                         <div className={'mt-xl pt-xl border-top'}>
-                          <p>Vrei sa cumperi produsele selectate sau sa primesti instructiounile prim email?
-                            Autentifica-te prin una dintre metodele de mai
-                            jos!</p>
+                          <p>Vrei sa cumperi produsele selectate sau sa primesti prin email o lista cu ele?
+                            Autentifica-te prin una dintre metodele de mai jos!</p>
                           <div className={'d-flex flex-column align-items-center'}>
                             <button type="button" className="mb-sm social-btn btn btn-outline-primary d-flex"
                                     onClick={loginWithGoogle}>
@@ -181,9 +182,15 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                           </button>
 
 
-                          <button type="button" className="mt-xl btn btn-link" onClick={logout}>
-                            <small>Logout</small>
-                          </button>
+                          <div className={'mt-xl pt-xl w-100 d-flex justify-content-center'}>
+                            <button type="button" className="btn btn-link" onClick={resetUserContext}>
+                              <small>Resetare</small>
+                            </button>
+                            <div className={'my-xs border-right'}></div>
+                            <button type="button" className="btn btn-link" onClick={logout}>
+                              <small>Logout</small>
+                            </button>
+                          </div>
                         </div>
                     }
                   </div>
@@ -202,7 +209,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
 function mapStateToProps(state: AppState, ownProps: ProductListProps, ownState: ProductListState): StateProps {
 
   return {
-    user: state.userContext.user,
+    user: state.user,
     isVisible: state.userContext.showProducts,
     productRanges: state.tutorial.productRanges,
     selectedProductRange: state.userContext.selectedProductRange,
@@ -216,6 +223,7 @@ function mapStateToProps(state: AppState, ownProps: ProductListProps, ownState: 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators<TutorialActions, ActionCreatorsMapObject<TutorialActions> & DispatchProps>({
     logout,
+    resetUserContext,
     showProducts,
     selectProductRange,
     loginWithGoogle,

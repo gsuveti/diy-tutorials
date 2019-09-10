@@ -22,6 +22,8 @@ import {getUserDataEpic} from './+state/epics/get-user-data.epic';
 import {updateCommonProductsTotalPriceEpic} from './+state/epics/update-common-products-total-price.epic';
 import {initialUserContextState} from './+state/user-context.reducer';
 import {AppState} from './+state/app.state';
+import {scrollToTopEpic} from './+state/epics/scroll-to-top.epic';
+import {initialUserState} from './+state/user.reducer';
 
 
 const epicMiddleware = createEpicMiddleware();
@@ -44,12 +46,14 @@ export const rootEpic = combineEpics(
   resetResponsesEpic,
   sendEmailWithInstructionsEpic,
   logoutEpic,
-  showProductsOrScrollToMeasurementsEpic
+  showProductsOrScrollToMeasurementsEpic,
+  scrollToTopEpic
 );
 
 export function configureStore(initialState: AppState = {
   tutorial: initialTutorialState,
-  userContext: initialUserContextState
+  userContext: initialUserContextState,
+  user: initialUserState
 }): Store<AppState, AnyAction> {
   const store = createStore(
     reducers,
