@@ -30,6 +30,8 @@ export enum TutorialActionTypes {
   Logout = '[Tutorial] Logout',
   ShowProductsOrScrollToMeasurements = '[Tutorial] Show products or scroll to measurements',
   ResetUserContext = '[Tutorial] Reset user context',
+  EmailSent = '[Tutorial] Email sent',
+  EmailNotSent = '[Tutorial] Email not sent',
 }
 
 

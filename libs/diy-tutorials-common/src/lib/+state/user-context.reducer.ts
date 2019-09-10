@@ -2,7 +2,6 @@ import {
   AddMeasurement,
   AddResponse,
   ChangeInstancesCount,
-  GetUserData,
   HideProducts,
   ResetResponses,
   SelectProduct,
@@ -18,9 +17,8 @@ import {
   UpdateProductQuantities,
   UserDataFetched
 } from './tutorial.actions';
-import {createReducer} from 'redux-starter-kit'
+import {AnyAction, createReducer} from 'redux-starter-kit'
 import {Response} from '../models/response.model';
-import * as firebase from 'firebase';
 
 export interface UserContextState {
   productQuantities: { [uuid: string]: number };
@@ -39,6 +37,7 @@ export interface UserContextState {
   showProducts: boolean,
   selectedProducts: string[],
   selectedProductRange: string,
+  emailMessage: {},
 }
 
 export const initialUserContextState: UserContextState = {
@@ -56,8 +55,8 @@ export const initialUserContextState: UserContextState = {
   displayedProducts: {},
   productRangePrices: {},
   displayedSections: [],
-  commonProductsTotalPrice: null
-
+  commonProductsTotalPrice: null,
+  emailMessage: null
 };
 
 export const userContextReducer = createReducer(initialUserContextState, {
@@ -192,6 +191,13 @@ export const userContextReducer = createReducer(initialUserContextState, {
     };
 
     return state;
-  }
-
+  },
+  [TutorialActionTypes.EmailSent]: (state: UserContextState, action: AnyAction) => {
+    state.emailMessage = {severity: 'success', text: 'Email-ul a fost trimis',};
+    return state;
+  },
+  [TutorialActionTypes.EmailNotSent]: (state: UserContextState, action: AnyAction) => {
+    state.emailMessage = {severity: 'danger', text: 'Selecteza un pachet de produse!',};
+    return state;
+  },
 });

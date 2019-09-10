@@ -54,6 +54,7 @@ interface StateProps {
   productRangePrices?: { [uuid: string]: number };
   commonProductsTotalPrice?: number;
   productToCartLink?: string;
+  emailMessage?: any;
 }
 
 type ProductListProps = StateProps & DispatchProps & OwnProps;
@@ -79,7 +80,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
       children, innerBlocks, attributes, isVisible = true, productRanges = [],
       isRenderedInEditor, selectProductRange, selectedProductRange, optionalProducts = [],
       user, loginWithGoogle, loginWithFacebook, productRangePrices, commonProductsTotalPrice,
-      sendEmailWithInstructions, logout, productToCartLink, resetUserContext
+      sendEmailWithInstructions, logout, productToCartLink, resetUserContext, emailMessage
     } = this.props;
 
     const content = children ?
@@ -181,6 +182,12 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                             Trimite email
                           </button>
 
+                          {emailMessage ?
+                            <p className={`text-${emailMessage.severity}`}>
+                              <small>{emailMessage.text}</small>
+                            </p> : null
+                          }
+
 
                           <div className={'mt-xl pt-xl w-100 d-flex justify-content-center'}>
                             <button type="button" className="btn btn-link" onClick={resetUserContext}>
@@ -210,6 +217,7 @@ function mapStateToProps(state: AppState, ownProps: ProductListProps, ownState: 
 
   return {
     user: state.user,
+    emailMessage: state.userContext.emailMessage,
     isVisible: state.userContext.showProducts,
     productRanges: state.tutorial.productRanges,
     selectedProductRange: state.userContext.selectedProductRange,

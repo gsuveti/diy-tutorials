@@ -1,8 +1,8 @@
-import {Observable} from 'rxjs';
+import {from, Observable, of} from 'rxjs';
 import {AnyAction} from 'redux';
 import {ofType, StateObservable} from 'redux-observable';
 import {AddResponse, TutorialActionTypes} from '../tutorial.actions';
-import {ignoreElements, tap} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
 import {AppState} from '../app.state';
 import * as firebase from 'firebase';
 import {
@@ -14,18 +14,18 @@ import {
 export const sendEmailWithInstructionsEpic = (action$: Observable<AnyAction>, state$: StateObservable<AppState>) => {
   return action$.pipe(
     ofType(TutorialActionTypes.SendEmailWithInstructions),
-    tap((action: AddResponse) => {
+    switchMap((action: AddResponse) => {
       const state = state$.value;
-      const {products, commonProducts, optionalProducts} = state$.value.tutorial;
+      const {optionalProducts} = state$.value.tutorial;
 
       const {
-        user, displayedProducts, selectedProductRange, productQuantities,
-        productRangePrices, selectedProducts: selectedProductsUUIDs,
+        selectedProductRange, productQuantities,
+        productRangePrices,
         commonProductsTotalPrice
       } = state$.value.userContext;
+      const {email} = state.user;
 
       if (selectedProductRange) {
-        const {email} = user;
 
         const title = getTitle();
         const content = getContent();
@@ -66,12 +66,15 @@ export const sendEmailWithInstructionsEpic = (action$: Observable<AnyAction>, st
           optionalProducts
         };
 
-        return firebase.firestore().collection(`emails`).add(data);
+        return from(firebase.firestore().collection(`emails`).add(data)).pipe(
+          map(() => {
+            return {type: TutorialActionTypes.EmailSent}
+          })
+        );
       } else {
-        alert("Selecteaza o gama de produse!")
+        return of({type: TutorialActionTypes.EmailNotSent});
       }
-    }),
-    ignoreElements()
+    })
   );
 };
 
