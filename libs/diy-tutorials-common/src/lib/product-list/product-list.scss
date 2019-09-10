@@ -17,6 +17,13 @@
       h4 {
         color: var(--primary);
       }
+
+      .product {
+        .badge-pill {
+          background-color: var(--green) !important;
+          color: var(--white) !important;
+        }
+      }
     }
 
     &.product-range-summary {

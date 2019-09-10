@@ -21,6 +21,7 @@ interface OwnProps {
     quantityFormula: string;
     optional: boolean;
     externalId: string;
+    parentBlockUUID: string;
   };
   isRenderedInEditor?: boolean;
 }
@@ -48,26 +49,15 @@ export class Product extends React.Component<ProductProps, ProductState> {
   constructor(props) {
     super(props);
     this.state = {};
-    this.onProductClicked = this.onProductClicked.bind(this)
   }
 
-  onProductClicked(event) {
-    const {selectProduct, removeProduct, attributes} = this.props;
-    const {uuid} = attributes;
-
-    const isChecked = event.currentTarget.checked;
-    if (isChecked) {
-      selectProduct(uuid);
-    } else {
-      removeProduct(uuid);
-    }
-  }
 
   render() {
     const {children, attributes, isRenderedInEditor, quantity = 0, isVisible = true, isSelected = false} = this.props;
+    const {selectProduct, removeProduct} = this.props;
     const {uuid, imageUrl, url, headline, optional} = attributes;
 
-
+    const badgeColor = (optional && isSelected) ? 'badge-success' : 'badge-light';
     return (
       <div data-attributes={serializeAttributes(attributes)}
            className={`product pb-md mb-md border-bottom col-12 px-0 ${isVisible ? "show" : "hide"}`}>
@@ -76,31 +66,36 @@ export class Product extends React.Component<ProductProps, ProductState> {
           isRenderedInEditor ? null :
             <div>
               <div style={{position: 'relative'}}>
-                {
-                  optional ?
-                    <input
-                      style={{position: 'relative', top: '-2px'}}
-                      className="mr-sm"
-                      type="checkbox"
-                      aria-label="Checkbox for following text input"
-                      checked={isSelected}
-                      onChange={this.onProductClicked}
-                    />
-                    :
-                    null
-                }
                 <span className={'m-0'}>
-
                   <a data-tooltip data-title={headline} title={headline} target="_blank" href={url}
                      rel="noopener noreferrer">
                     <span className={'headline'}>{headline}</span>
                   </a>
-                  <span className="badge badge-light badge-pill">{quantity} buc</span>
+                  <span className={`badge badge-pill ${badgeColor}`}>{quantity} buc</span>
                 </span>
               </div>
               <div className={'image-wrapper'}>
                 <img src={imageUrl}/>
               </div>
+              {
+                optional ?
+                  <div className={'d-flex justify-content-center'}>
+                    {
+                      isSelected ?
+                        <button className={'btn btn-light ml btn-sm d-flex align-items-center'}
+                                onClick={() => removeProduct(uuid)}>
+                          <i className={'material-icons'}>remove_shopping_cart</i>Scoate din cos
+                        </button>
+                        :
+                        <button className={'btn btn-outline-primary btn-sm d-flex align-items-center'}
+                                onClick={() => selectProduct(uuid)}>
+                          <i className={'material-icons'}>add_shopping_cart</i>Adauga in cos
+                        </button>
+                    }
+                  </div>
+                  :
+                  null
+              }
             </div>
         }
       </div>
@@ -111,8 +106,10 @@ export class Product extends React.Component<ProductProps, ProductState> {
 
 function mapStateToProps(state: AppState, ownProps: ProductProps, ownState: ProductState): StateProps {
   const {attributes} = ownProps;
-  const {uuid, productType} = attributes;
+  const {uuid, productType, parentBlockUUID} = attributes;
   const quantity = state.userContext.productQuantities[uuid];
+  const {selectedProductRange} = state.userContext;
+
 
   return {
     isVisible: productType ? state.userContext.displayedProductTypes[productType] : true,
