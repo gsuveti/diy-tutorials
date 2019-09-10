@@ -30,6 +30,7 @@ export const userReducer = createReducer(initialUserState, {
     state.isAnonymous = user.isAnonymous;
     state.email = user.email;
     state.displayName = user.displayName;
+    state.uid = user.uid;
 
     return state;
   },
