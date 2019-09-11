@@ -19,7 +19,7 @@ script:
 
 before_deploy:
   - cd ${TRAVIS_BUILD_DIR}/wp-content/plugins/
-  - zip -r diy-tutorials-${TRAVIS_BUILD_NUMBER}.zip diy-tutorials
+  - zip -r diy-tutorials-${TRAVIS_TAG}.zip diy-tutorials
 
 deploy:
   provider: releases
