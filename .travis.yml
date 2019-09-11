@@ -24,7 +24,7 @@ before_deploy:
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
-  file: diy-tutorials-${TRAVIS_BUILD_NUMBER}.zip
+  file: diy-tutorials-${TRAVIS_TAG}.zip
   skip_cleanup: true
   on:
     tags: true
