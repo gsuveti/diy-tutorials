@@ -170,7 +170,6 @@ function diy_settings_page_init()
 {
   $cm_settings['codeEditor'] = wp_enqueue_code_editor(array('name' => 'javascript', 'json' => true));
   wp_localize_script('jquery', 'cm_settings', $cm_settings);
-  wp_enqueue_script('settings_page_init', plugins_url('/src/settings-page-init.js', dirname(__FILE__)), null, null, true);
   wp_enqueue_style('wp-codemirror');
 
 
@@ -234,5 +233,10 @@ function diy_settings_page_template()
     submit_button();
     ?>
   </form>
+  <script>
+    jQuery(function ($) {
+      wp.codeEditor.initialize($('.cm-textarea'), {mode: 'javascript', json: true});
+    });
+  </script>
   <?php
 }
