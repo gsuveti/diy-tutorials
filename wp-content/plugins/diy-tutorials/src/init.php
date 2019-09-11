@@ -194,7 +194,7 @@ function diy_settings_page_init()
 
   add_settings_field(
     'cart_url',
-    'Cart url',
+    'Cart URL',
     'cart_url_renderer',
     'diy_tutorials',
     'diy_settings_section'
