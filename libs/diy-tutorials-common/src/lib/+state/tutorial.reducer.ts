@@ -1,5 +1,6 @@
 import {createReducer} from 'redux-starter-kit'
 import {BlockAttributes} from '../models/block-attributes.model';
+import {EnvironmentModel} from '../models/environment.model';
 
 
 export interface TutorialState {
@@ -18,8 +19,7 @@ export interface TutorialState {
 
   questionOptions: { [uuid: string]: any };
   displayedConditions: { [uuid: string]: any };
-
-
+  environment: EnvironmentModel
 }
 
 export const initialTutorialState: TutorialState = {
@@ -37,6 +37,7 @@ export const initialTutorialState: TutorialState = {
   commonProducts: [],
   questionOptions: {},
   displayedConditions: {},
+  environment: {},
 };
 
 export const tutorialReducer = createReducer(initialTutorialState, {});

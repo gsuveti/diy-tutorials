@@ -32,6 +32,7 @@ export function getUserContextInitialState(tutorialState: TutorialState): UserCo
     displayedProductTypes: {},
     displayedProducts: {},
     productRangePrices: {},
-    commonProductsTotalPrice: null
+    commonProductsTotalPrice: null,
+    emailMessage: null
   };
 }

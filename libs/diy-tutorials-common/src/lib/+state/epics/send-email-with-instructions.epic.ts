@@ -4,7 +4,7 @@ import {ofType, StateObservable} from 'redux-observable';
 import {AddResponse, TutorialActionTypes} from '../tutorial.actions';
 import {map, switchMap} from 'rxjs/operators';
 import {AppState} from '../app.state';
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import {
   getDisplayedOptionalProducts,
   getDisplayedProductsFromSelectedProductRange

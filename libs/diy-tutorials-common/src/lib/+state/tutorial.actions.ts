@@ -1,7 +1,7 @@
 import {Action, ActionCreator, AnyAction} from 'redux';
 import {Response} from '../models/response.model';
 import {action, createAction} from 'typesafe-actions';
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 
 export enum TutorialActionTypes {
   AddResponse = '[Tutorial] Add response',

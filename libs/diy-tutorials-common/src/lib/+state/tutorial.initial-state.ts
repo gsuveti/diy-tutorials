@@ -2,8 +2,9 @@ import {filterBlocksByName, getBlockAttributesList, groupBy} from '../utils';
 import {TutorialState} from './tutorial.reducer';
 import {Block} from '../models/block.model';
 import {BlockNames} from '../constants';
+import {EnvironmentModel} from '@diy-tutorials/diy-tutorials-common';
 
-export function getTutorialInitialState(uuid: string, innerBlocks: Block[]): TutorialState {
+export function getTutorialInitialState(uuid: string, innerBlocks: Block[], environment:EnvironmentModel): TutorialState {
 
 
   const blocks = getBlockAttributesList(innerBlocks);
@@ -50,5 +51,6 @@ export function getTutorialInitialState(uuid: string, innerBlocks: Block[]): Tut
     productRanges,
     questionOptions,
     displayedConditions,
+    environment
   };
 }

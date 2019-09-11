@@ -1,4 +1,4 @@
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import {getUserData} from './+state/tutorial.actions';
 
 export function logout() {

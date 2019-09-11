@@ -3,7 +3,7 @@ import {AnyAction} from 'redux';
 import {ofType, StateObservable} from 'redux-observable';
 import {GetUserData, TutorialActionTypes, userDataFetched} from '../tutorial.actions';
 import {filter, map, switchMap} from 'rxjs/operators';
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import {AppState} from '@diy-tutorials/diy-tutorials-common';
 
 export const getUserDataEpic = (action$: Observable<AnyAction>, state$: StateObservable<AppState>) => {

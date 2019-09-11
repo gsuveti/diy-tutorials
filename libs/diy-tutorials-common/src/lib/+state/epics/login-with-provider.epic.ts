@@ -4,7 +4,7 @@ import {ofType, StateObservable} from 'redux-observable';
 import {TutorialActionTypes} from '../tutorial.actions';
 import {catchError, ignoreElements, map, switchMap} from 'rxjs/operators';
 import {CREDENTIALS_ALREADY_IN_USE} from '../../constants';
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import {AppState} from '../app.state';
 
 

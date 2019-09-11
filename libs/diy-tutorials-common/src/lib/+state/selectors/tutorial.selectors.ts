@@ -11,6 +11,7 @@ const getDisplayedProducts = (state: AppState) => state.userContext.displayedPro
 const getSelectedProductRange = (state: AppState) => state.userContext.selectedProductRange;
 const getSelectedProducts = (state: AppState) => state.userContext.selectedProducts;
 const getProductQuantities = (state: AppState) => state.userContext.productQuantities;
+const getCartURL = (state: AppState) => state.tutorial.environment['cart_url'];
 
 export const getDisplayedCommonProductsFromSelectedProductRange = createSelector(
   [getCommonProducts, getDisplayedProducts, getSelectedProductRange],
@@ -28,7 +29,6 @@ export const getDisplayedOptionalProducts = createSelector(
     return optionalProducts
       .filter(product => displayedProducts[product.uuid])
       .filter(product => selectedProductsUUIDs.indexOf(product.uuid) >= 0);
-
   }
 );
 
@@ -44,8 +44,8 @@ export const getDisplayedProductsFromSelectedProductRange = createSelector(
 );
 
 export const getProductsToCartLink = createSelector(
-  [getDisplayedProductsFromSelectedProductRange, getDisplayedOptionalProducts, getProductQuantities],
-  (products, optionalProducts, productQuantities): string => {
+  [getDisplayedProductsFromSelectedProductRange, getDisplayedOptionalProducts, getProductQuantities, getCartURL],
+  (products, optionalProducts, productQuantities, cartURL): string => {
 
     const additionalParams = products.concat(optionalProducts)
       .reduce((params, product) => {
@@ -59,7 +59,7 @@ export const getProductsToCartLink = createSelector(
         num_items: []
       });
 
-    const url = new domurl('https://sorelamigo.ro/index.php?route=checkout/cart');
+    const url = new domurl(cartURL);
     const params = {
       ...qs.parse(url.query),
       ...additionalParams

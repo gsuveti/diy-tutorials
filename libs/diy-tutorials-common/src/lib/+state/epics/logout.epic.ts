@@ -4,8 +4,7 @@ import {ofType, StateObservable} from 'redux-observable';
 import {resetUserContext, TutorialActionTypes} from '../tutorial.actions';
 import {map, switchMap} from 'rxjs/operators';
 import {AppState} from '@diy-tutorials/diy-tutorials-common';
-import * as firebase from 'firebase';
-
+import * as firebase from 'firebase/app';
 
 export const logoutEpic = (action$: Observable<AnyAction>, state$: StateObservable<AppState>) => {
   return action$.pipe(

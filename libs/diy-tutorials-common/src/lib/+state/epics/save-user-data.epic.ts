@@ -3,7 +3,7 @@ import {AnyAction} from 'redux';
 import {ofType, StateObservable} from 'redux-observable';
 import {TutorialActionTypes, userDataSaved} from '../tutorial.actions';
 import {debounceTime, map, switchMap} from 'rxjs/operators';
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import {AppState} from '@diy-tutorials/diy-tutorials-common';
 
 export const saveUserDataEpic = (action$: Observable<AnyAction>, state$: StateObservable<AppState>) => {
@@ -24,7 +24,6 @@ export const saveUserDataEpic = (action$: Observable<AnyAction>, state$: StateOb
     debounceTime(1000),
     switchMap(action => {
       const currentUser = firebase.auth().currentUser;
-      console.log(currentUser);
 
       if (!currentUser) {
         return from(firebase.auth().signInAnonymously()).pipe(

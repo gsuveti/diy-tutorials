@@ -69,8 +69,6 @@ function diy_tutorials_block_assets()
       )
     )
   );
-
-
 }
 
 function getJSFiles($folder)
@@ -99,6 +97,17 @@ function getFileName($fullName)
 function frontend_enqueue_scripts()
 {
 
+  // Register the environment script
+  wp_register_script('frontend_environment', plugins_url('/src/environment.js', dirname(__FILE__)), null, null, true);
+  $options = get_option('diy_settings');
+  $translation_array = array(
+    'firebase_config' => $options['firebase_config'],
+    'cart_url' => $options['cart_url']
+  );
+  wp_localize_script('frontend_environment', 'environment', $translation_array);
+  wp_enqueue_script('frontend_environment');
+
+
   $folder = '/dist/diy-tutorials-frontend/';
 
   $jsFiles = getJSFiles($folder);
@@ -117,9 +126,11 @@ function frontend_enqueue_scripts()
     $key = array_search($name, $jsFileNames);
     $fullName = $jsFiles[$key];
 
-    wp_enqueue_script($name,
+    wp_enqueue_script('frontend_' . $name,
       plugins_url($folder . $fullName, dirname(__FILE__)), null, null, true);
   }
+
+
 }
 
 
@@ -137,11 +148,91 @@ function my_deregister_scripts()
 
 add_action('wp_footer', 'my_deregister_scripts');
 
-function add_async_attribute($tag, $handle)
+function add_defer_attribute($tag, $handle)
 {
   if (strpos($handle, 'frontend_') === 0)
-    return str_replace(' src', ' async="async" src', $tag);
+    return str_replace(' src', ' defer src', $tag);
   return $tag;
 }
 
-add_filter('script_loader_tag', 'add_async_attribute', 10, 2);
+add_filter('script_loader_tag', 'add_defer_attribute', 10, 2);
+
+
+add_action('admin_menu', 'diy_settings_page_menu');
+add_action('admin_init', 'diy_settings_page_init');
+
+function diy_settings_page_menu()
+{
+  add_menu_page('DIY Settings', 'DIY Settings Page', 'manage_options', 'diy_settings_page', 'diy_settings_page_template');
+}
+
+function diy_settings_page_init()
+{
+  $cm_settings['codeEditor'] = wp_enqueue_code_editor(array('name' => 'javascript', 'json' => true));
+  wp_localize_script('jquery', 'cm_settings', $cm_settings);
+  wp_enqueue_script('settings_page_init', plugins_url('/src/settings-page-init.js', dirname(__FILE__)), null, null, true);
+  wp_enqueue_style('wp-codemirror');
+
+
+  register_setting('diy_tutorials', 'diy_settings');
+
+
+  add_settings_section(
+    'diy_settings_section',
+    '',
+    'diy_settings_section_callback',
+    'diy_tutorials'
+  );
+
+  add_settings_field(
+    'firebase_config',
+    'Firbase config',
+    'firebase_config_renderer',
+    'diy_tutorials',
+    'diy_settings_section'
+  );
+
+  add_settings_field(
+    'cart_url',
+    'Cart url',
+    'cart_url_renderer',
+    'diy_tutorials',
+    'diy_settings_section'
+  );
+}
+
+function diy_settings_section_callback()
+{
+  echo '';
+}
+
+function firebase_config_renderer()
+{
+  $options = get_option('diy_settings');
+  ?>
+  <textarea type='text' class="cm-textarea"
+            name='diy_settings[firebase_config]'><?php echo $options['firebase_config']; ?></textarea>
+  <?php
+}
+
+function cart_url_renderer()
+{
+  $options = get_option('diy_settings');
+  ?>
+  <input style='width:100%' type='text' name='diy_settings[cart_url]' value='<?php echo $options['cart_url']; ?>'/>
+  <?php
+}
+
+function diy_settings_page_template()
+{
+  ?>
+  <form action='options.php' method='post'>
+    <h1>DIY Settings Page</h1>
+    <?php
+    settings_fields('diy_tutorials');
+    do_settings_sections('diy_tutorials');
+    submit_button();
+    ?>
+  </form>
+  <?php
+}

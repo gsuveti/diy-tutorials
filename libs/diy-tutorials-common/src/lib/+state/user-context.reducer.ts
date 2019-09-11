@@ -117,7 +117,6 @@ export const userContextReducer = createReducer(initialUserContextState, {
   [TutorialActionTypes.UserDataFetched]: (state: UserContextState, action: UserDataFetched) => {
     const {data} = action.payload;
     console.log("UserDataFetched");
-    console.log(data);
 
     state = {
       ...state,
