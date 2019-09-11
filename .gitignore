@@ -39,7 +39,6 @@ testem.log
 Thumbs.db
 
 
-
 /wp-content/
 !/wp-content/index.php
 !/wp-content/plugins/hello.php
