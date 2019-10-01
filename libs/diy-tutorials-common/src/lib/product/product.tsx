@@ -22,6 +22,7 @@ interface OwnProps {
     optional: boolean;
     externalId: string;
     parentBlockUUID: string;
+    defaultOption: string;
   };
   isRenderedInEditor?: boolean;
 }
@@ -55,7 +56,7 @@ export class Product extends React.Component<ProductProps, ProductState> {
   render() {
     const {children, attributes, isRenderedInEditor, quantity = 0, isVisible = true, isSelected = false} = this.props;
     const {selectProduct, removeProduct} = this.props;
-    const {uuid, imageUrl, url, headline, optional} = attributes;
+    const {uuid, imageUrl, url, headline, optional, defaultOption} = attributes;
 
     const badgeColor = (optional && isSelected) ? 'badge-success' : 'badge-light';
     return (
@@ -71,7 +72,10 @@ export class Product extends React.Component<ProductProps, ProductState> {
                      rel="noopener noreferrer">
                     <span className={'headline'}>{headline}</span>
                   </a>
-                  <span className={`badge badge-pill ${badgeColor}`}>{quantity} buc</span>
+                  <span className={`quantity-badge badge badge-pill ${badgeColor}`}>{quantity} buc</span>
+                  {defaultOption?
+                    <span className={`badge badge-pill badge-warning`}>Diverse optiuni</span>:null
+                  }
                 </span>
               </div>
               <div className={'image-wrapper'}>

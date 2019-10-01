@@ -49,14 +49,16 @@ export const getProductsToCartLink = createSelector(
 
     const additionalParams = products.concat(optionalProducts)
       .reduce((params, product) => {
-        const {content_ids, num_items} = params;
+        const {content_ids, num_items, default_options} = params;
         content_ids.push(product.externalId);
         num_items.push(productQuantities[product.uuid]);
+        default_options.push(product.defaultOption ||  'null');
 
-        return {content_ids, num_items};
+        return {content_ids, num_items, default_options};
       }, {
         content_ids: [],
-        num_items: []
+        num_items: [],
+        default_options: []
       });
 
     const url = new domurl(cartURL);

@@ -27,6 +27,7 @@ registerBlockType('irian/diy-product', {
     price: {type: 'string'},
     quantityFormula: {type: 'string'},
     optional: {type: 'boolean', default: false},
+    defaultOption: {type: 'string'}
   }),
 
   edit: withSelect((select, ownProps) => {
@@ -42,7 +43,7 @@ registerBlockType('irian/diy-product', {
   })(
     (props: any) => {
       const {setAttributes, attributes, productTypeOptions, isCommonOrOptionalProduct} = props;
-      const {headline, imageUrl, price, quantityFormula, productType, optional, url, externalId} = attributes;
+      const {headline, imageUrl, price, quantityFormula, productType, optional, url, externalId, defaultOption} = attributes;
 
       initBaseAttributes(props);
 
@@ -84,6 +85,15 @@ registerBlockType('irian/diy-product', {
               onChange={(value) => {
                 setAttributes({headline: value});
               }}/>
+
+            <TextControl
+              label="Optiune implicita"
+              key={"defaultOption"}
+              value={defaultOption}
+              onChange={(value) => {
+                setAttributes({defaultOption: value});
+              }}/>
+
             <TextControl
               label="URL Imagine"
               key={"imageUrl"}

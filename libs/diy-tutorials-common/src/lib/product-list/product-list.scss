@@ -19,9 +19,11 @@
       }
 
       .product {
-        .badge-pill {
-          background-color: var(--green) !important;
-          color: var(--white) !important;
+        .quantity-badge{
+          &.badge-pill {
+            background-color: var(--green) !important;
+            color: var(--white) !important;
+          }
         }
       }
     }
