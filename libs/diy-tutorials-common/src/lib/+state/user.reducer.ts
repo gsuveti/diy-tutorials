@@ -27,10 +27,12 @@ export const initialUserState: UserState = {
 export const userReducer = createReducer(initialUserState, {
   [TutorialActionTypes.GetUserData]: (state: UserState, action: GetUserData) => {
     const {user} = action.payload;
-    state.isAnonymous = user.isAnonymous;
-    state.email = user.email;
-    state.displayName = user.displayName;
-    state.uid = user.uid;
+    if (user) {
+      state.isAnonymous = user.isAnonymous;
+      state.email = user.email;
+      state.displayName = user.displayName;
+      state.uid = user.uid;
+    }
 
     return state;
   },
