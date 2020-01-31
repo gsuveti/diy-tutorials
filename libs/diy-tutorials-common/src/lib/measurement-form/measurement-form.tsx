@@ -85,12 +85,12 @@ export const MeasurementForm = (props: MeasurementFormProps) => {
       {
         isRenderedInEditor ?
           null :
-          <div id={uuid}>
-            <h4>{headline}</h4>
-            <p>{description}</p>
+          <div id={uuid} className={`measurement-form`}>
+            <h4 className={`measurement-form-headline`}>{headline}</h4>
+            <p className={`measurement-form-description`}>{description}</p>
 
             {multipleInstances ?
-              <div className="form-group">
+              <div className="instances-question form-group">
                 <label id={`${uuid}-label`} htmlFor={uuid}>
                   {instancesCountQuestion}
                   <ShowInEmail>
@@ -117,7 +117,7 @@ export const MeasurementForm = (props: MeasurementFormProps) => {
               : null
             }
 
-            <div className="list-group">
+            <div className="measurements list-group">
               {measurements}
               {/*<HideInEmail className={"list-group-item d-flex justify-content-between align-items-start"} key="total">*/}
               {/*Sum: {value}*/}

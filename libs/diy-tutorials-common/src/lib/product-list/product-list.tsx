@@ -120,7 +120,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
 
     const optionalProductsContent = optionalProducts.map((attributes: any) => {
       return (
-        <div className={'optional-products col-sm px-0'} key={attributes.uuid}>
+        <div className={'optional-product col-sm px-0'} key={attributes.uuid}>
           <div className={'row no-gutters'}>
             <ConnectedProduct
               attributes={attributes}
@@ -143,7 +143,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                 {productRangesSummary}
               </div>
 
-              <h4 className={'my-sm'}>Produse optionale</h4>
+              <h4 className={'optional-products-headline my-sm'}>Produse optionale</h4>
 
               <div className={'row no-gutters'}>
                 {optionalProductsContent}
@@ -155,46 +155,46 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                   <div className={'d-print-none'}>
                     {
                       user.isAnonymous ?
-                        <div className={'mt-xl pt-xl border-top'}>
-                          <p>Vrei sa cumperi produsele selectate sau sa primesti prin email o lista cu ele?
+                        <div className={'social-login mt-xl pt-xl border-top'}>
+                          <p className={`social-login-description`}>Vrei sa cumperi produsele selectate sau sa primesti prin email o lista cu ele?
                             Autentifica-te prin una dintre metodele de mai jos!</p>
                           <div className={'d-flex flex-column align-items-center'}>
-                            <button type="button" className="mb-sm social-btn btn btn-outline-primary d-flex"
+                            <button type="button" className="social-btn-google mb-sm social-btn btn btn-outline-primary d-flex"
                                     onClick={loginWithGoogle}>
                               Google
                             </button>
-                            <button type="button" className="mb-sm social-btn btn btn-outline-primary d-flex"
+                            <button type="button" className="social-btn-facebook mb-sm social-btn btn btn-outline-primary d-flex"
                                     onClick={loginWithFacebook}>
                               Facebook
                             </button>
                           </div>
                         </div>
                         :
-                        <div className={'mt-xl pt-xl border-top d-flex flex-column align-items-center'}>
-                          <p>Esti la un click distanta de cumpararea produselor necesare!</p>
+                        <div className={'authenticated-user-actions mt-xl pt-xl border-top d-flex flex-column align-items-center'}>
+                          <p className={`buy-description`}>Esti la un click distanta de cumpararea produselor necesare!</p>
                           <a href={productToCartLink} target="_blank" rel="noopener noreferrer"
-                             className="mb-xl social-btn btn btn-outline-primary d-flex">
+                             className="buy-action mb-xl social-btn btn btn-outline-primary d-flex">
                             Cumpara produsele
                           </a>
-                          <p>Vrei sa primesti un email cu instructiunile la adresa {user.email} ?</p>
-                          <button type="button" className="mb-sm social-btn btn btn-outline-primary d-flex"
+                          <p className={`notify-description`}>Vrei sa primesti un email cu instructiunile la adresa {user.email} ?</p>
+                          <button type="button" className="notify-action mb-sm social-btn btn btn-outline-primary d-flex"
                                   onClick={sendEmailWithInstructions}>
                             Trimite email
                           </button>
 
                           {emailMessage ?
-                            <p className={`text-${emailMessage.severity}`}>
+                            <p className={`email-success-message text-${emailMessage.severity}`}>
                               <small>{emailMessage.text}</small>
                             </p> : null
                           }
 
 
-                          <div className={'mt-xl pt-xl w-100 d-flex justify-content-center'}>
-                            <button type="button" className="btn btn-link" onClick={resetUserContext}>
+                          <div className={'user-context-actions mt-xl pt-xl w-100 d-flex justify-content-center'}>
+                            <button type="button" className="btn-reset btn btn-link" onClick={resetUserContext}>
                               <small>Resetare</small>
                             </button>
                             <div className={'my-xs border-right'}></div>
-                            <button type="button" className="btn btn-link" onClick={logout}>
+                            <button type="button" className="btn-logout btn btn-link" onClick={logout}>
                               <small>Logout</small>
                             </button>
                           </div>

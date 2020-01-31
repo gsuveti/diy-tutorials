@@ -72,8 +72,8 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
       {
         isRenderedInEditor ? null :
           <div>
-            <h4>{headline}</h4>
-            <p>{description}</p>
+            <h4 className={`product-range-headline`}>{headline}</h4>
+            <p className={`product-range-description`}>{description}</p>
           </div>
       }
       {content}

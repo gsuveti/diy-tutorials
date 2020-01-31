@@ -138,7 +138,7 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
 
         {isRenderedInEditor ?
           null :
-          <div className={"pt-md"}>
+          <div className={"question pt-md"}>
             {text ?
               <div>
                 <div className="d-flex align-items-baseline">

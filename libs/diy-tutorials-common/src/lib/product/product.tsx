@@ -68,11 +68,16 @@ export class Product extends React.Component<ProductProps, ProductState> {
             <div>
               <div style={{position: 'relative'}}>
                 <span className={'m-0'}>
-                  <a data-tooltip data-title={headline} title={headline} target="_blank" href={url}
+                  <a data-tooltip
+                     data-title={headline}
+                     title={headline}
+                     target="_blank"
+                     href={url}
+                     className={`product-title`}
                      rel="noopener noreferrer">
                     <span className={'headline'}>{headline}</span>
                   </a>
-                  <span className={`quantity-badge badge badge-pill ${badgeColor}`}>{quantity} buc</span>
+                  <span className={`product-quantity quantity-badge badge badge-pill ${badgeColor}`}>{quantity} buc</span>
                   {defaultOption?
                     <span className={`badge badge-pill badge-warning`}>Diverse optiuni</span>:null
                   }

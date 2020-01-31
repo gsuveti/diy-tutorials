@@ -47,16 +47,18 @@ export const Measurement = (props: MeasurementProps, state: MeasurementState) =>
     <div className={``}
          data-attributes={serializeAttributes(attributes)}>
       {isRenderedInEditor ? children :
-        <div>
+        <div className={`measurement`}>
           <div className="form-group">
-            <label htmlFor={uuid}>
+            <label
+              className={`measurement-label`}
+              htmlFor={uuid}>
               {property}
               <ShowInEmail>
                 <span><strong>{measuredValue}</strong></span>
               </ShowInEmail>
             </label>
             <HideInEmail>
-              <input id={uuid} type="number" step="0.01" min={1} className="form-control" aria-label={property}
+              <input id={uuid} type="number" step="0.01" min={1} className="measurement-input form-control" aria-label={property}
                      value={measuredValue || ""}
                      aria-describedby="measurementHelp"
                      onChange={(event: FormEvent<HTMLInputElement>) => {
