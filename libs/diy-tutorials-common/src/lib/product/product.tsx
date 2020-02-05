@@ -56,16 +56,24 @@ export class Product extends React.Component<ProductProps, ProductState> {
   render() {
     const {children, attributes, isRenderedInEditor, quantity = 0, isVisible = true, isSelected = false} = this.props;
     const {selectProduct, removeProduct} = this.props;
-    const {uuid, imageUrl, url, headline, optional, defaultOption} = attributes;
+    const {uuid, imageUrl, url, headline, optional, defaultOption, price} = attributes;
 
     const badgeColor = (optional && isSelected) ? 'badge-success' : 'badge-light';
+    const showOrHideClass = isVisible ? "show" : "hide";
+
     return (
       <div data-attributes={serializeAttributes(attributes)}
-           className={`product pb-md mb-md border-bottom col-12 px-0 ${isVisible ? "show" : "hide"}`}>
+
+           className={`product pb-md mb-md col-12 px-0 ${showOrHideClass}`}>
         {children}
         {
           isRenderedInEditor ? null :
             <div>
+
+              <div className={'image-wrapper'}>
+                <img src={imageUrl}/>
+              </div>
+
               <div style={{position: 'relative'}}>
                 <span className={'m-0'}>
                   <a data-tooltip
@@ -77,30 +85,33 @@ export class Product extends React.Component<ProductProps, ProductState> {
                      rel="noopener noreferrer">
                     <span className={'headline'}>{headline}</span>
                   </a>
-                  <span className={`product-quantity quantity-badge badge badge-pill ${badgeColor}`}>{quantity} buc</span>
-                  {defaultOption?
-                    <span className={`badge badge-pill badge-warning`}>Diverse optiuni</span>:null
+                  <span
+                    className={`product-quantity quantity-badge badge badge-pill ${badgeColor}`}>{quantity} buc</span>
+                  {defaultOption ?
+                    <span className={`badge badge-pill badge-warning`}>Diverse optiuni</span> : null
                   }
                 </span>
               </div>
-              <div className={'image-wrapper'}>
-                <img src={imageUrl}/>
-              </div>
               {
                 optional ?
-                  <div className={'d-flex justify-content-center'}>
-                    {
-                      isSelected ?
-                        <button className={'btn btn-light ml btn-sm d-flex align-items-center'}
-                                onClick={() => removeProduct(uuid)}>
-                          <i className={'material-icons'}>remove_shopping_cart</i>Scoate din cos
-                        </button>
-                        :
-                        <button className={'btn btn-outline-primary btn-sm d-flex align-items-center'}
-                                onClick={() => selectProduct(uuid)}>
-                          <i className={'material-icons'}>add_shopping_cart</i>Adauga in cos
-                        </button>
-                    }
+                  <div className={'d-flex flex-column'}>
+                    <div className={'d-flex justify-content-center'}>
+                      <p className={`m-sm`}>- {price} lei -</p>
+                    </div>
+                    <div className={'d-flex justify-content-center'}>
+                      {
+                        isSelected ?
+                          <button className={'btn btn-light ml btn-sm d-flex align-items-center px-lg'}
+                                  onClick={() => removeProduct(uuid)}>
+                            <i className={'material-icons'}>remove_shopping_cart</i>Scoate din cos
+                          </button>
+                          :
+                          <button className={'btn btn-primary text-light btn-sm d-flex align-items-center pt-xs px-lg'}
+                                  onClick={() => selectProduct(uuid)}>
+                            <i className={'material-icons'}>add_shopping_cart</i>Adauga in cos
+                          </button>
+                      }
+                    </div>
                   </div>
                   :
                   null

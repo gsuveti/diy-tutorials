@@ -23,3 +23,14 @@ $spacers: map-merge(
 
 
 $margin: -12px;
+
+$primary  : #000000;
+$secondary  : #FFCC66;
+
+$theme-colors: map-merge(
+  $theme-colors,
+    (
+      "primary":    $primary,
+      "secondary":  $secondary
+    )
+);

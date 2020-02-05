@@ -1,12 +1,13 @@
 .product {
-  .headline {
+  .product-title {
     font-size: 14px;
     line-height: 20px;
     height: 42px;
     max-height: 42px;
-    font-weight: 700;
+    font-weight: 500;
     overflow: hidden;
     display: block;
+    color: black;
   }
 
   .image-wrapper {

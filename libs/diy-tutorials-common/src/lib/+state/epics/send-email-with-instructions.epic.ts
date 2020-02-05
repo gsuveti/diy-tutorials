@@ -49,18 +49,23 @@ export const sendEmailWithInstructionsEpic = (action$: Observable<AnyAction>, st
             return total + product.price * quantity;
           }, 0);
 
-        const optionalProductsContent = selectedOptionalProducts
-          .reduce((html, product) => {
-            const quantity = productQuantities[product.uuid];
-            return html + getHtmlForProduct(product, quantity);
-          }, `<h2>Produse optionale (${selectedOptionalProductsTotal} lei)</h2>`);
+        const optionalProductsContent =
+          selectedOptionalProducts && selectedOptionalProducts.length ?
+          selectedOptionalProducts
+          .reduce(
+            (html, product) => {
+              const quantity = productQuantities[product.uuid];
+              return html + getHtmlForProduct(product, quantity);
+            },
+            `<h2>Produse optionale (${selectedOptionalProductsTotal} lei)</h2>`
+          )
+          :
+          ''
+        ;
 
-
-        const html = title + content + displayedSections
-          + productsContent + optionalProductsContent;
 
         const data = {
-          html,
+          html:template(title + content + displayedSections + productsContent + optionalProductsContent),
           email,
           products: selectedProducts.concat(selectedOptionalProducts),
           optionalProducts
@@ -83,7 +88,10 @@ function getTitle() {
 }
 
 function getContent() {
-  return Array.from(document.querySelectorAll('.entry-content > :not(#root)'))
+  const rootParent = document.getElementById('root').parentElement;
+
+  return Array.from(rootParent.children)
+    .filter(elem => elem.id!=='root')
     .reduce((acc, item) => {
       return acc + item.outerHTML
     }, '');
@@ -101,4 +109,12 @@ function getHtmlForProduct(product, quantity): string {
             <h3><a target="_blank" href="${product.url}">${product.headline}</a> x ${quantity}</h3>
             <img src="${product.imageUrl}"/>
           </div>`;
+}
+
+function template(html:string):string{
+  return `
+    <div style="max-width: 600px;margin:auto">
+        ${html}
+    </div>
+  `;
 }

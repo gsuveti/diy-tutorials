@@ -1,4 +1,6 @@
 .product-list {
+  --product-summary-height: 120px;
+
   > .product {
     display: none;
   }
@@ -10,16 +12,16 @@
 
   .product-range-selected {
     &.product-range {
-      box-shadow: inset -5px 0px 5px -5px var(--primary),
-      inset 5px 0px 5px -5px var(--primary),
-      inset 0px 5px 5px -5px var(--primary);
-
       h4 {
         color: var(--primary);
       }
 
+      .product-range-content{
+
+      }
+
       .product {
-        .quantity-badge{
+        .quantity-badge {
           &.badge-pill {
             background-color: var(--green) !important;
             color: var(--white) !important;
@@ -29,10 +31,6 @@
     }
 
     &.product-range-summary {
-      box-shadow: inset -5px 0px 5px -5px var(--primary),
-      inset 5px 0px 5px -5px var(--primary),
-      inset 0px -5px 5px -5px var(--primary);
-
       p {
         color: var(--primary);
       }
@@ -40,8 +38,11 @@
   }
 
   .optional-products {
+    margin-top: calc(-1 * var(--product-summary-height));
+
     .product {
       border: none !important;
+      margin: 0 !important;
     }
   }
 }

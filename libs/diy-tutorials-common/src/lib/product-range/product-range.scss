@@ -1,4 +1,10 @@
 .product-range {
+  .product-range-content {
+    height: 100%;
+    padding-bottom: var(--product-summary-height);
+  }
+
+
   > .product {
     &:last-child {
       border: none !important;

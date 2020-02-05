@@ -55,7 +55,7 @@ exports.sendMail = functions.https.onRequest((req: any, res: any) => {
     };
 
     sgMail.send(msg).then((response: any) => {
-      return res.send('Sended');
+      return res.send('Sent');
     });
   });
 });

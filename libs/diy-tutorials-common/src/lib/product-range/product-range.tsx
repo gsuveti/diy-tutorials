@@ -65,19 +65,25 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
   return (
     <div
       className={`product-range
-          ${isSelected ? 'product-range-selected border-primary' : 'border-secondary'}
-          ${isRenderedInEditor ? 'px-0' : 'col-12 col-md-4 p-md border'}
+          ${isSelected ? 'product-range-selected' : ''}
+          ${isRenderedInEditor ? 'px-0' : 'col-12 col-md-4 px-1'}
               `}
       data-attributes={serializeAttributes(attributes)}>
-      {
-        isRenderedInEditor ? null :
-          <div>
-            <h4 className={`product-range-headline`}>{headline}</h4>
-            <p className={`product-range-description`}>{description}</p>
-          </div>
-      }
-      {content}
-      {commonProductsContent}
+      <div className={
+        ` ${isRenderedInEditor ? '' : 'product-range-content shadow rounded pt-md px-sm'}
+          ${isSelected ? 'border border-secondary' : ''}
+        `
+      }>
+        {
+          isRenderedInEditor ? null :
+            <div>
+              <h4 className={`product-range-headline text-center`}>{headline}</h4>
+              <p className={`product-range-description`}>{description}</p>
+            </div>
+        }
+        {content}
+        {commonProductsContent}
+      </div>
     </div>
   );
 };
