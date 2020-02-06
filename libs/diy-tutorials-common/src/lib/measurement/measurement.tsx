@@ -58,7 +58,10 @@ export const Measurement = (props: MeasurementProps, state: MeasurementState) =>
               </ShowInEmail>
             </label>
             <HideInEmail>
-              <input id={uuid} type="number" step="0.01" min={1} className="measurement-input form-control" aria-label={property}
+              <input id={uuid} type="number"
+                     step="1"
+                     min={0.01}
+                     className="measurement-input form-control" aria-label={property}
                      value={measuredValue || ""}
                      aria-describedby="measurementHelp"
                      onChange={(event: FormEvent<HTMLInputElement>) => {
@@ -66,7 +69,7 @@ export const Measurement = (props: MeasurementProps, state: MeasurementState) =>
                          uuid,
                          parentBlockUUID,
                          instanceIndex,
-                         Number.parseInt(event.currentTarget.value),
+                         Number.parseFloat(event.currentTarget.value) || undefined,
                        );
                      }}/>
             </HideInEmail>
