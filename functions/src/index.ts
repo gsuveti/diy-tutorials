@@ -5,6 +5,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const cors = require('cors')({origin: true});
 const scrape = require('html-metadata');
+const juice = require('juice');
 
 
 const email = functions.config().common.email;
@@ -18,18 +19,28 @@ admin.initializeApp();
  * Here we're using Gmail to send
  */
 
-exports.useWildcard = functions.firestore
+const emailStyle=`
+<style>
+    img{
+        width: 100%;
+    }    
+</style>
+`;
+
+exports.sendEmail = functions.firestore
   .document('emails/{emailId}')
   .onCreate((snap: DocumentSnapshot, context: EventContext) => {
     const data: any = snap.data();
 
     console.log(data);
 
+    const html = juice(emailStyle + data.html);
+
     const msg = {
       to: data.email,
       from: email,
       subject: 'DIY tutorial - instructions',
-      html: data.html
+      html: html
     };
 
     sgMail.send(msg).then((response: any) => {
@@ -37,28 +48,6 @@ exports.useWildcard = functions.firestore
     });
 
   });
-
-
-exports.sendMail = functions.https.onRequest((req: any, res: any) => {
-  cors(req, res, () => {
-
-    // getting dest email by query string
-    const dest = req.query.dest;
-    const html = req.body;
-
-
-    const msg = {
-      to: dest,
-      from: email,
-      subject: 'Sending with Twilio SendGrid is Fun',
-      html: html
-    };
-
-    sgMail.send(msg).then((response: any) => {
-      return res.send('Sent');
-    });
-  });
-});
 
 
 exports.getMetadata = functions.https.onRequest((req: any, res: any) => {
