@@ -11,9 +11,20 @@ export  function getSectionsPath(state: TutorialState, sectionUUID: string): str
 
   const isSectionWithoutRedirect = state.sectionsWithRedirect.indexOf(sectionUUID) < 0;
 
-  if (isSectionWithoutRedirect && section.nextSection) {
-    const nextSection = state.sections[sectionIndex + 1];
-    const nextSectionUUID = (section.nextSection != SUBMIT_FORM ? section.nextSection : undefined) || ((nextSection && !nextSection.submitForm) ? nextSection.uuid : undefined);
+  if (isSectionWithoutRedirect) {
+
+    let nextSectionUUID = undefined;
+    if(section.nextSection != SUBMIT_FORM){
+      if(section.nextSection){
+          nextSectionUUID = section.nextSection;
+      }else{
+        const nextSection = state.sections[sectionIndex + 1];
+        if(nextSection){
+          nextSectionUUID = nextSection.uuid;
+        }
+      }
+    }
+
     return [sectionUUID, ...getSectionsPath(state, nextSectionUUID)];
   } else {
     return [sectionUUID];
