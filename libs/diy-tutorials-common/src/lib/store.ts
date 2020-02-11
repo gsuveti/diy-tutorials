@@ -24,6 +24,7 @@ import {initialUserContextState} from './+state/user-context.reducer';
 import {AppState} from './+state/app.state';
 import {scrollToTopEpic} from './+state/epics/scroll-to-top.epic';
 import {initialUserState} from './+state/user.reducer';
+import {resetUserContextEpic} from './+state/epics/reset-user-context.epic';
 
 
 const epicMiddleware = createEpicMiddleware();
@@ -47,7 +48,8 @@ export const rootEpic = combineEpics(
   sendEmailWithInstructionsEpic,
   logoutEpic,
   showProductsOrScrollToMeasurementsEpic,
-  scrollToTopEpic
+  scrollToTopEpic,
+  resetUserContextEpic
 );
 
 export function configureStore(initialState: AppState = {

@@ -2,6 +2,7 @@ import {Action, ActionCreator, AnyAction} from 'redux';
 import {Response} from '../models/response.model';
 import {action, createAction} from 'typesafe-actions';
 import * as firebase from 'firebase/app';
+import {UserContextState} from './user-context.reducer';
 
 export enum TutorialActionTypes {
   AddResponse = '[Tutorial] Add response',
@@ -30,6 +31,7 @@ export enum TutorialActionTypes {
   Logout = '[Tutorial] Logout',
   ShowProductsOrScrollToMeasurements = '[Tutorial] Show products or scroll to measurements',
   ResetUserContext = '[Tutorial] Reset user context',
+  SetUserContext = '[Tutorial] Set user context',
   EmailSent = '[Tutorial] Email sent',
   EmailNotSent = '[Tutorial] Email not sent',
 }
@@ -282,10 +284,20 @@ export const resetUserContext: ActionCreator<Action> = () => action(
   TutorialActionTypes.ResetUserContext, {});
 
 
+export interface SetUserContext extends AnyAction, Action<string> {
+  type: typeof TutorialActionTypes.SetUserContext
+  payload: UserContextState
+}
+
+export const setUserContext: ActionCreator<SetUserContext> = (userContext:UserContextState) => action(
+  TutorialActionTypes.SetUserContext, userContext);
+
+
 export type TutorialActions = AddResponse | AddMeasurement
   | ChangeInstancesCount | ShowProducts | AddProductsToCart | SelectProductRange
   | SelectProduct | RemoveProduct | UpdateDisplayedProductTypes
   | Action<TutorialActionTypes.LoginWithGoogle> | Action<TutorialActionTypes.LoginWithFacebook>
   | Action<TutorialActionTypes.Logout>
   | Action<TutorialActionTypes.ResetUserContext>
+  | Action<TutorialActionTypes.SetUserContext>
   | Action<TutorialActionTypes.SendEmailWithInstructions>;

@@ -1,9 +1,10 @@
 import {TutorialState} from './tutorial.reducer';
 import {UserContextState} from './user-context.reducer';
+import {getSectionsPath} from './get-sections-path';
 
 export function getUserContextInitialState(tutorialState: TutorialState): UserContextState {
 
-  const displayedSections = [tutorialState.sections[0].uuid];
+  const displayedSections = getSectionsPath(tutorialState, tutorialState.sections[0].uuid);
   const instancesCountByMeasurementForm = tutorialState.measurementForms.reduce((obj, item) => {
     return {
       ...obj,

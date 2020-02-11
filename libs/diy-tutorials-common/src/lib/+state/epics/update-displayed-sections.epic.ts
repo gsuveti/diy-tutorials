@@ -4,8 +4,7 @@ import {ofType, StateObservable} from 'redux-observable';
 import {AddResponse, TutorialActionTypes, updateDisplayedSections} from '../tutorial.actions';
 import {filter, map} from 'rxjs/operators';
 import {AppState} from '../app.state';
-import {TutorialState} from '../tutorial.reducer';
-import {SUBMIT_FORM} from '../../constants';
+import {getSectionsPath} from '../get-sections-path';
 
 export const updateDisplayedSectionsEpic = (action$: Observable<AnyAction>, state$: StateObservable<AppState>) => {
   return action$.pipe(
@@ -35,19 +34,3 @@ export const updateDisplayedSectionsEpic = (action$: Observable<AnyAction>, stat
     map(displayedSections => updateDisplayedSections(displayedSections))
   );
 };
-
-
-function getSectionsPath(state: TutorialState, sectionUUID: string): string[] {
-  if (!sectionUUID) {
-    return [];
-  }
-  if (state.sectionsWithRedirect.indexOf(sectionUUID) < 0) {
-    const sectionIndex = state.sections.findIndex(section => section.uuid === sectionUUID);
-    const section = state.sections[sectionIndex];
-    const nextSection = state.sections[sectionIndex + 1];
-    const nextSectionUUID = (section.nextSection != SUBMIT_FORM ? section.nextSection : undefined) || ((nextSection && !nextSection.submitForm) ? nextSection.uuid : undefined);
-    return [sectionUUID, ...getSectionsPath(state, nextSectionUUID)];
-  } else {
-    return [sectionUUID];
-  }
-}

@@ -130,10 +130,11 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
     });
 
 
-    return (
+    return ([
       <div
         className={`product-list row mx-n1 ${isVisible ? "show" : "hide"} ${isRenderedInEditor ? 'flex-column' : ''}`}
-        data-attributes={serializeAttributes(attributes)}>
+        data-attributes={serializeAttributes(attributes)}
+        key='product-list'>
         {content}
         {
           isRenderedInEditor ? null :
@@ -195,16 +196,6 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                               </p> : null
                             }
 
-
-                            <div className={'user-context-actions mt-xl pt-xl w-100 d-flex justify-content-center'}>
-                              <button type="button" className="btn-reset btn btn-link" onClick={resetUserContext}>
-                                <small>Resetare</small>
-                              </button>
-                              <div className={'my-xs border-right'}></div>
-                              <button type="button" className="btn-logout btn btn-link" onClick={logout}>
-                                <small>Logout</small>
-                              </button>
-                            </div>
                           </div>
                       }
                     </div>
@@ -214,8 +205,23 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
             ]
         }
 
+      </div>,
+      <div key='reset-or-logout'>
+        {
+          isRenderedInEditor ? null:
+            <div className={'user-context-actions mt-xl pt-xl w-100 d-flex justify-content-center'}>
+              <button type="button" className="btn-reset btn btn-link" onClick={resetUserContext}>
+                <small>Resetare</small>
+              </button>
+              <div className={'my-xs border-right'}></div>
+              <button type="button" className="btn-logout btn btn-link" onClick={logout}>
+                <small>Logout</small>
+              </button>
+            </div>
+
+        }
       </div>
-    );
+    ]);
   }
 }
 

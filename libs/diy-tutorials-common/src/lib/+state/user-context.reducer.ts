@@ -6,6 +6,7 @@ import {
   ResetResponses,
   SelectProduct,
   SelectProductRange,
+  SetUserContext,
   ShowProducts,
   TutorialActionTypes,
   UpdateCommonProductsTotalPrice,
@@ -170,26 +171,8 @@ export const userContextReducer = createReducer(initialUserContextState, {
     state.commonProductsTotalPrice = commonProductsTotalPrice;
     return state;
   },
-  [TutorialActionTypes.ResetUserContext]: (state: UserContextState, action: UpdateCommonProductsTotalPrice) => {
-
-    const displayedSections = state.displayedSections.slice(0, 1);
-    const instancesCountByMeasurementForm = {};
-    const productQuantities = {};
-
-    Object.keys(state.instancesCountByMeasurementForm).map(key => {
-      instancesCountByMeasurementForm[key] = 1;
-    });
-    Object.keys(state.productQuantities).map(key => {
-      productQuantities[key] = 0;
-    });
-    state = {
-      ...initialUserContextState,
-      displayedSections,
-      instancesCountByMeasurementForm,
-      productQuantities
-    };
-
-    return state;
+  [TutorialActionTypes.SetUserContext]: (state: UserContextState, action: SetUserContext) => {
+    return action.payload;
   },
   [TutorialActionTypes.EmailSent]: (state: UserContextState, action: AnyAction) => {
     state.emailMessage = {severity: 'success', text: 'Email-ul a fost trimis',};
