@@ -58,9 +58,10 @@ export const Measurement = (props: MeasurementProps, state: MeasurementState) =>
               </ShowInEmail>
             </label>
             <HideInEmail>
-              <input id={uuid} type="number"
+              <input id={uuid}
+                     type="number"
                      step="1"
-                     min={0.01}
+                     min={0}
                      className="measurement-input form-control" aria-label={property}
                      value={measuredValue || ""}
                      aria-describedby="measurementHelp"
