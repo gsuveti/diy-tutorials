@@ -46,20 +46,28 @@ const allowedComponents = {
 export const ProductRange = (props: ProductRangeProps, state: ProductRangeState) => {
   const {children, innerBlocks, attributes, isRenderedInEditor, isSelected, commonProducts = []} = props;
   const {headline, description, uuid} = attributes;
-  const content = children ?
-    children
-    :
-    <InnerBlocksContent
-      innerBlocks={innerBlocks}
-      allowedComponents={allowedComponents}
-    />
-  ;
 
   const commonProductsContent = commonProducts.map((attributes: any) => {
     return <ConnectedProduct key={attributes.uuid}
                              attributes={attributes}
     />;
   });
+
+  const content = children ?
+    children
+    :
+    <div className={
+      ` ${isRenderedInEditor ? '' : 'product-range-content shadow rounded pt-md px-sm'}
+          ${isSelected ? 'border border-secondary' : ''}
+        `
+    }>
+      <InnerBlocksContent
+        innerBlocks={innerBlocks}
+        allowedComponents={allowedComponents}
+      />
+      {commonProductsContent}
+    </div>
+  ;
 
 
   return (
@@ -69,11 +77,7 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
           ${isRenderedInEditor ? 'px-0' : 'col-12 col-md-4 px-1'}
               `}
       data-attributes={serializeAttributes(attributes)}>
-      <div className={
-        ` ${isRenderedInEditor ? '' : 'product-range-content shadow rounded pt-md px-sm'}
-          ${isSelected ? 'border border-secondary' : ''}
-        `
-      }>
+
         {
           isRenderedInEditor ? null :
             <div>
@@ -82,8 +86,6 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
             </div>
         }
         {content}
-        {commonProductsContent}
-      </div>
     </div>
   );
 };

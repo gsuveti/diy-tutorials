@@ -22,4 +22,4 @@ Adding lodash in the plugin will break the gutenberg image block.
 
 ## Deployment
 
-https://travis-ci.com/gsuveti/
+https://travis-ci.com/gsuveti/diy-tutorials/
