@@ -61,6 +61,13 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
           ${isSelected ? 'border border-secondary' : ''}
         `
     }>
+      {
+        isRenderedInEditor ? null :
+          <div>
+            <h4 className={`product-range-headline text-center`}>{headline}</h4>
+            <p className={`product-range-description`}>{description}</p>
+          </div>
+      }
       <InnerBlocksContent
         innerBlocks={innerBlocks}
         allowedComponents={allowedComponents}
@@ -78,14 +85,7 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
               `}
       data-attributes={serializeAttributes(attributes)}>
 
-        {
-          isRenderedInEditor ? null :
-            <div>
-              <h4 className={`product-range-headline text-center`}>{headline}</h4>
-              <p className={`product-range-description`}>{description}</p>
-            </div>
-        }
-        {content}
+      {content}
     </div>
   );
 };
