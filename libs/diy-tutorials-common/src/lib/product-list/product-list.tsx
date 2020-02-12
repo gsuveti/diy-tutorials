@@ -129,7 +129,6 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
       );
     });
 
-
     return ([
       <div
         className={`product-list row mx-n1 ${isVisible ? "show" : "hide"} ${isRenderedInEditor ? 'flex-column' : ''}`}
@@ -144,11 +143,15 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                   {productRangesSummary}
                 </div>
 
-                <h4 className={'optional-products-headline mt-lg mb-sm'}>Produse optionale</h4>
-
-                <div className={'row mx-n1'}>
-                  {optionalProductsContent}
-                </div>
+                {
+                  optionalProductsContent.length ?
+                    [
+                        <h4 key={'optional-products-headline'} className={'optional-products-headline mt-lg mb-sm'}>Produse optionale</h4>,
+                        <div key={'optional-products-content'} className={'row mx-n1'}>
+                            {optionalProductsContent}
+                        </div>
+                    ]:null
+                }
               </div>,
               <div key={'actions'} className={`col-12 px-1`}>
                 {
