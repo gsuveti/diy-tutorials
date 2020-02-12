@@ -133,7 +133,8 @@ registerBlockType('irian/diy-product', {
                   value={optional}
                   options={optionalOptions}
                   onChange={(optional) => {
-                    setAttributes({optional: optional});
+                    const newValue = optional === "true";
+                    setAttributes({optional: newValue});
                   }}
                 />
                 :

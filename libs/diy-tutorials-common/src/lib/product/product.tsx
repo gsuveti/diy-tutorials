@@ -71,7 +71,9 @@ export class Product extends React.Component<ProductProps, ProductState> {
             <div>
 
               <div className={'image-wrapper'}>
-                <img src={imageUrl}/>
+                <figure>
+                  <img src={imageUrl}/>
+                </figure>
               </div>
 
               <div style={{position: 'relative'}}>
