@@ -43,6 +43,22 @@ export const Measurement = (props: MeasurementProps, state: MeasurementState) =>
   } = props;
   const {property, uuid, parentBlockUUID} = attributes;
 
+  const onMeasurementChange = (event: FormEvent<HTMLInputElement>) => {
+    const number = Number.parseFloat(event.currentTarget.value);
+    const value = isNaN(number) ?  null : Math.abs(number);
+
+    addMeasurement(
+      uuid,
+      parentBlockUUID,
+      instanceIndex,
+      value,
+    );
+  };
+
+  // `value` prop on `input` should not be null.
+  // Consider using an empty string to clear the component or `undefined` for uncontrolled components.
+  const value =  typeof (measuredValue) === 'number' ? measuredValue: "";
+
   return (
     <div className={``}
          data-attributes={serializeAttributes(attributes)}>
@@ -62,17 +78,11 @@ export const Measurement = (props: MeasurementProps, state: MeasurementState) =>
                      type="number"
                      step="1"
                      min={0}
-                     className="measurement-input form-control" aria-label={property}
-                     value={measuredValue || ""}
+                     className="measurement-input form-control"
+                     aria-label={property}
+                     value={value}
                      aria-describedby="measurementHelp"
-                     onChange={(event: FormEvent<HTMLInputElement>) => {
-                       addMeasurement(
-                         uuid,
-                         parentBlockUUID,
-                         instanceIndex,
-                         Number.parseFloat(event.currentTarget.value) || undefined,
-                       );
-                     }}/>
+                     onChange={onMeasurementChange}/>
             </HideInEmail>
 
           </div>
