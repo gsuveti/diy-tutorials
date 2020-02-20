@@ -8,6 +8,8 @@ const {TextControl, CheckboxControl, TextareaControl} = wp.components;
 const {registerBlockType} = window.wp.blocks;
 // @ts-ignore
 const {BlockControls, InspectorControls, InnerBlocks} = window.wp.editor;
+// @ts-ignore
+const {withSelect} = window.wp.data;
 
 console.log("registerBlockType measurement form");
 /**
@@ -37,8 +39,14 @@ registerBlockType('irian/diy-measurement-form', {
   }),
 
 
-  edit: function (props: any) {
-    const {attributes, className, setAttributes, name} = props;
+  edit: withSelect((select, ownProps) => {
+    const {getMeasurementFormIndex} = select("diy-tutorial");
+
+    return {
+      index: getMeasurementFormIndex(ownProps.attributes.uuid)
+    };
+  })((props: any) => {
+    const {attributes, className, setAttributes, name, index} = props;
     const {multipleInstances, uuid, formula, instancesCountQuestion, headline, description} = attributes;
 
     if (!uuid) {
@@ -65,7 +73,7 @@ registerBlockType('irian/diy-measurement-form', {
           attributes={attributes}
           isRenderedInEditor={true}
         >
-          <p className={'block-title'}>{i18n.measurementForm.title}</p>
+          <p className={'block-title'}>{`${i18n.measurementForm.title} (M${index + 1})`}</p>
           <TextControl
             label="Titlu"
             key={"headline"}
@@ -119,7 +127,7 @@ registerBlockType('irian/diy-measurement-form', {
 
       ]
     );
-  },
+  }),
 
 
   /**

@@ -145,6 +145,11 @@ registerStore('diy-tutorial', {
       return measurementsOrder[clientId];
     },
 
+    getMeasurementFormIndex(state, clientId) {
+      const {measurementFormsOrder} = state;
+      return measurementFormsOrder.indexOf(clientId);
+    },
+
     getSectionOptions(state) {
       return state.sectionOptions;
     },
