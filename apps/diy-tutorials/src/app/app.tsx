@@ -116,7 +116,7 @@ export class App extends React.Component<AppProps, AppState> {
               </div>
 
 
-              <button className={'btn btn-primary'} onClick={this.addProduct}>Adauga Produs</button>
+              <button className={'btn btn-primary'} onClick={this.addProduct}>Adaugă Produs</button>
             </div>
 
             <div>

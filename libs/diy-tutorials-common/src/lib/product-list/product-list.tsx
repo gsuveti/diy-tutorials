@@ -109,7 +109,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                     onClick={() => {
                       selectProductRange(productRange.uuid);
                     }}>
-              Selecteaza
+              Selectează
             </button>
           </div>
 
@@ -146,7 +146,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                 {
                   optionalProductsContent.length ?
                     [
-                        <h4 key={'optional-products-headline'} className={'optional-products-headline mt-lg mb-sm'}>Produse optionale</h4>,
+                        <h4 key={'optional-products-headline'} className={'optional-products-headline mt-lg mb-sm'}>Produse opționale</h4>,
                         <div key={'optional-products-content'} className={'row mx-n1'}>
                             {optionalProductsContent}
                         </div>
@@ -160,9 +160,9 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                       {
                         user.isAnonymous ?
                           <div className={'social-login mt-xl pt-xl border-top'}>
-                            <p className={`social-login-description`}>Vrei sa cumperi produsele selectate sau sa
-                              primesti prin email o lista cu ele?
-                              Autentifica-te prin una dintre metodele de mai jos!</p>
+                            <p className={`social-login-description`}>Vrei să cumperi produsele selectate sau să
+                              primești prin email o listă cu ele?
+                              Autentifică-te prin una dintre metodele de mai jos!</p>
                             <div className={'d-flex flex-column align-items-center'}>
                               <button type="button"
                                       className="social-btn-google mb-sm social-btn btn btn-primary text-light text-light d-flex"
@@ -179,13 +179,13 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                           :
                           <div
                             className={'authenticated-user-actions mt-xl pt-xl border-top d-flex flex-column align-items-center'}>
-                            <p className={`buy-description`}>Esti la un click distanta de cumpararea produselor
+                            <p className={`buy-description`}>Ești la un click distanță de cumpărarea produselor
                               necesare!</p>
                             <a href={productToCartLink} target="_blank" rel="noopener noreferrer"
                                className="buy-action mb-xl social-btn btn btn-primary text-light d-flex">
-                              Cumpara produsele
+                              Cumpără produsele
                             </a>
-                            <p className={`notify-description`}>Vrei sa primesti un email cu instructiunile la
+                            <p className={`notify-description`}>Vrei să primești un email cu instrucțiunile la
                               adresa {user.email} ?</p>
                             <button type="button"
                                     className="notify-action mb-sm social-btn btn btn-primary text-light d-flex"

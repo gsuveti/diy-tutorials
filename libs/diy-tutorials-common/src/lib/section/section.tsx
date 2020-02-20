@@ -69,7 +69,7 @@ export const Section = (props: SectionProps) => {
             {showSubmitFormButton ?
               <button type="button" className="my-md btn btn-primary text-light d-flex"
                       onClick={() => showProducts()}>
-                Afiseaza produsele necesare
+                Afișează produsele necesare
               </button>
               : null
             }
