@@ -47,7 +47,8 @@ function calculateMeasuredFormValue(state: AppState, parentBlockUUID): number {
 
   const measurementsByInstance = transposeArray(measurementsByProperty);
 
-  const instancesCount = userContextState.instancesCountByMeasurementForm[parentBlockUUID];
+  const instancesCount = userContextState.instancesCountByMeasurementForm[parentBlockUUID] || 1;
+
 
   return new Array(instancesCount).fill(1).reduce((sum, value, index) => {
     const parser = new FormulaParser();
