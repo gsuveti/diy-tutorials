@@ -69,18 +69,21 @@ export function getBlock(element: HTMLElement, parentBlockUUID?: string): Block 
 }
 
 export function getBlockAttributesList(blocks: Block[], depth = 1, parentBlockUUID?: string): BlockAttributes[] {
-  return blocks.reduce((accumulator, block, index) => {
-    accumulator.push({
-      ...block.attributes,
-      depth,
-      index,
-      parentBlockUUID
-    });
-    if (block.innerBlocks) {
-      accumulator.push(...getBlockAttributesList(block.innerBlocks, depth + 1, block.attributes.uuid))
-    }
-    return accumulator;
-  }, []);
+  if (blocks) {
+    return blocks.reduce((accumulator, block, index) => {
+      accumulator.push({
+        ...block.attributes,
+        depth,
+        index,
+        parentBlockUUID
+      });
+      if (block.innerBlocks) {
+        accumulator.push(...getBlockAttributesList(block.innerBlocks, depth + 1, block.attributes.uuid))
+      }
+      return accumulator;
+    }, []);
+  }
+  return [];
 }
 
 

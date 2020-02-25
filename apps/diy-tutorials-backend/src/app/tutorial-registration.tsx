@@ -4,11 +4,13 @@ import {Icon} from './icon';
 import i18n from './i18n/i18n';
 
 // @ts-ignore
-const {registerBlockType} = window.wp.blocks;
+const {registerBlockType, createBlock} = window.wp.blocks;
 // @ts-ignore
 const {Component} = window.wp.element;
 // @ts-ignore
 const {BlockControls, InspectorControls, AlignmentToolbar, InnerBlocks} = window.wp.editor;
+// @ts-ignore
+const {Button, Text} = window.wp.components;
 // @ts-ignore
 const {withSelect, withDispatch} = window.wp.data;
 
@@ -36,12 +38,15 @@ registerBlockType('irian/diy-tutorial', {
   })(
     withDispatch((dispatch, ownProps) => {
       const {init} = dispatch('diy-tutorial');
+      const {replaceBlock} = dispatch('core/block-editor');
+
       return {
-        init
+        init,
+        replaceBlock
       };
     })(
       (props) => {
-        const {attributes, className, innerBlocks, name, init} = props;
+        const {attributes, innerBlocks, name, init, replaceBlock} = props;
         const {uuid} = attributes;
         init(innerBlocks);
 
@@ -58,13 +63,36 @@ registerBlockType('irian/diy-tutorial', {
         ];
         const ALLOWED_BLOCKS = ['irian/diy-section', 'irian/diy-product-list'];
 
+        const recoverBlock = ({name, attributes, innerBlocks}) =>
+          createBlock(name, attributes, innerBlocks);
+
+        const attemptBlockRecovery = (innerBlocks) => {
+
+          innerBlocks.map(
+            block => {
+              if (block.innerBlocks) {
+                attemptBlockRecovery(block.innerBlocks)
+              }
+              if (!block.isValid) {
+                console.log(`attempting block recovery for clientId: ${block.clientId}`);
+                replaceBlock(block.clientId, recoverBlock(block));
+              }
+            }
+          );
+        };
 
         return ([
             <BlockControls key='controls'>
 
             </BlockControls>,
             <InspectorControls key='inspector'>
-
+              <hr/>
+              <p>Recover all invalid blocks</p>
+              <Button isPrimary
+                      onClick={() => attemptBlockRecovery(innerBlocks)}
+              >
+                Attempt blocks recovery
+              </Button>
             </InspectorControls>,
 
             <Tutorial
