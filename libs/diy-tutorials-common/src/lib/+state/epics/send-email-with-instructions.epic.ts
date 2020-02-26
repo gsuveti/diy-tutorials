@@ -27,7 +27,7 @@ export const sendEmailWithInstructionsEpic = (action$: Observable<AnyAction>, st
 
       if (selectedProductRange) {
 
-        const title = getTitle();
+        const titleHtml = getTitle();
         const content = getContent();
         const displayedSections = getSections();
 
@@ -51,24 +51,26 @@ export const sendEmailWithInstructionsEpic = (action$: Observable<AnyAction>, st
 
         const optionalProductsContent =
           selectedOptionalProducts && selectedOptionalProducts.length ?
-          selectedOptionalProducts
-          .reduce(
-            (html, product) => {
-              const quantity = productQuantities[product.uuid];
-              return html + getHtmlForProduct(product, quantity);
-            },
-            `<h2>Produse optionale (${selectedOptionalProductsTotal} lei)</h2>`
-          )
-          :
-          ''
+            selectedOptionalProducts
+              .reduce(
+                (html, product) => {
+                  const quantity = productQuantities[product.uuid];
+                  return html + getHtmlForProduct(product, quantity);
+                },
+                `<h2>Produse optionale (${selectedOptionalProductsTotal} lei)</h2>`
+              )
+            :
+            ''
         ;
 
 
         const data = {
-          html:template(title + content + displayedSections + productsContent + optionalProductsContent),
+          title: getTitleText(),
+          content,
+          displayedSections,
           email,
           products: selectedProducts.concat(selectedOptionalProducts),
-          optionalProducts
+          productQuantities
         };
 
         return from(firebase.firestore().collection(`emails`).add(data)).pipe(
@@ -87,11 +89,15 @@ function getTitle() {
   return document.querySelector('.post .entry-title').outerHTML;
 }
 
+function getTitleText() {
+  return document.querySelector('.post .entry-title').innerHTML;
+}
+
 function getContent() {
   const rootParent = document.getElementById('root').parentElement;
 
   return Array.from(rootParent.children)
-    .filter(elem => elem.id!=='root')
+    .filter(elem => elem.id !== 'root')
     .reduce((acc, item) => {
       return acc + item.outerHTML
     }, '');
@@ -111,7 +117,7 @@ function getHtmlForProduct(product, quantity): string {
           </div>`;
 }
 
-function template(html:string):string{
+function template(html: string): string {
   return `
     <div style="max-width: 600px;margin:auto">
         ${html}

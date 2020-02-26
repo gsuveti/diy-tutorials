@@ -3,11 +3,15 @@
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "build": "tsc",
-    "serve": "npm run build && firebase serve --only functions",
-    "shell": "npm run build && firebase functions:shell",
+    "watch": "tsc -w",
+    "runtimeconfig": "firebase functions:config:get > .runtimeconfig.json",
+    "shell": "npm run build && npm run runtimeconfig && firebase functions:shell",
+    "serve": "npm run watch | firebase serve --only functions",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "get-email": "firebase functions:config:get common.email",
+    "set-email": "firebase functions:config:set common.email='LucrareaMea <office@lucrareamea.ro>'"
   },
   "engines": {
     "node": "8"
@@ -16,6 +20,8 @@
   "dependencies": {
     "@sendgrid/mail": "^6.4.0",
     "cors": "^2.8.5",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
     "firebase": "^6.5.0",
     "firebase-admin": "^8.0.0",
     "firebase-functions": "^3.1.0",

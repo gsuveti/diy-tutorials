@@ -1,16 +1,20 @@
 import {DocumentSnapshot} from 'firebase-functions/lib/providers/firestore';
-import {Change, EventContext} from 'firebase-functions';
+import {EventContext} from 'firebase-functions';
+import {template} from './template';
 
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const cors = require('cors')({origin: true});
-const scrape = require('html-metadata');
 const juice = require('juice');
 
 
 const email = functions.config().common.email;
 const sendgridApiKey = functions.config().sendgrid.api_key;
 const sgMail = require('@sendgrid/mail');
+const express = require("express");
+const ejs = require('ejs');
+
+const app = express();
+
 sgMail.setApiKey(sendgridApiKey);
 
 admin.initializeApp();
@@ -19,13 +23,56 @@ admin.initializeApp();
  * Here we're using Gmail to send
  */
 
-const emailStyle=`
+interface Data {
+  title: string;
+  content: string;
+  displayedSections: string;
+  productQuantities: { [key: string]: number }
+  products: { optional: string, [key: string]: any };
+}
+
+const emailStyle = `
 <style>
+    .content{
+        max-width: 600px;
+        margin:auto;
+    }
     img{
         width: 100%;
     }    
 </style>
 `;
+
+
+function getTotal(products: any, productQuantities: any) {
+  return products.reduce((total: any, product: any) => {
+    const quantity = productQuantities[product.uuid];
+    return total + product.price * quantity;
+  }, 0)
+}
+
+function renderTemplate({title, content, displayedSections, products, productQuantities}: Data) {
+
+  const requiredProducts = products.filter((product: any) => !product.optional);
+  const optionalProducts = products.filter((product: any) => product.optional);
+
+  const requiredProductsTotal = getTotal(requiredProducts, productQuantities);
+  const optionalProductsTotal = getTotal(optionalProducts, productQuantities);
+
+  return ejs.render(template,
+    {
+      title,
+      displayedSections,
+      content,
+      requiredProducts,
+      optionalProducts,
+      requiredProductsTotal,
+      optionalProductsTotal,
+      productQuantities
+    });
+  ;
+}
+
 
 exports.sendEmail = functions.firestore
   .document('emails/{emailId}')
@@ -34,53 +81,28 @@ exports.sendEmail = functions.firestore
 
     console.log(data);
 
-    const html = juice(emailStyle + data.html);
+    const html = data.html ? (emailStyle + data.html) : renderTemplate(data);
+    const title = data.title;
 
     const msg = {
       to: data.email,
       from: email,
-      subject: 'DIY tutorial - instructions',
-      html: html
+      subject: `Lucrare DIY${title ? " - " + title : ""}`,
+      html: juice(html)
     };
 
     sgMail.send(msg).then((response: any) => {
       console.log('mail sent!');
     });
-
   });
 
 
-exports.getMetadata = functions.https.onRequest((req: any, res: any) => {
-  const {url} = req.query;
-  cors(req, res, () => {
-    scrape(url, function (error: any, metadata: any) {
-      console.log(metadata);
-      res.send(metadata);
-    });
+app.post('/getTemplate', function (req: any, res: any) {
+  const data: Data = req.body;
+  const html = renderTemplate(data);
+  res.send(juice(html));
 
-  });
 });
 
-exports.setMetadata = functions.firestore
-  .document('products/{productId}')
-  .onWrite((change: Change<DocumentSnapshot>, context: EventContext) => {
-    const data: any = change.after.data();
-
-    console.log(context.eventType);
-
-    if (data) {
-      console.log(data.url);
-      return scrape(data.url)
-        .then((metadata: any) => {
-          console.log(metadata);
-
-          return change.after.ref.set({
-            metadata: metadata,
-            id: context.params.productId
-          }, {merge: true});
-        });
-    }
-
-    return 'ok';
-  });
+exports.webApp = functions.https.onRequest(app);
 
