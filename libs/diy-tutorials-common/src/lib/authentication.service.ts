@@ -2,7 +2,7 @@ import * as firebase from 'firebase/app';
 import {getUserData} from './+state/tutorial.actions';
 
 export function logout() {
-  firebase.auth().signOut()
+  firebase.auth().signOut();
 }
 
 
@@ -18,7 +18,6 @@ export function setAuthPersistence() {
 
 
 export function watchAuthState(store) {
-
   firebase.auth().onAuthStateChanged(function (user: firebase.User) {
     store.dispatch(getUserData(user));
   });
