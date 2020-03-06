@@ -93,33 +93,50 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
   renderSelectOneQuestion() {
     const {response, options, attributes} = this.props;
     const {text} = attributes;
-    const value: string = response ? options.findIndex(option => option.uuid === response.responseUUID).toString() : "";
+
+    const responseUUID = response ? response.responseUUID : '';
 
     if (options) {
       return (
-        <div className="form-group">
-          <label>{text}</label>
+        <div className={`question-content  ${responseUUID ? '' : 'pulse'}`}>
+          <div className={`card d-flex flex-column flex-grow-1`}>
+            <div className={`question-header p-md`}>
+              <label>{text}</label>
+            </div>
 
-          <HideInEmail>
-            <select className="custom-select"
-                    value={value}
-                    onChange={(event) => {
-                      const index: number = Number.parseInt(event.currentTarget.value);
-                      if (index >= 0) {
-                        const option = options[index];
-                        this.submitResponse(option.value, option.uuid, option.nextSection, true);
-                      }
-                    }}
-            >
-              {[{uuid: "", value: '-- Alege un raspuns --'}].concat(options).map(({value, uuid}, index) => (
-                  <option key={index} value={index - 1}>{value}</option>
-                )
-              )}
-            </select>
-          </HideInEmail>
-          <ShowInEmail>
-            <span><strong>{response ? response.value : undefined}</strong></span>
-          </ShowInEmail>
+            <HideInEmail>
+              <div className={`d-flex flex-column flex-grow-1`}>
+                <div className={`question-options d-flex flex-column flex-grow-1 p-md`}>
+                  {options.map(({value, uuid, nextSection}, index) => (
+                      <div className={`d-flex flex-grow-1`} key={index}>
+                        <button
+                          className={`btn d-flex flex-grow-1 align-items-center mb-sm ${responseUUID == uuid ? 'btn-secondary' : 'btn-outline-primary'}`}
+                          value={index - 1}
+                          onClick={() => {
+                            this.submitResponse(value, uuid, nextSection, true);
+                          }}
+                        >
+                          <i className={'material-icons pr-sm'}>
+                            {responseUUID == uuid ? 'radio_button_checked' : 'radio_button_unchecked'}
+                          </i>
+                          <span className={`text-left`}>{value}</span>
+                        </button>
+                      </div>
+                    )
+                  )}
+                </div>
+                {responseUUID ? null :
+                  <div className={`question-help px-md pb-md`}>
+                    <small>Alege o optiune pentru a merge mai departe</small>
+                  </div>
+                }
+              </div>
+
+            </HideInEmail>
+            <ShowInEmail>
+              <span><strong>{response ? response.value : undefined}</strong></span>
+            </ShowInEmail>
+          </div>
         </div>
       );
     }
@@ -138,18 +155,16 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
 
         {isRenderedInEditor ?
           null :
-          <div className={"question pt-md"}>
+          <div className={"question py-lg"}>
             {text ?
-              <div>
-                <div className="d-flex align-items-baseline">
-                  {type === 'text' ?
-                    this.renderTextQuestion() : null
-                  }
+              <div className="d-flex">
+                {type === 'text' ?
+                  this.renderTextQuestion() : null
+                }
 
-                  {type === 'selectOne' ?
-                    this.renderSelectOneQuestion() : null
-                  }
-                </div>
+                {type === 'selectOne' ?
+                  this.renderSelectOneQuestion() : null
+                }
               </div>
               : null
             }
