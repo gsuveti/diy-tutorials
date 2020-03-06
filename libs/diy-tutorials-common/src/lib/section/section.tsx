@@ -9,7 +9,7 @@ import {InnerBlocksContent} from '../inner-blocks-content/inner-blocks-content';
 import {ConnectedMeasurementForm} from '../measurement-form/measurement-form';
 import {AppState} from '../+state/app.state';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
-import {showProducts, TutorialActions} from '../+state/tutorial.actions';
+import {showProductsOrScrollToMeasurements, TutorialActions} from '../+state/tutorial.actions';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
@@ -25,7 +25,7 @@ interface OwnProps {
 
 
 interface DispatchProps {
-  showProducts?: typeof showProducts;
+  showProductsOrScrollToMeasurements?: typeof showProductsOrScrollToMeasurements;
 }
 
 interface StateProps {
@@ -50,7 +50,7 @@ const allowedComponents = {
 export const Section = (props: SectionProps) => {
   const {
     innerBlocks = [], children, attributes, isVisible = true,
-    showSubmitFormButton, showProducts, isRenderedInEditor
+    showSubmitFormButton, showProductsOrScrollToMeasurements, isRenderedInEditor
   } = props;
 
 
@@ -68,7 +68,7 @@ export const Section = (props: SectionProps) => {
           <div>
             {showSubmitFormButton ?
               <button type="button" className="my-md btn btn-primary text-light d-flex"
-                      onClick={() => showProducts()}>
+                      onClick={() => showProductsOrScrollToMeasurements()}>
                 Afișează produsele necesare
               </button>
               : null
@@ -91,7 +91,7 @@ function mapStateToProps(state: AppState, ownProps: SectionProps, ownState: Sect
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators<TutorialActions, ActionCreatorsMapObject<TutorialActions> & DispatchProps>({
-    showProducts,
+    showProductsOrScrollToMeasurements,
   }, dispatch);
 
 

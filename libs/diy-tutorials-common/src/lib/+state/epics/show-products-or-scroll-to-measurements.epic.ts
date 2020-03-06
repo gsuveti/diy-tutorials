@@ -1,7 +1,7 @@
 import {Observable} from 'rxjs';
 import {AnyAction} from 'redux';
 import {ofType, StateObservable} from 'redux-observable';
-import {map} from 'rxjs/operators';
+import {filter, map} from 'rxjs/operators';
 import {AppState} from '@diy-tutorials/diy-tutorials-common';
 import {showProducts, TutorialActionTypes, UserDataFetched} from '../tutorial.actions';
 
@@ -9,21 +9,29 @@ import {showProducts, TutorialActionTypes, UserDataFetched} from '../tutorial.ac
 export const showProductsOrScrollToMeasurementsEpic = (action$: Observable<AnyAction>, state$: StateObservable<AppState>) => {
   return action$.pipe(
     ofType(TutorialActionTypes.ShowProductsOrScrollToMeasurements),
-    map((action: UserDataFetched) => {
+    filter((action: UserDataFetched) => {
       const tutorialState = state$.value.tutorial;
       const userContextState = state$.value.userContext;
+      const {measuredFormValues, displayedSections} = userContextState;
 
       const measurementFormWithoutValue = tutorialState.measurementForms.find(measurementForm => {
-        return !userContextState.measuredFormValues[measurementForm.uuid];
+        return !measuredFormValues[measurementForm.uuid] &&
+          displayedSections.indexOf(measurementForm.parentBlockUUID) > -1;
       });
 
       if (measurementFormWithoutValue) {
-        document.getElementById(measurementFormWithoutValue.uuid).scrollIntoView({
+        const id = measurementFormWithoutValue.uuid;
+        const measurement = document.getElementById(id);
+        measurement.scrollIntoView({
           behavior: 'smooth'
         });
-      }
+        const input = measurement.querySelector('input');
+        input.focus();
 
-      return showProducts();
-    })
+        return false;
+      }
+      return true;
+    }),
+    map(() => showProducts())
   );
 };
