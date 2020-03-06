@@ -127,7 +127,7 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
                 </div>
                 {responseUUID ? null :
                   <div className={`question-help px-md pb-md`}>
-                    <small>Alege o optiune pentru a merge mai departe</small>
+                    <small>Alege o opțiune pentru a merge mai departe!</small>
                   </div>
                 }
               </div>
