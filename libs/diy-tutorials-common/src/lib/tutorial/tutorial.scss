@@ -178,6 +178,19 @@ body {
     --product-summary-height: 120px;
 
     @include media-breakpoint-down(sm) {
+      .product {
+        > div {
+          display: flex;
+
+          .image-wrapper {
+            --height: 60px;
+            --width: 100px;
+            flex-basis: var(--width);
+            min-width: var(--width);
+            max-width: var(--width);
+          }
+        }
+      }
       .optional-products {
         .product-range-summary {
           margin-top: $spacer;

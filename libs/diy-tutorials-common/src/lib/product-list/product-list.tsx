@@ -102,7 +102,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
              className={`product-range-summary col-4 ${isRenderedInEditor ? 'px-0' : 'p-1'}
           `}>
           <div className={'d-flex flex-column align-items-center'}>
-            <p className={'m-0 pt-xs'}>{productRange.headline}</p>
+            <p className={'m-0 pt-xs pb-0'}>{productRange.headline}</p>
             <p className={'m-0 '}><strong>{total} lei</strong></p>
             <button type="button" className="btn btn-primary text-light d-flex mt-sm pt-xs px-sm"
                     onClick={() => {

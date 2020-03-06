@@ -69,7 +69,6 @@ export class Product extends React.Component<ProductProps, ProductState> {
         {
           isRenderedInEditor ? null :
             <div>
-
               <div className={'image-wrapper'}>
                 <figure>
                   <img src={imageUrl}/>
@@ -94,31 +93,33 @@ export class Product extends React.Component<ProductProps, ProductState> {
                   }
                 </span>
               </div>
-              {
-                optional ?
-                  <div className={'d-flex flex-column'}>
-                    <div className={'d-flex justify-content-center'}>
-                      <p className={`m-sm`}>- {price} lei -</p>
-                    </div>
-                    <div className={'d-flex justify-content-center'}>
-                      {
-                        isSelected ?
-                          <button className={'btn btn-light ml btn-sm d-flex align-items-center px-lg'}
-                                  onClick={() => removeProduct(uuid)}>
-                            <i className={'material-icons'}>remove_shopping_cart</i>Scoate din listă
-                          </button>
-                          :
-                          <button className={'btn btn-primary text-light btn-sm d-flex align-items-center pt-xs px-lg'}
-                                  onClick={() => selectProduct(uuid)}>
-                            <i className={'material-icons'}>add_shopping_cart</i>Adaugă în listă
-                          </button>
-                      }
-                    </div>
-                  </div>
-                  :
-                  null
-              }
+
             </div>
+        }
+
+        {
+          !isRenderedInEditor && optional ?
+            <div className={'d-flex flex-column'}>
+              <div className={'d-flex justify-content-center'}>
+                <p className={`m-sm`}>- {price} lei -</p>
+              </div>
+              <div className={'d-flex justify-content-center'}>
+                {
+                  isSelected ?
+                    <button className={'btn btn-light ml btn-sm d-flex align-items-center px-lg'}
+                            onClick={() => removeProduct(uuid)}>
+                      <i className={'material-icons'}>remove_shopping_cart</i>Scoate din listă
+                    </button>
+                    :
+                    <button className={'btn btn-primary text-light btn-sm d-flex align-items-center pt-xs px-lg'}
+                            onClick={() => selectProduct(uuid)}>
+                      <i className={'material-icons'}>add_shopping_cart</i>Adaugă în listă
+                    </button>
+                }
+              </div>
+            </div>
+            :
+            null
         }
       </div>
     );
