@@ -99,13 +99,12 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
 
       return (
         <div key={productRange.uuid}
-             className={`product-range-summary col-12 col-md-4
-               ${isRenderedInEditor ? 'px-0' : 'p-1'}
+             className={`product-range-summary col-4 ${isRenderedInEditor ? 'px-0' : 'p-1'}
           `}>
           <div className={'d-flex flex-column align-items-center'}>
             <p className={'m-0 pt-xs'}>{productRange.headline}</p>
             <p className={'m-0 '}><strong>{total} lei</strong></p>
-            <button type="button" className="btn btn-primary text-light d-flex mt-sm pt-xs px-lg"
+            <button type="button" className="btn btn-primary text-light d-flex mt-sm pt-xs px-sm"
                     onClick={() => {
                       selectProductRange(productRange.uuid);
                     }}>
@@ -146,11 +145,12 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                 {
                   optionalProductsContent.length ?
                     [
-                        <h4 key={'optional-products-headline'} className={'optional-products-headline mt-lg mb-sm'}>Produse opționale</h4>,
-                        <div key={'optional-products-content'} className={'row mx-n1'}>
-                            {optionalProductsContent}
-                        </div>
-                    ]:null
+                      <h4 key={'optional-products-headline'}
+                          className={'optional-products-headline mt-lg mb-sm'}>Produse opționale</h4>,
+                      <div key={'optional-products-content'} className={'row mx-n1'}>
+                        {optionalProductsContent}
+                      </div>
+                    ] : null
                 }
               </div>,
               <div key={'actions'} className={`col-12 px-1`}>
@@ -211,15 +211,19 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
       </div>,
       <div key='reset-or-logout'>
         {
-          isRenderedInEditor ? null:
+          isRenderedInEditor ? null :
             <div className={'user-context-actions mt-xl pt-xl w-100 d-flex justify-content-center'}>
               <button type="button" className="btn-reset btn btn-link" onClick={resetUserContext}>
                 <small>Resetare</small>
               </button>
-              <div className={'my-xs border-right'}></div>
-              <button type="button" className="btn-logout btn btn-link" onClick={logout}>
-                <small>Logout</small>
-              </button>
+              {(user.uid && !user.isAnonymous) ?
+                [
+                  <div key="border" className={'my-xs border-right'}></div>,
+                  <button key="logout" type="button" className="btn-logout btn btn-link" onClick={logout}>
+                    <small>Logout</small>
+                  </button>
+                ] : null
+              }
             </div>
 
         }

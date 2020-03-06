@@ -1,5 +1,5 @@
 .product-list {
-  --product-summary-height: 120px;
+
 
   > .product {
     display: none;
@@ -16,7 +16,7 @@
         color: var(--primary);
       }
 
-      .product-range-content{
+      .product-range-content {
 
       }
 
@@ -37,8 +37,8 @@
     }
   }
 
+
   .optional-products {
-    margin-top: calc(-1 * var(--product-summary-height));
 
     .product {
       border: none !important;

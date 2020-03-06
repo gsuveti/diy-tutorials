@@ -81,7 +81,7 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
     <div
       className={`product-range
           ${isSelected ? 'product-range-selected' : ''}
-          ${isRenderedInEditor ? 'px-0' : 'col-12 col-md-4 px-1'}
+          ${isRenderedInEditor ? 'px-0' : 'col-12 col-md-4 px-1 pt-md'}
               `}
       data-attributes={serializeAttributes(attributes)}>
 
