@@ -22,11 +22,13 @@ export const showProductsOrScrollToMeasurementsEpic = (action$: Observable<AnyAc
       if (measurementFormWithoutValue) {
         const id = measurementFormWithoutValue.uuid;
         const measurement = document.getElementById(id);
+
+        const input = measurement.querySelector('input');
+        input.focus({preventScroll:true});
+
         measurement.scrollIntoView({
           behavior: 'smooth'
         });
-        const input = measurement.querySelector('input');
-        input.focus();
 
         return false;
       }
