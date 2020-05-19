@@ -14,7 +14,7 @@ before_script:
   - npm install -g @angular/cli
 
 script:
-  - ng build diy-tutorials-frontend
+  - ng build --prod diy-tutorials-frontend
   - ng build diy-tutorials-backend
 
 before_deploy:

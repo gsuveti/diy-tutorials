@@ -3,8 +3,8 @@ import {reducers} from "./reducers";
 import {combineEpics, createEpicMiddleware} from 'redux-observable';
 import {showProductsOrScrollToMeasurementsEpic} from './+state/epics/show-products-or-scroll-to-measurements.epic';
 import {
-  calculateAllMeasurementFormValuesEpic,
-  calculateMeasurementFormValueEpic
+    calculateAllMeasurementFormValuesEpic,
+    calculateMeasurementFormValueEpic
 } from './+state/epics/calculate-measurement-form-value.epic';
 import {updatePriceForProductRangesEpic} from './+state/epics/update-price-for-product-ranges.epic';
 import {loginWithProviderEpic} from './+state/epics/login-with-provider.epic';
@@ -30,49 +30,54 @@ import {resetMeasurementInstancesEpic} from './+state/epics/reset-measurement-in
 
 
 const epicMiddleware = createEpicMiddleware();
-const reduxDevtoolsExtension = (window && (window as any).__REDUX_DEVTOOLS_EXTENSION__) ? [(window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()] : [];
+const reduxDevtoolsExtension =
+    (process.env.NODE_ENV !== 'production' && window && (window as any).__REDUX_DEVTOOLS_EXTENSION__)
+        ?
+        [(window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()]
+        :
+        [];
 
 
 export const rootEpic = combineEpics(
-  getUserDataEpic,
-  saveUserDataEpic,
-  loginWithProviderEpic,
-  calculateMeasurementFormValueEpic,
-  calculateAllMeasurementFormValuesEpic,
-  calculateProductQuantitiesEpic,
-  hideProductsEpic,
-  updateDisplayedProductTypesEpic,
-  updateDisplayedProductsEpic,
-  updateDisplayedSectionsEpic,
-  updatePriceForProductRangesEpic,
-  updateCommonProductsTotalPriceEpic,
-  resetResponsesEpic,
-  sendEmailWithInstructionsEpic,
-  logoutEpic,
-  showProductsOrScrollToMeasurementsEpic,
-  scrollToTopEpic,
-  resetUserContextEpic,
-  resetMeasurementsEpic,
-  resetMeasurementInstancesEpic
+    getUserDataEpic,
+    saveUserDataEpic,
+    loginWithProviderEpic,
+    calculateMeasurementFormValueEpic,
+    calculateAllMeasurementFormValuesEpic,
+    calculateProductQuantitiesEpic,
+    hideProductsEpic,
+    updateDisplayedProductTypesEpic,
+    updateDisplayedProductsEpic,
+    updateDisplayedSectionsEpic,
+    updatePriceForProductRangesEpic,
+    updateCommonProductsTotalPriceEpic,
+    resetResponsesEpic,
+    sendEmailWithInstructionsEpic,
+    logoutEpic,
+    showProductsOrScrollToMeasurementsEpic,
+    scrollToTopEpic,
+    resetUserContextEpic,
+    resetMeasurementsEpic,
+    resetMeasurementInstancesEpic
 );
 
 export function configureStore(initialState: AppState = {
-  tutorial: initialTutorialState,
-  userContext: initialUserContextState,
-  user: initialUserState
+    tutorial: initialTutorialState,
+    userContext: initialUserContextState,
+    user: initialUserState
 }): Store<AppState, AnyAction> {
-  const store = createStore(
-    reducers,
-    initialState,
-    compose(
-      applyMiddleware(epicMiddleware),
-      ...reduxDevtoolsExtension
-    )
-  );
-  // @ts-ignore
-  epicMiddleware.run(rootEpic);
+    const store = createStore(
+        reducers,
+        initialState,
+        compose(
+            applyMiddleware(epicMiddleware),
+            ...reduxDevtoolsExtension
+        )
+    );
+    // @ts-ignore
+    epicMiddleware.run(rootEpic);
 
-  return store;
+    return store;
 }
 
 
