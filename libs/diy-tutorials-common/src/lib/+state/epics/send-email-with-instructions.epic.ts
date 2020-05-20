@@ -70,7 +70,8 @@ export const sendEmailWithInstructionsEpic = (action$: Observable<AnyAction>, st
           displayedSections,
           email,
           products: selectedProducts.concat(selectedOptionalProducts),
-          productQuantities
+          productQuantities,
+
         };
 
         return from(firebase.firestore().collection(`emails`).add(data)).pipe(
