@@ -47,12 +47,18 @@ class AuthenticationSection extends React.Component<AuthenticationSectionProps, 
         this.loginWithEmail = this.loginWithEmail.bind(this);
     }
 
-    loginWithEmail() {
+    loginWithEmail(event) {
+        event.preventDefault();
         const {loginWithEmail} = this.props;
 
         const email = this.emailInput.current.value;
         loginWithEmail(email);
     }
+
+    handleValidity = ({target}) => {
+        const message = target.dataset.message;
+        target.setCustomValidity(message);
+    };
 
     render() {
         const {loginWithGoogle, loginWithFacebook} = this.props;
@@ -64,14 +70,15 @@ class AuthenticationSection extends React.Component<AuthenticationSectionProps, 
                     primești prin email o listă cu ele?
                     Autentifică-te prin una dintre metodele de mai jos!</p>
                 <div className={'d-flex flex-column align-items-center'}>
-                    <form>
+                    <form onSubmit={this.loginWithEmail}>
                         <label>Email:</label>
                         <input id={`email`}
                                type="email"
+                               data-message={'Introduceti un email valid!'}
+                               onInvalid={this.handleValidity}
                                ref={this.emailInput}
                                className="measurement-input form-control mb-md"/>
-                        <button type="button"
-                                onClick={this.loginWithEmail}
+                        <button type="submit"
                                 className="social-btn-facebook social-btn btn btn-primary text-light d-flex"
                         >
                             Autentifica-te cu email
