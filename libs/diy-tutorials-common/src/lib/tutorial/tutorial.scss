@@ -98,6 +98,18 @@ body {
     padding: $spacer;
   }
 
+  .measurement-form{
+    &.required{
+      .measurement{
+        .measurement-label{
+          &:after{
+            content: ' *';
+          }
+        }
+      }
+    }
+  }
+
   .measurements {
     .list-group-item {
       color: var(--accent);

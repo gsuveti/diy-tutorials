@@ -26,74 +26,74 @@ console.log("registerBlockType measurement");
  *                             registered; otherwise `undefined`.
  */
 registerBlockType('irian/diy-measurement', {
-  title: i18n.measurement.title, // Block title.
-  icon: 'layout',
-  category: 'common',
-  keywords: [],
-  attributes: withBaseAttributes({
-    property: {type: 'string'},
-  }),
+    title: i18n.measurement.title, // Block title.
+    icon: 'layout',
+    category: 'common',
+    keywords: [],
+    attributes: withBaseAttributes({
+        property: {type: 'string'}
+    }),
 
 
-  edit: withSelect((select, ownProps) => {
-    const {getMeasurementIndex} = select("diy-tutorial");
+    edit: withSelect((select, ownProps) => {
+        const {getMeasurementIndex} = select("diy-tutorial");
 
-    return {
-      index: getMeasurementIndex(ownProps.attributes.uuid)
-    };
-  })((props: any) => {
-    const {isSelected, setAttributes, attributes, className, index, name, clientId} = props;
-    const {uuid, property} = attributes;
-
-
-    if (!uuid) {
-      setAttributes({
-        uuid: generateUUID(),
-        name: name,
-      })
-    }
-
-    return ([
-        <BlockControls key='controls'>
-        </BlockControls>,
-        <InspectorControls key='inspector'>
-        </InspectorControls>,
-        <Measurement
-          isRenderedInEditor={true}
-          attributes={attributes}>
-          <p className={'block-title'}>{`${i18n.measurement.title} (A${index + 1})`}</p>
-          <div>
-            <TextControl
-              label={`Denumirea proprietatii`}
-              key={"property"}
-              value={property}
-              onChange={(value) => {
-                props.setAttributes({property: value});
-              }}/>
-          </div>
-        </Measurement>
-
-      ]
-    );
-  }),
+        return {
+            index: getMeasurementIndex(ownProps.attributes.uuid)
+        };
+    })((props: any) => {
+        const {setAttributes, attributes, index, name} = props;
+        const {uuid, property} = attributes;
 
 
-  /**
-   * The save function defines the way in which the different attributes should be combined
-   * into the final markup, which is then serialized by Gutenberg into post_content.
-   *
-   * The "save" property must be specified and must be a valid function.
-   *
-   * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
-   */
-  save: function (props: any) {
-    const {attributes, clientId} = props;
+        if (!uuid) {
+            setAttributes({
+                uuid: generateUUID(),
+                name: name,
+            })
+        }
 
-    return (
-      <Measurement
-        attributes={attributes}>
-      </Measurement>
-    );
-  },
+        return ([
+                <BlockControls key='controls'>
+                </BlockControls>,
+                <InspectorControls key='inspector'>
+                </InspectorControls>,
+                <Measurement
+                    isRenderedInEditor={true}
+                    attributes={attributes}>
+                    <p className={'block-title'}>{`${i18n.measurement.title} (A${index + 1})`}</p>
+                    <div>
+                        <TextControl
+                            label={`Denumirea proprietatii`}
+                            key={"property"}
+                            value={property}
+                            onChange={(value) => {
+                                props.setAttributes({property: value});
+                            }}/>
+                    </div>
+                </Measurement>
+
+            ]
+        );
+    }),
+
+
+    /**
+     * The save function defines the way in which the different attributes should be combined
+     * into the final markup, which is then serialized by Gutenberg into post_content.
+     *
+     * The "save" property must be specified and must be a valid function.
+     *
+     * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
+     */
+    save: function (props: any) {
+        const {attributes, clientId} = props;
+
+        return (
+            <Measurement
+                attributes={attributes}>
+            </Measurement>
+        );
+    },
 });
 

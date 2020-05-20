@@ -15,7 +15,7 @@ interface OwnProps {
   children?: any;
   isRenderedInEditor?: boolean;
   attributes: BlockAttributes & {
-    property: string
+    property: string;
   },
   instanceIndex?: number;
   value?: number;
@@ -41,7 +41,7 @@ export const Measurement = (props: MeasurementProps, state: MeasurementState) =>
     children, isRenderedInEditor, attributes,
     addMeasurement, measuredValue, instanceIndex
   } = props;
-  const {property, uuid, parentBlockUUID} = attributes;
+  const {property,required, uuid, parentBlockUUID} = attributes;
 
   const onMeasurementChange = (event: FormEvent<HTMLInputElement>) => {
     const number = Number.parseFloat(event.currentTarget.value);

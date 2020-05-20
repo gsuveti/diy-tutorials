@@ -14,27 +14,28 @@ import ShowInEmail from '../show-in-email/show-in-email';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
-  children?: ReactNode;
-  innerBlocks?: Block[];
-  attributes?: {
-    uuid?: string;
-    name?: string;
-    headline?: string;
-    description?: string;
-    multipleInstances?: boolean;
-    instancesCountQuestion?: string;
-  };
-  isRenderedInEditor?: boolean;
+    children?: ReactNode;
+    innerBlocks?: Block[];
+    attributes?: {
+        uuid?: string;
+        name?: string;
+        headline?: string;
+        description?: string;
+        multipleInstances?: boolean;
+        instancesCountQuestion?: string;
+        required: boolean;
+    };
+    isRenderedInEditor?: boolean;
 }
 
 
 interface DispatchProps {
-  changeInstancesCount?: typeof changeInstancesCount
+    changeInstancesCount?: typeof changeInstancesCount
 }
 
 interface StateProps {
-  instancesCount?: number
-  value?: number
+    instancesCount?: number
+    value?: number
 }
 
 type MeasurementFormProps = StateProps & DispatchProps & OwnProps;
@@ -45,108 +46,111 @@ export interface MeasurementFormState {
 }
 
 const allowedComponents = {
-  'irian/diy-measurement': ConnectedMeasurement
+    'irian/diy-measurement': ConnectedMeasurement
 };
 
 export const MeasurementForm = (props: MeasurementFormProps) => {
-  const {
-    children, attributes, innerBlocks = [], instancesCount, changeInstancesCount, value,
-    isRenderedInEditor
-  } = props;
-  const {uuid, multipleInstances, instancesCountQuestion, headline, description} = attributes;
+    const {
+        children, attributes, innerBlocks = [], instancesCount, changeInstancesCount, value,
+        isRenderedInEditor
+    } = props;
+    const {uuid, multipleInstances, instancesCountQuestion, headline, description, required} = attributes;
 
-  const measurements = new Array(instancesCount || 1).fill(1)
-    .map((value, index) => {
-      const alteredBlocks = innerBlocks.map(block => {
-        return {
-          ...block,
-          instanceIndex: index
-        };
-      });
+    const measurements = new Array(instancesCount || 1).fill(1)
+        .map((value, index) => {
+            const alteredBlocks = innerBlocks.map(block => {
+                return {
+                    ...block,
+                    instanceIndex: index
+                };
+            });
 
-      return (
-        <div className="list-group-item d-flex justify-content-between align-items-start" key={index}>
-          <div>
-            <InnerBlocksContent
-              innerBlocks={alteredBlocks}
-              allowedComponents={allowedComponents}
-            />
-          </div>
-          <HideInEmail>
-            <span className="badge badge-primary badge-pill">{index + 1}</span>
-          </HideInEmail>
-        </div>
-      );
-    });
+            return (
+                <div className="list-group-item d-flex justify-content-between align-items-start" key={index}>
+                    <div>
+                        <InnerBlocksContent
+                            innerBlocks={alteredBlocks}
+                            allowedComponents={allowedComponents}
+                        />
+                    </div>
+                    <HideInEmail>
+                        <span className="badge badge-primary badge-pill">{index + 1}</span>
+                    </HideInEmail>
+                </div>
+            );
+        });
 
-  return (
-    <div data-attributes={serializeAttributes(attributes)}>
-      {children}
-      {
-        isRenderedInEditor ?
-          null :
-          <div id={uuid} className={`measurement-form`}>
-            <h4 className={`measurement-form-headline`}>{headline}</h4>
-            <p className={`measurement-form-description`}>{description}</p>
+    return (
+        <div data-attributes={serializeAttributes(attributes)}>
+            {children}
+            {
+                isRenderedInEditor ?
+                    null :
+                    <div id={uuid} className={`measurement-form ${required ? "required" : ""}`}>
+                        <h4 className={`measurement-form-headline`}>{headline}</h4>
+                        <p className={`measurement-form-description`}>{description}</p>
 
-            {multipleInstances ?
-              <div className="instances-question form-group">
-                <label id={`${uuid}-label`} htmlFor={uuid}>
-                  {instancesCountQuestion}
-                  <ShowInEmail>
+                        {multipleInstances ?
+                            <div className="instances-question form-group">
+                                <label id={`${uuid}-label`} htmlFor={uuid}>
+                                    {instancesCountQuestion}
+                                    <ShowInEmail>
                     <span>
                       <strong>
-                    {instancesCount}
+                         {'' + instancesCount}
                       </strong>
                     </span>
-                  </ShowInEmail>
-                </label>
-                <HideInEmail>
-                  <input id={uuid} type="number" min={1} max={10} className="form-control"
-                         aria-label={instancesCountQuestion}
-                         value={instancesCount}
-                         aria-describedby="basic-addon1"
-                         onChange={(event: FormEvent<HTMLInputElement>) => {
-                           changeInstancesCount(
-                             uuid,
-                             Math.min(10, Number.parseInt(event.currentTarget.value))
-                           );
-                         }}/>
-                </HideInEmail>
-              </div>
-              : null
+                                    </ShowInEmail>
+                                </label>
+                                <HideInEmail>
+                                    <input id={uuid}
+                                           type="number"
+                                           min={1}
+                                           max={10} className="form-control"
+                                           aria-label={instancesCountQuestion}
+                                           value={'' + instancesCount}
+                                           aria-describedby="basic-addon1"
+                                           onChange={(event: FormEvent<HTMLInputElement>) => {
+                                               changeInstancesCount(
+                                                   uuid,
+                                                   Math.min(10, Number.parseInt(event.currentTarget.value))
+                                               );
+                                           }}/>
+                                </HideInEmail>
+                            </div>
+                            : null
+                        }
+
+                        <div className="measurements list-group">
+                            {measurements}
+                            {/*<HideInEmail className={"list-group-item d-flex justify-content-between align-items-start"} key="total">*/}
+                            {/*Sum: {value}*/}
+                            {/*</HideInEmail>*/}
+                        </div>
+
+                    </div>
             }
-
-            <div className="measurements list-group">
-              {measurements}
-              {/*<HideInEmail className={"list-group-item d-flex justify-content-between align-items-start"} key="total">*/}
-              {/*Sum: {value}*/}
-              {/*</HideInEmail>*/}
-            </div>
-
-          </div>
-      }
-    </div>
-  );
+        </div>
+    );
 };
 
 
 function mapStateToProps(state: AppState, ownProps: MeasurementFormProps, ownState: MeasurementFormState): StateProps {
-  return {
-    instancesCount: state.userContext.instancesCountByMeasurementForm[ownProps.attributes.uuid] || 1,
-    value: state.userContext.measuredFormValues[ownProps.attributes.uuid]
-  };
+    return {
+        instancesCount: state.userContext.instancesCountByMeasurementForm[ownProps.attributes.uuid],
+        value: state.userContext.measuredFormValues[ownProps.attributes.uuid]
+    };
 }
 
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
-  bindActionCreators<TutorialActions, ActionCreatorsMapObject<TutorialActions> & DispatchProps>({
-    changeInstancesCount
-  }, dispatch);
+    bindActionCreators<TutorialActions, ActionCreatorsMapObject<TutorialActions> & DispatchProps>({
+        changeInstancesCount
+    }, dispatch);
 
 
 export const ConnectedMeasurementForm = connect<StateProps, DispatchProps, MeasurementFormProps>(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(MeasurementForm);
 
