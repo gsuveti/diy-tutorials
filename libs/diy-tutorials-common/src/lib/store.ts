@@ -27,6 +27,7 @@ import {initialUserState} from './+state/user.reducer';
 import {resetUserContextEpic} from './+state/epics/reset-user-context.epic';
 import {resetMeasurementsEpic} from './+state/epics/reset-measurements.epic';
 import {resetMeasurementInstancesEpic} from './+state/epics/reset-measurement-instances.epic';
+import {loginWithEmailEpic} from './+state/epics/login-with-email.epic';
 
 
 const epicMiddleware = createEpicMiddleware();
@@ -42,6 +43,7 @@ export const rootEpic = combineEpics(
     getUserDataEpic,
     saveUserDataEpic,
     loginWithProviderEpic,
+    loginWithEmailEpic,
     calculateMeasurementFormValueEpic,
     calculateAllMeasurementFormValuesEpic,
     calculateProductQuantitiesEpic,

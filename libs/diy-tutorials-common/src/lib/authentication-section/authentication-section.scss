@@ -1,0 +1,48 @@
+.product-list {
+
+
+  > .product {
+    display: none;
+  }
+
+  .social-btn {
+    width: 200px;
+    justify-content: center;
+  }
+
+  .product-range-selected {
+    &.product-range {
+      h4 {
+        color: var(--primary);
+      }
+
+      .product-range-content {
+
+      }
+
+      .product {
+        .quantity-badge {
+          &.badge-pill {
+            background-color: var(--green) !important;
+            color: var(--white) !important;
+          }
+        }
+      }
+    }
+
+    &.product-range-summary {
+      p {
+        color: var(--primary);
+      }
+    }
+  }
+
+
+  .optional-products {
+
+    .product {
+      border: none !important;
+      margin: 0 !important;
+    }
+  }
+}
