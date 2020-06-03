@@ -32,7 +32,8 @@ function calculateProductQuantities(state: AppState) {
     return tutorialState.products.reduce((productQuantities, block) => {
         const parser = new FormulaParser();
         parser.on('callCellValue', function (cellCoord, done) {
-            done(measuredFormValues[cellCoord.row.index]);
+            const value = measuredFormValues[cellCoord.row.index] | 0;
+            done(value);
         });
 
         const parsedObject = parser.parse(block.quantityFormula);
