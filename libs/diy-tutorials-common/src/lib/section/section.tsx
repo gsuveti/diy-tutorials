@@ -68,8 +68,7 @@ export const Section = (props: SectionProps) => {
                     <div>
                         {showSubmitFormButton ?
                             <div className={`class="my-lg d-flex flex-column flex-align-center"`}>
-                                <strong>Calculează cantitățile și afișează materiale necesare pentru lucrarea
-                                    mea</strong>
+                                <strong>Calculează cantitățile și afișează materiale necesare pentru lucrarea mea</strong>
                                 <button type="button" className="my-md btn btn-primary text-light d-flex align-self-center"
                                         onClick={() => showProductsOrScrollToMeasurements()}>
                                     Calculează

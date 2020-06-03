@@ -165,17 +165,27 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
 
                                                     <div
                                                         className={'authenticated-user-actions mt-xl pt-xl border-top d-flex flex-column align-items-center'}>
-                                                        <p className={`buy-description`}>Ești la un click distanță de
-                                                            cumpărarea produselor
-                                                            necesare!</p>
+                                                        <p className={`buy-description`}>
+                                                            <strong>
+                                                                Apasă "Adaugă în coș" și te vom
+                                                                redirecționa către un magazin unde vor apărea deja
+                                                                produsele
+                                                                selectate în coșul de cumpărături. Pe site-ul
+                                                                partenerului
+                                                                nostru vei putea finaliza comanda.
+                                                            </strong>
+                                                        </p>
                                                         <a href={productToCartLink} target="_blank"
                                                            rel="noopener noreferrer"
                                                            className="buy-action mb-xl social-btn btn btn-primary text-light d-flex">
-                                                            Cumpără produsele
+                                                            Adaugă în coș
                                                         </a>
-                                                        <p className={`notify-description`}>Vrei să primești un email cu
-                                                            instrucțiunile la
-                                                            adresa {user.email} ?</p>
+                                                        <p className={`notify-description`}>
+                                                            <strong>
+                                                                Vrei să primești un email cu lista de produse la
+                                                                adresa {user.email} ?
+                                                            </strong>
+                                                        </p>
                                                         <button type="button"
                                                                 className="notify-action mb-sm social-btn btn btn-primary text-light d-flex"
                                                                 onClick={sendEmailWithInstructions}>

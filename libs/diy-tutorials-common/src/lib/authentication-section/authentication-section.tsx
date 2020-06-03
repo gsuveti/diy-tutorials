@@ -66,12 +66,24 @@ class AuthenticationSection extends React.Component<AuthenticationSectionProps, 
 
         return (
             <div className={'social-login mt-xl pt-xl border-top'}>
-                <p className={`social-login-description`}>Vrei să cumperi produsele selectate sau să
-                    primești prin email o listă cu ele?
-                    Autentifică-te prin una dintre metodele de mai jos!</p>
+                <div className={`social-login-description`}>
+                    <p className={`mb-0`}>
+                        <strong>
+                            Ca să-ți trimitem lista cu produse necesare pentru lucrarea ta
+                            completează adresa ta de email sau autentifică-te cu contul de Google sau Facebook.
+                        </strong>
+                    </p>
+                    <p>
+                        <strong>
+                            Cu lista poți merge la cumpărături sau printr-o apăsare de buton te vom redirecționa către
+                            un
+                            magazin unde vor apărea deja produsele selectate în coșul de cumpărături.
+                        </strong>
+                    </p>
+                </div>
                 <div className={'d-flex flex-column align-items-center'}>
                     <form onSubmit={this.loginWithEmail}>
-                        <label>Email:</label>
+                        <label>Introdu adresa ta de email:</label>
                         <input id={`email`}
                                type="email"
                                data-message={'Introduceti un email valid!'}
