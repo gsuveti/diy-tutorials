@@ -28,6 +28,7 @@ import {resetUserContextEpic} from './+state/epics/reset-user-context.epic';
 import {resetMeasurementsEpic} from './+state/epics/reset-measurements.epic';
 import {resetMeasurementInstancesEpic} from './+state/epics/reset-measurement-instances.epic';
 import {loginWithEmailEpic} from './+state/epics/login-with-email.epic';
+import {showProductsIfThereAreNoMeasurementsEpic} from './+state/epics/show-products-if-there-are-no-measurements.epic';
 
 
 const epicMiddleware = createEpicMiddleware();
@@ -60,7 +61,8 @@ export const rootEpic = combineEpics(
     scrollToTopEpic,
     resetUserContextEpic,
     resetMeasurementsEpic,
-    resetMeasurementInstancesEpic
+    resetMeasurementInstancesEpic,
+    showProductsIfThereAreNoMeasurementsEpic
 );
 
 export function configureStore(initialState: AppState = {
