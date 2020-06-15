@@ -1,4 +1,4 @@
-import {Observable} from 'rxjs';
+import {EMPTY, Observable} from 'rxjs';
 import {AnyAction} from 'redux';
 import {ofType, StateObservable} from 'redux-observable';
 import {showProducts, TutorialActionTypes, UpdateDisplayedSections} from '../tutorial.actions';
@@ -12,6 +12,11 @@ export const showProductsIfThereAreNoMeasurementsEpic = (action$: Observable<Any
             const {displayedSections} = action.payload;
             const state = state$.value;
             const tutorialState = state.tutorial;
+            const {measurementForms} = tutorialState;
+
+            if (measurementForms && measurementForms.length) {
+                return false;
+            }
 
             const lastSection = tutorialState.sections
                 .filter(section => displayedSections.indexOf(section.uuid) >= 0)
