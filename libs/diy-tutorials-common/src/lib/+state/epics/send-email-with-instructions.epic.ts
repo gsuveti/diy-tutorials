@@ -24,8 +24,6 @@ export const sendEmailWithInstructionsEpic = (action$: Observable<AnyAction>, st
                 email
             };
 
-            console.log(JSON.stringify(data));
-
             return from(firebase.firestore().collection(`instructions-emails`).add(data)).pipe(
                 map(() => {
                     return {type: TutorialActionTypes.InstructionsEmailSent}

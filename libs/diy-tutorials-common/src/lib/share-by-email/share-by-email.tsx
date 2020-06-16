@@ -101,7 +101,6 @@ export class ShareByEmail extends React.Component<ShareByEmailProps, ShareByEmai
         event.preventDefault();
 
         const {sendEmailWithInstructions} = this.props;
-        console.log(this.emailInput.current.value);
         sendEmailWithInstructions(this.emailInput.current.value);
     }
 }
