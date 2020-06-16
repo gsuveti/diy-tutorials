@@ -30,12 +30,15 @@ export enum TutorialActionTypes {
     UpdatePriceForProductRanges = '[Tutorial] Update price for product ranges',
     UpdateCommonProductsTotalPrice = '[Tutorial] Update common products total price',
     SendEmailWithInstructions = '[Tutorial] Send email with instructions',
+    SendEmailWithProducts = '[Tutorial] Send email with products',
     Logout = '[Tutorial] Logout',
     ShowProductsOrScrollToMeasurements = '[Tutorial] Show products or scroll to measurements',
     ResetUserContext = '[Tutorial] Reset user context',
     SetUserContext = '[Tutorial] Set user context',
     EmailSent = '[Tutorial] Email sent',
     EmailNotSent = '[Tutorial] Email not sent',
+    InstructionsEmailSent = '[Tutorial] Instructions Email sent',
+    InstructionsEmailNotSent = '[Tutorial] Instructions Email not sent',
 }
 
 export interface AddResponse extends AnyAction, Action<string> {
@@ -275,8 +278,18 @@ export const loginWithFacebook: ActionCreator<Action> = () => action(
 export const loginWithEmail: ActionCreator<Action> = (email: string) => action(
     TutorialActionTypes.LoginWithEmail, {email: email});
 
-export const sendEmailWithInstructions: ActionCreator<Action> = () => action(
-    TutorialActionTypes.SendEmailWithInstructions, {});
+export interface SendEmailWithInstructions extends AnyAction, Action<string> {
+    type: typeof TutorialActionTypes.SendEmailWithInstructions
+    payload: {
+        email: string
+    }
+}
+
+export const sendEmailWithInstructions: ActionCreator<SendEmailWithInstructions> = (email: string) => action(
+    TutorialActionTypes.SendEmailWithInstructions, {email});
+
+export const sendEmailWithProducts: ActionCreator<Action> = () => action(
+    TutorialActionTypes.SendEmailWithProducts, {});
 
 export const logout: ActionCreator<Action> = () => action(
     TutorialActionTypes.Logout, {});

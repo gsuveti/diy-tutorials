@@ -1,47 +1,9 @@
 // language=HTML
-export const template: string = `
+import {commonStyle} from './common-style.template';
+
+export const productsEmailTemplate: string = `
+    ${commonStyle}
     <style>
-        .container {
-            padding: 32px;
-            background-color: rgb(247, 247, 247);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-
-        }
-
-        .content {
-            max-width: 632px;
-            margin: auto;
-            padding: 16px;
-            background-color: white;
-            box-sizing: border-box;
-            border-radius: 4px;
-        }
-        .footer{
-            max-width: 632px;
-            margin: auto;
-            padding: 16px;
-            text-align: center;
-            font-size: 0.75rem;
-        }
-
-        .header {
-            padding-bottom: 32px;
-        }
-
-        .header .logo {
-            display: block;
-            width: 200px;
-            margin: auto;
-        }
-
-        figure{
-            text-align: center;
-        }
-        
-        img {
-            max-width: 100%;
-        }
-
         .products, .optional-products {
             display: table;
             width: 100%;
@@ -74,27 +36,6 @@ export const template: string = `
         }
 
 
-        .instances-question label, .measurement-label {
-            display: block;
-            border: 1px solid #cacaca;
-            padding: 4px;
-            margin: 2px 0;
-            border-radius: 2px;
-
-        }
-
-        .instances-question label > *, .measurement-label > * {
-            display: inline-block;
-            width: 50%;
-            border-left: 1px solid #cacaca;
-            padding-left: 4px;
-            float: right;
-        }
-
-        .py {
-            padding-top: 8px;
-            padding-bottom: 8px;
-        }
     </style>
     <div class="container">
         <div class="header">
@@ -105,7 +46,8 @@ export const template: string = `
             <h1><%= title%></h1>
 
             <div class="py">
-                Revino la articol pentru etapele detaliate ale lucrării tale și pentru a definitiva comanda:
+                <p class="p-none m-none">Revino la articol pentru etapele detaliate ale lucrării tale și pentru a
+                    definitiva comanda</p>
                 <a target="_blank" href="<%= tutorialUrl %>"><%= tutorialUrl %></a>
             </div>
 
@@ -150,11 +92,20 @@ export const template: string = `
                 diferit, deoarece LucrareaMea.ro este o platformă independentă care îți oferă informații gratuit.
                 Prețurile afișate sunt estimative, includ TVA și exclud costul de transport.
             </p>
+
+
+            <div class="py">
+                <p class="p-none m-none">Dacă te mai interesează și alte subiecte despre casă și pentru acasă, te rugăm
+                    să accesezi</p>
+                <a target="_blank" href="https://lucrareamea.ro/blog/">lucrareamea.ro/blog</a>
+            </div>
         </div>
-        
+
         <div class="footer">
             <p class="py">
-                Ai primit acest email pentru că ai vizitat site-ul <a href="https://www.lucrareamea.ro">www.lucrareamea.ro</a> și ai optat să primești lista de produse gratuit pe mail. Dacă întâmpini vreo problemă, ai vreo nelămurire sau o sugestie te rugăm să ne contactezi pe email <a href="mailto: office@lucrareamea.ro">office@lucrareamea.ro</a>.
+                Ai primit acest email pentru că ai vizitat site-ul <a href="https://www.lucrareamea.ro">www.lucrareamea.ro</a>
+                și ai optat să primești lista de produse gratuit pe mail. Dacă întâmpini vreo problemă, ai vreo
+                nelămurire sau o sugestie te rugăm să ne contactezi pe email <a href="mailto: office@lucrareamea.ro">office@lucrareamea.ro</a>.
             </p>
 
             <p><strong>LucrareaMea.ro</strong> - DIY Projects Mkt SRL, Timișoara, str. Virgil Madgearu nr. 5.</p>

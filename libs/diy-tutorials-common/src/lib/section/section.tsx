@@ -10,6 +10,7 @@ import {ConnectedMeasurementForm} from '../measurement-form/measurement-form';
 import {AppState} from '../+state/app.state';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {showProductsOrScrollToMeasurements, TutorialActions} from '../+state/tutorial.actions';
+import {ConnectedShareByEmail, ShareByEmail} from '../share-by-email/share-by-email';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
@@ -44,6 +45,7 @@ const allowedComponents = {
     'irian/diy-question': ConnectedQuestion,
     'irian/diy-content': Content,
     'irian/diy-measurement-form': ConnectedMeasurementForm,
+    'irian/diy-share-by-email': ConnectedShareByEmail,
 };
 
 

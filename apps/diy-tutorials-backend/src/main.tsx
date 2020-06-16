@@ -10,4 +10,5 @@ export * from './app/measurement-form-registration';
 export * from './app/measurement-registration';
 export * from './app/display-condition-registration';
 export * from './app/question-option-registration';
+export * from './app/share-by-email-registration';
 export * from './app/store';

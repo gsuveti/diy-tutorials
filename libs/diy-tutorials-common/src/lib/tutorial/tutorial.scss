@@ -88,6 +88,7 @@
 body {
   --background-black: #{$primary};
   --accent: #{$secondary};
+  --center-sections-width: 320px;
 
 
   .instances-question {
@@ -131,14 +132,16 @@ body {
     }
   }
 
+  .share-by-email{
+    margin: auto;
+    width: var(--center-sections-width);
+  }
+
   .question {
-
-
     .question-content {
       border-radius: 4px;
-      width: 320px;
+      width: var(--center-sections-width);
       margin: auto;
-
 
       &.pulse {
         animation-name: pulse;
@@ -179,10 +182,6 @@ body {
         border-bottom: 2px solid var(--background-black);
       }
     }
-  }
-
-  button.btn, a.btn {
-    border-radius: 1em;
   }
 
 

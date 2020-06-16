@@ -39,6 +39,7 @@ export interface UserContextState {
   selectedProducts: string[],
   selectedProductRange: string,
   emailMessage: {},
+  instructionsEmailMessage: {},
 }
 
 export const initialUserContextState: UserContextState = {
@@ -57,7 +58,8 @@ export const initialUserContextState: UserContextState = {
   productRangePrices: {},
   displayedSections: [],
   commonProductsTotalPrice: null,
-  emailMessage: null
+  emailMessage: null,
+  instructionsEmailMessage: null
 };
 
 export const userContextReducer = createReducer(initialUserContextState, {
@@ -182,4 +184,8 @@ export const userContextReducer = createReducer(initialUserContextState, {
     state.emailMessage = {severity: 'danger', text: 'Selecteza un pachet de produse!',};
     return state;
   },
+  [TutorialActionTypes.InstructionsEmailSent]: (state: UserContextState, action: AnyAction) => {
+    state.instructionsEmailMessage = {severity: 'success', text: 'Email-ul a fost trimis',};
+    return state;
+  }
 });

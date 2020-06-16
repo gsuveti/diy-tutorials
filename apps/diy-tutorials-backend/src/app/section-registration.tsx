@@ -51,7 +51,8 @@ registerBlockType('irian/diy-section', {
       const ALLOWED_BLOCKS = [
         'irian/diy-content',
         'irian/diy-question',
-        'irian/diy-measurement-form'
+        'irian/diy-measurement-form',
+        'irian/diy-share-by-email'
       ];
 
 

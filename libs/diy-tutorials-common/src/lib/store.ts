@@ -29,13 +29,14 @@ import {resetMeasurementsEpic} from './+state/epics/reset-measurements.epic';
 import {resetMeasurementInstancesEpic} from './+state/epics/reset-measurement-instances.epic';
 import {loginWithEmailEpic} from './+state/epics/login-with-email.epic';
 import {showProductsIfThereAreNoMeasurementsEpic} from './+state/epics/show-products-if-there-are-no-measurements.epic';
+import {sendEmailWithProductsEpic} from './+state/epics/send-email-with-products.epic';
 
 
 const epicMiddleware = createEpicMiddleware();
 const reduxDevtoolsExtension =
     (process.env.NODE_ENV !== 'production' && window && (window as any).__REDUX_DEVTOOLS_EXTENSION__)
         ?
-        [(window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()]
+        [(window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__({ trace: true })]
         :
         [];
 
@@ -56,6 +57,7 @@ export const rootEpic = combineEpics(
     updateCommonProductsTotalPriceEpic,
     resetResponsesEpic,
     sendEmailWithInstructionsEpic,
+    sendEmailWithProductsEpic,
     logoutEpic,
     showProductsOrScrollToMeasurementsEpic,
     scrollToTopEpic,

@@ -86,8 +86,8 @@ class AuthenticationSection extends React.Component<AuthenticationSectionProps, 
                         <label>Introdu adresa ta de email:</label>
                         <input id={`email`}
                                type="email"
+                               autoComplete="email"
                                data-message={'Introduceti un email valid!'}
-                               onInvalid={this.handleValidity}
                                ref={this.emailInput}
                                className="measurement-input form-control mb-md"/>
                         <button type="submit"

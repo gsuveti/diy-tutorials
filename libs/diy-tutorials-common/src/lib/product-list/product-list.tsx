@@ -12,7 +12,7 @@ import {
     logout,
     resetUserContext,
     selectProductRange,
-    sendEmailWithInstructions,
+    sendEmailWithProducts,
     showProducts,
     TutorialActions
 } from '../+state/tutorial.actions';
@@ -41,7 +41,7 @@ interface DispatchProps {
     selectProductRange?: typeof selectProductRange;
     loginWithGoogle?: typeof loginWithGoogle;
     loginWithFacebook?: typeof loginWithFacebook;
-    sendEmailWithInstructions?: typeof sendEmailWithInstructions;
+    sendEmailWithProducts?: typeof sendEmailWithProducts;
     logout?: typeof logout;
     resetUserContext?: typeof resetUserContext;
 }
@@ -81,7 +81,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
             children, innerBlocks, attributes, isVisible = true, productRanges = [],
             isRenderedInEditor, selectProductRange, selectedProductRange, optionalProducts = [],
             user, productRangePrices, commonProductsTotalPrice,
-            sendEmailWithInstructions, logout, productToCartLink, resetUserContext, emailMessage
+            sendEmailWithProducts, logout, productToCartLink, resetUserContext, emailMessage
         } = this.props;
 
         const content = children ?
@@ -188,7 +188,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                                                         </p>
                                                         <button type="button"
                                                                 className="notify-action mb-sm social-btn btn btn-primary text-light d-flex"
-                                                                onClick={sendEmailWithInstructions}>
+                                                                onClick={sendEmailWithProducts}>
                                                             Trimite email
                                                         </button>
 
@@ -256,7 +256,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
         selectProductRange,
         loginWithGoogle,
         loginWithFacebook,
-        sendEmailWithInstructions
+        sendEmailWithProducts
     }, dispatch);
 
 export const ConnectedProductList = connect<StateProps, DispatchProps, ProductListProps>(

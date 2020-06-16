@@ -11,7 +11,9 @@ $sections-border: (
   'irian/diy-product-list':#2196F3,
   'irian/diy-product-type':#8BC34A,
   'irian/diy-product-range':#FF5722,
-  'irian/diy-product':#FF9800);
+  'irian/diy-product':#FF9800,
+  'irian/diy-share-by-email':#BF360C
+);
 
 .wp-block {
   @each $section, $color in $sections-border {
