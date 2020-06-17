@@ -14,7 +14,7 @@
     "set-email": "firebase functions:config:set common.email='LucrareaMea <office@lucrareamea.ro>'"
   },
   "engines": {
-    "node": "8"
+    "node": "10"
   },
   "main": "lib/index.js",
   "dependencies": {
