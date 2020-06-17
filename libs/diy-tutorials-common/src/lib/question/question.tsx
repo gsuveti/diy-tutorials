@@ -110,7 +110,7 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
                                     {options.map(({value, uuid, nextSection}, index) => (
                                             <div className={`d-flex flex-grow-1`} key={index}>
                                                 <button
-                                                    className={`btn d-flex flex-grow-1 align-items-center mb-sm ${responseUUID == uuid ? 'btn-secondary' : 'btn-outline-primary'}`}
+                                                    className={`btn d-flex flex-grow-1 align-items-center mb-sm ${responseUUID == uuid ? 'btn-secondary' : 'btn-outline-dark'}`}
                                                     value={index - 1}
                                                     onClick={() => {
                                                         this.submitResponse(value, uuid, nextSection, true);

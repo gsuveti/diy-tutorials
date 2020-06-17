@@ -91,7 +91,7 @@ class AuthenticationSection extends React.Component<AuthenticationSectionProps, 
                                ref={this.emailInput}
                                className="measurement-input form-control mb-md"/>
                         <button type="submit"
-                                className="social-btn-facebook social-btn btn btn-primary text-light d-flex"
+                                className="social-btn btn btn-primary d-flex"
                         >
                             Autentifica-te cu email
                         </button>
@@ -102,12 +102,12 @@ class AuthenticationSection extends React.Component<AuthenticationSectionProps, 
                 </div>
                 <div className={'d-flex flex-column align-items-center'}>
                     <button type="button"
-                            className="social-btn-google mb-sm social-btn btn btn-primary text-light text-light d-flex"
+                            className="mb-sm social-btn social-btn-google btn text-light d-flex"
                             onClick={loginWithGoogle}>
                         Google
                     </button>
                     <button type="button"
-                            className="social-btn-facebook mb-sm social-btn btn btn-primary text-light d-flex"
+                            className="mb-sm social-btn social-btn-facebook btn text-light d-flex"
                             onClick={loginWithFacebook}>
                         Facebook
                     </button>

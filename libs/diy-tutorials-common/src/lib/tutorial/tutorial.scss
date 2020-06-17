@@ -86,10 +86,14 @@
 }
 
 body {
-  --background-black: #{$primary};
+  --background-black: black;
   --accent: #{$secondary};
   --center-sections-width: 320px;
 
+  .wide-btn {
+    width: 200px;
+    justify-content: center;
+  }
 
   .instances-question {
     color: var(--accent);
@@ -99,11 +103,11 @@ body {
     padding: $spacer;
   }
 
-  .measurement-form{
-    &.required{
-      .measurement{
-        .measurement-label{
-          &:after{
+  .measurement-form {
+    &.required {
+      .measurement {
+        .measurement-label {
+          &:after {
             content: ' *';
           }
         }
@@ -117,6 +121,17 @@ body {
       border-radius: $border-radius;
       background: var(--background-black);
       margin-bottom: $spacer;
+
+      .list-group-item-index {
+
+        .number {
+          width: $spacer;
+          height: $spacer;
+          line-height: 16px;
+          display: flex;
+          justify-content: center;
+        }
+      }
     }
 
     .badge {
@@ -132,7 +147,7 @@ body {
     }
   }
 
-  .share-by-email{
+  .share-by-email {
     margin: auto;
     width: var(--center-sections-width);
   }

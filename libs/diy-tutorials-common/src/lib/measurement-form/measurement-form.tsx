@@ -67,15 +67,17 @@ export const MeasurementForm = (props: MeasurementFormProps) => {
 
             return (
                 <div className="list-group-item d-flex justify-content-between align-items-start" key={index}>
-                    <div>
+                    <HideInEmail>
+                        <div className={`list-group-item-index bg-secondary rounded-circle p-2 my-2 mr-3`}>
+                            <span className="number text-dark">{index + 1}</span>
+                        </div>
+                    </HideInEmail>
+                    <div className={`d-flex flex-column flex-grow-1 ml-1`}>
                         <InnerBlocksContent
                             innerBlocks={alteredBlocks}
                             allowedComponents={allowedComponents}
                         />
                     </div>
-                    <HideInEmail>
-                        <span className="badge badge-primary badge-pill">{index + 1}</span>
-                    </HideInEmail>
                 </div>
             );
         });

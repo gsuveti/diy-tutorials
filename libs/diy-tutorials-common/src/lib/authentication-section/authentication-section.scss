@@ -8,6 +8,14 @@
   .social-btn {
     width: 200px;
     justify-content: center;
+
+    &.social-btn-facebook {
+      background-color: #3D5D9C !important;
+    }
+
+    &.social-btn-google {
+      background-color: #DC4D28 !important;
+    }
   }
 
   .product-range-selected {

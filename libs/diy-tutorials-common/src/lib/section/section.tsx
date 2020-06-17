@@ -10,7 +10,7 @@ import {ConnectedMeasurementForm} from '../measurement-form/measurement-form';
 import {AppState} from '../+state/app.state';
 import {ActionCreatorsMapObject, bindActionCreators, Dispatch} from 'redux';
 import {showProductsOrScrollToMeasurements, TutorialActions} from '../+state/tutorial.actions';
-import {ConnectedShareByEmail, ShareByEmail} from '../share-by-email/share-by-email';
+import {ConnectedShareByEmail} from '../share-by-email/share-by-email';
 
 /* tslint:disable:no-empty-interface */
 interface OwnProps {
@@ -70,8 +70,10 @@ export const Section = (props: SectionProps) => {
                     <div>
                         {showSubmitFormButton ?
                             <div className={`class="my-lg d-flex flex-column flex-align-center"`}>
-                                <strong>Calculează cantitățile și afișează materiale necesare pentru lucrarea mea</strong>
-                                <button type="button" className="my-md btn btn-primary text-light d-flex align-self-center"
+                                <strong>Calculează cantitățile și afișează materiale necesare pentru lucrarea
+                                    mea</strong>
+                                <button type="button"
+                                        className="my-md btn btn-primary wide-btn text-light d-flex align-self-center"
                                         onClick={() => showProductsOrScrollToMeasurements()}>
                                     Calculează
                                 </button>
