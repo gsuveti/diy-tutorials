@@ -1,5 +1,6 @@
 @import "../style/utils";
 @import "~bootstrap/scss/bootstrap";
+@import '~pure-react-carousel/dist/react-carousel.es.css';
 
 /* fallback */
 @font-face {
@@ -187,8 +188,6 @@ body {
     .question-options {
 
     }
-
-
   }
 
   .product-range {
@@ -204,16 +203,18 @@ body {
     --product-summary-height: 120px;
 
     @include media-breakpoint-down(sm) {
-      .product {
-        > div {
-          display: flex;
+      .product-range-content {
+        .product {
+          > div {
+            display: flex;
 
-          .image-wrapper {
-            --height: 60px;
-            --width: 100px;
-            flex-basis: var(--width);
-            min-width: var(--width);
-            max-width: var(--width);
+            .image-wrapper {
+              --height: 60px;
+              --width: 100px;
+              flex-basis: var(--width);
+              min-width: var(--width);
+              max-width: var(--width);
+            }
           }
         }
       }

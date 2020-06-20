@@ -43,6 +43,7 @@
     "firebase": "^6.2.4",
     "hot-formula-parser": "^3.0.1",
     "immutable": "^4.0.0-rc.12",
+    "pure-react-carousel": "^1.27.1",
     "qs": "^6.8.0",
     "react": "16.8.3",
     "react-dom": "16.8.3",

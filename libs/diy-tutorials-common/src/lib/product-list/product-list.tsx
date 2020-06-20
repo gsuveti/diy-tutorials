@@ -23,6 +23,7 @@ import {ConnectedProduct} from '../product/product';
 import {getProductsToCartLink} from '../+state/selectors/tutorial.selectors';
 import {UserState} from '../+state/user.reducer';
 import AuthenticationSection from '../authentication-section/authentication-section';
+import {ButtonBack, ButtonNext, CarouselProvider, Slide, Slider} from 'pure-react-carousel';
 
 
 /* tslint:disable:no-empty-interface */
@@ -117,17 +118,23 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
             );
         });
 
-        const optionalProductsContent = optionalProducts.map((attributes: any) => {
+        const slides =   optionalProducts.map((attributes: any, index:number) => {
             return (
-                <div className={'optional-product col-12 col-md-4 p-1'} key={attributes.uuid}>
-                    <div className={'shadow rounded p-sm'}>
-                        <ConnectedProduct
-                            attributes={attributes}
-                        />
+                <Slide key={index} index={index}>
+                    <div className={'optional-product p-1'} key={attributes.uuid}>
+                        <div className={'shadow-sm rounded p-sm'}>
+                            <ConnectedProduct
+                                attributes={attributes}
+                            />
+                        </div>
                     </div>
-                </div>
+                </Slide>
             );
         });
+
+        const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        const visibleSlides = vw >= 768 ? 3.5 :1.5;
+        const dragStep = vw >= 768 ? 2 :1;
 
         return ([
             <div
@@ -144,13 +151,30 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                                 </div>
 
                                 {
-                                    optionalProductsContent.length ?
+                                    optionalProducts.length ?
                                         [
                                             <h4 key={'optional-products-headline'}
                                                 className={'optional-products-headline mt-lg mb-sm'}>Produse
                                                 opționale</h4>,
-                                            <div key={'optional-products-content'} className={'row mx-n1'}>
-                                                {optionalProductsContent}
+                                            <div key={'optional-products-content'} className={'optional-products-content'}>
+
+                                                <CarouselProvider
+                                                    visibleSlides={visibleSlides}
+                                                    dragStep={dragStep}
+                                                    naturalSlideWidth={100}
+                                                    naturalSlideHeight={150}
+                                                    totalSlides={optionalProducts.length}
+                                                >
+                                                    <ButtonBack>
+                                                        <i className={'material-icons'}>navigate_before</i>
+                                                    </ButtonBack>
+                                                    <Slider style={{height:'340px'}}>
+                                                        {slides}
+                                                    </Slider>
+                                                    <ButtonNext>
+                                                        <i className={'material-icons'}>navigate_next</i>
+                                                    </ButtonNext>
+                                                </CarouselProvider>
                                             </div>
                                         ] : null
                                 }
