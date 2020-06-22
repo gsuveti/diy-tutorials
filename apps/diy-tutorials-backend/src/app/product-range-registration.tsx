@@ -49,7 +49,7 @@ registerBlockType('irian/diy-product-range', {
               setAttributes({headline: value});
             }}/>
             <TextControl
-            label="UrlImagine"
+            label="URL Imagine"
             key={"imageUrl"}
             value={imageUrl}
             onChange={(value) => {

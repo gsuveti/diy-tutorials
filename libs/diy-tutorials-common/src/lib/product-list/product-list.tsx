@@ -118,13 +118,13 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                     isRenderedInEditor ? null :
                         [
                             <div key={'toggle-show-products'}
-                                 className={`d-none d-md-flex flex-grow-1 row no-gutters justify-content-end`}>
+                                 className={`d-none d-md-flex flex-grow-1 row no-gutters justify-content-center`}>
                                 <button type="button"
-                                        className="btn btn-link"
+                                        className="mt-md btn btn-outline-dark"
                                         onClick={() => {
                                             toggleShowProductsForAllProductRanges();
                                         }}>
-                                    {expandAllProductRanges? 'Ascunde Detalii pachet':'Detalii pachet'}
+                                    {expandAllProductRanges? 'Ascunde detalii pachete':'Detalii pachete'}
                                 </button>
                             </div>,
                             <div id={`optional-products`} key={`optional-products`} className={'optional-products col-12 px-1'}>
