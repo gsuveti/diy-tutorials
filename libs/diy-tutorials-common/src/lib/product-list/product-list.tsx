@@ -147,7 +147,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                                                     <ButtonBack>
                                                         <i className={'material-icons'}>navigate_before</i>
                                                     </ButtonBack>
-                                                    <Slider style={{height: '340px'}}>
+                                                    <Slider style={{height: '300px'}}>
                                                         {slides}
                                                     </Slider>
                                                     <ButtonNext>

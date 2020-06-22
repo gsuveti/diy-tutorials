@@ -102,11 +102,11 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
                                         <div className={`col-12 col-sm-6 col-md-12`}>
                                             <div className={`row no-gutters`}>
                                                 <button type="button"
-                                                        className="btn btn-primary col-12 pt-xs px-sm my-xs"
+                                                        className="btn btn-primary col-12 d-flex align-items-center justify-content-center pt-xs px-sm my-xs"
                                                         onClick={() => {
                                                             selectProductRange(uuid);
                                                         }}>
-                                                    Selectează pachet
+                                                    <i className={'material-icons mr-xs'}>add_shopping_cart</i>Selectează pachet
                                                 </button>
                                             </div>
                                         </div>
