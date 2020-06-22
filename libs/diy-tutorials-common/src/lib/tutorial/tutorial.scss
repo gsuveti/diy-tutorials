@@ -200,7 +200,6 @@ body {
 
 
   .product-list {
-    --product-summary-height: 120px;
 
     @include media-breakpoint-down(sm) {
       .product-range-content {
@@ -225,16 +224,5 @@ body {
       }
     }
 
-    @include media-breakpoint-up(md) {
-      .product-range {
-        .product-range-content {
-          padding-bottom: var(--product-summary-height);
-        }
-      }
-
-      .optional-products {
-        margin-top: calc(-1 * var(--product-summary-height));
-      }
-    }
   }
 }

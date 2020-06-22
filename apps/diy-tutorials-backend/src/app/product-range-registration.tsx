@@ -13,17 +13,18 @@ console.log("registerBlockType content");
 
 registerBlockType('irian/diy-product-range', {
   title: i18n.productRange.title,
-  icon: <strong>GP</strong>,
+  icon: 'GP',
   category: 'common',
   keywords: [],
   attributes: withBaseAttributes({
     headline: {type: 'string'},
     description: {type: 'string'},
+    imageUrl: {type: 'string'},
   }),
 
   edit: function (props: any) {
     const {setAttributes, attributes, className} = props;
-    const {headline, description} = attributes;
+    const {headline, description, imageUrl} = attributes;
 
     initBaseAttributes(props);
     const ALLOWED_BLOCKS = [
@@ -46,6 +47,13 @@ registerBlockType('irian/diy-product-range', {
             value={headline}
             onChange={(value) => {
               setAttributes({headline: value});
+            }}/>
+            <TextControl
+            label="UrlImagine"
+            key={"imageUrl"}
+            value={imageUrl}
+            onChange={(value) => {
+              setAttributes({imageUrl: value});
             }}/>
           <TextareaControl
             label="Description"

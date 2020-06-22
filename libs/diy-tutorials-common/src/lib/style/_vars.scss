@@ -10,13 +10,21 @@ $spacers: map-merge(
                         2: ($spacer * .5),
                         3: $spacer,
                         4: ($spacer * 1.5),
+
                         none: 0,
                         xs: ($spacer * .25),
                         sm: ($spacer * .5),
                         "": $spacer,
                         md: $spacer,
                         lg: ($spacer * 1.5),
-                        xl: ($spacer * 2)
+                        xl: ($spacer * 2),
+
+                        nxs: ($spacer * -0.25),
+                        nsm: ($spacer * -0.5),
+                        n: ($spacer * -1),
+                        nmd: ($spacer * -1),
+                        nlg: ($spacer * 1.5),
+                        nxl: ($spacer * 2)
                 ),
                 $spacers
 );

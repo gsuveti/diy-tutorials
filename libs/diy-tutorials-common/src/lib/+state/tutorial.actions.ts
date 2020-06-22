@@ -10,6 +10,8 @@ export enum TutorialActionTypes {
     HideProducts = '[Tutorial] Hide products',
     AddProductsToCart = '[Tutorial] Add products to cart',
     SelectProductRange = '[Tutorial] Select product range',
+    ShowProductsForProductRange = '[Tutorial] Show products for product range',
+    ToggleShowProductsForAllProductRanges = '[Tutorial] Toggle show products for all product range',
     SelectProduct = '[Tutorial] Select product',
     RemoveProduct = '[Tutorial] Remove product',
     AddMeasurement = '[Tutorial] Add measurement',
@@ -150,6 +152,21 @@ export interface SelectProductRange extends AnyAction, Action<string> {
 
 export const selectProductRange: ActionCreator<SelectProductRange> = (productRangeUUID: string) => action(
     TutorialActionTypes.SelectProductRange, {productRangeUUID});
+
+export interface ShowProductsForProductRange extends AnyAction, Action<string> {
+    type: typeof TutorialActionTypes.ShowProductsForProductRange
+    payload: {
+        productRangeUUID: string
+    }
+}
+
+export const showProductsForProductRange: ActionCreator<ShowProductsForProductRange> = (productRangeUUID: string) => action(
+    TutorialActionTypes.ShowProductsForProductRange, {productRangeUUID}
+);
+
+export const toggleShowProductsForAllProductRanges: ActionCreator<Action> = () => action(
+    TutorialActionTypes.ToggleShowProductsForAllProductRanges, {}
+);
 
 
 export interface GetUserData extends Action<string> {
@@ -318,4 +335,6 @@ export type TutorialActions = AddResponse | AddMeasurement
     | Action<TutorialActionTypes.Logout>
     | Action<TutorialActionTypes.ResetUserContext>
     | Action<TutorialActionTypes.SetUserContext>
+    | Action<TutorialActionTypes.ShowProductsForProductRange>
+    | Action<TutorialActionTypes.ToggleShowProductsForAllProductRanges>
     | Action<TutorialActionTypes.SendEmailWithInstructions>;

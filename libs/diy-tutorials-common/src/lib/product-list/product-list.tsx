@@ -11,9 +11,8 @@ import {
     loginWithGoogle,
     logout,
     resetUserContext,
-    selectProductRange,
     sendEmailWithProducts,
-    showProducts,
+    showProducts, toggleShowProductsForAllProductRanges,
     TutorialActions
 } from '../+state/tutorial.actions';
 import {AppState} from '../+state/app.state';
@@ -39,24 +38,21 @@ interface OwnProps {
 
 interface DispatchProps {
     showProducts?: typeof showProducts;
-    selectProductRange?: typeof selectProductRange;
     loginWithGoogle?: typeof loginWithGoogle;
     loginWithFacebook?: typeof loginWithFacebook;
     sendEmailWithProducts?: typeof sendEmailWithProducts;
     logout?: typeof logout;
     resetUserContext?: typeof resetUserContext;
+    toggleShowProductsForAllProductRanges?: typeof toggleShowProductsForAllProductRanges;
 }
 
 interface StateProps {
     user?: UserState;
     isVisible?: boolean;
-    selectedProductRange?: string;
     optionalProducts?: BlockAttributes[];
-    productRanges?: BlockAttributes;
-    productRangePrices?: { [uuid: string]: number };
-    commonProductsTotalPrice?: number;
     productToCartLink?: string;
     emailMessage?: any;
+    expandAllProductRanges?: boolean;
 }
 
 type ProductListProps = StateProps & DispatchProps & OwnProps;
@@ -79,10 +75,10 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
 
     render() {
         const {
-            children, innerBlocks, attributes, isVisible = true, productRanges = [],
-            isRenderedInEditor, selectProductRange, selectedProductRange, optionalProducts = [],
-            user, productRangePrices, commonProductsTotalPrice,
-            sendEmailWithProducts, logout, productToCartLink, resetUserContext, emailMessage
+            children, innerBlocks, attributes, isVisible = true,
+            isRenderedInEditor, optionalProducts = [],
+            toggleShowProductsForAllProductRanges, expandAllProductRanges,
+            user, sendEmailWithProducts, logout, productToCartLink, resetUserContext, emailMessage
         } = this.props;
 
         const content = children ?
@@ -94,31 +90,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
             />
         ;
 
-        const productRangesSummary = productRanges.map(productRange => {
-            const isSelected = selectedProductRange === productRange.uuid;
-
-            const total = productRangePrices[productRange.uuid] + commonProductsTotalPrice;
-
-            return (
-                <div key={productRange.uuid}
-                     className={`product-range-summary col-4 ${isRenderedInEditor ? 'px-0' : 'p-1'}
-          `}>
-                    <div className={'d-flex flex-column align-items-center'}>
-                        <p className={'m-0 pt-xs pb-0'}>{productRange.headline}</p>
-                        <p className={'m-0 '}><strong>{total} lei</strong></p>
-                        <button type="button" className="btn btn-primary text-light d-flex mt-sm pt-xs px-sm"
-                                onClick={() => {
-                                    selectProductRange(productRange.uuid);
-                                }}>
-                            Selectează
-                        </button>
-                    </div>
-
-                </div>
-            );
-        });
-
-        const slides =   optionalProducts.map((attributes: any, index:number) => {
+        const slides = optionalProducts.map((attributes: any, index: number) => {
             return (
                 <Slide key={index} index={index}>
                     <div className={'optional-product p-1'} key={attributes.uuid}>
@@ -133,8 +105,8 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
         });
 
         const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-        const visibleSlides = vw >= 768 ? 3.5 :1.5;
-        const dragStep = vw >= 768 ? 2 :1;
+        const visibleSlides = vw >= 768 ? 3.5 : 1.5;
+        const dragStep = vw >= 768 ? 2 : 1;
 
         return ([
             <div
@@ -145,18 +117,25 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                 {
                     isRenderedInEditor ? null :
                         [
-                            <div key={`optional-products`} className={'optional-products col-12 px-1'}>
-                                <div className={'row mx-n1'}>
-                                    {productRangesSummary}
-                                </div>
-
+                            <div key={'toggle-show-products'}
+                                 className={`d-none d-md-flex flex-grow-1 row no-gutters justify-content-end`}>
+                                <button type="button"
+                                        className="btn btn-link"
+                                        onClick={() => {
+                                            toggleShowProductsForAllProductRanges();
+                                        }}>
+                                    {expandAllProductRanges? 'Ascunde Detalii pachet':'Detalii pachet'}
+                                </button>
+                            </div>,
+                            <div id={`optional-products`} key={`optional-products`} className={'optional-products col-12 px-1'}>
                                 {
                                     optionalProducts.length ?
                                         [
                                             <h4 key={'optional-products-headline'}
                                                 className={'optional-products-headline mt-lg mb-sm'}>Produse
                                                 opționale</h4>,
-                                            <div key={'optional-products-content'} className={'optional-products-content'}>
+                                            <div key={'optional-products-content'}
+                                                 className={'optional-products-content'}>
 
                                                 <CarouselProvider
                                                     visibleSlides={visibleSlides}
@@ -168,7 +147,7 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                                                     <ButtonBack>
                                                         <i className={'material-icons'}>navigate_before</i>
                                                     </ButtonBack>
-                                                    <Slider style={{height:'340px'}}>
+                                                    <Slider style={{height: '340px'}}>
                                                         {slides}
                                                     </Slider>
                                                     <ButtonNext>
@@ -263,12 +242,9 @@ function mapStateToProps(state: AppState, ownProps: ProductListProps, ownState: 
         user: state.user,
         emailMessage: state.userContext.emailMessage,
         isVisible: state.userContext.showProducts,
-        productRanges: state.tutorial.productRanges,
-        selectedProductRange: state.userContext.selectedProductRange,
         optionalProducts: state.tutorial.optionalProducts,
-        productRangePrices: state.userContext.productRangePrices,
-        commonProductsTotalPrice: state.userContext.commonProductsTotalPrice,
-        productToCartLink: getProductsToCartLink(state)
+        productToCartLink: getProductsToCartLink(state),
+        expandAllProductRanges : state.userContext.expandAllProductRanges
     };
 }
 
@@ -277,10 +253,10 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
         logout,
         resetUserContext,
         showProducts,
-        selectProductRange,
         loginWithGoogle,
         loginWithFacebook,
-        sendEmailWithProducts
+        sendEmailWithProducts,
+        toggleShowProductsForAllProductRanges
     }, dispatch);
 
 export const ConnectedProductList = connect<StateProps, DispatchProps, ProductListProps>(
