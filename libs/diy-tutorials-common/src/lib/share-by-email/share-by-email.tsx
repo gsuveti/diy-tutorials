@@ -76,7 +76,7 @@ export class ShareByEmail extends React.Component<ShareByEmailProps, ShareByEmai
                                     <button className={`btn btn-primary d-flex justify-content-center`}
                                             type="submit"
                                     >
-                                        Trimite rețeta!
+                                        Trimite e-mail
                                     </button>
 
                                     {instructionsEmailMessage ?
