@@ -12,7 +12,8 @@ import {
     logout,
     resetUserContext,
     sendEmailWithProducts,
-    showProducts, toggleShowProductsForAllProductRanges,
+    showProducts,
+    toggleShowProductsForAllProductRanges,
     TutorialActions
 } from '../+state/tutorial.actions';
 import {AppState} from '../+state/app.state';
@@ -53,6 +54,7 @@ interface StateProps {
     productToCartLink?: string;
     emailMessage?: any;
     expandAllProductRanges?: boolean;
+    selectedProductRange?: string;
 }
 
 type ProductListProps = StateProps & DispatchProps & OwnProps;
@@ -60,6 +62,7 @@ type ProductListProps = StateProps & DispatchProps & OwnProps;
 
 /* tslint:disable:no-empty-interface */
 export interface ProductListState {
+    buyButtonPressed: boolean
 }
 
 const allowedComponents = {
@@ -71,6 +74,9 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
 
     constructor(props) {
         super(props);
+        this.state = {
+            buyButtonPressed: false
+        }
     }
 
     render() {
@@ -78,8 +84,10 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
             children, innerBlocks, attributes, isVisible = true,
             isRenderedInEditor, optionalProducts = [],
             toggleShowProductsForAllProductRanges, expandAllProductRanges,
+            selectedProductRange,
             user, sendEmailWithProducts, logout, productToCartLink, resetUserContext, emailMessage
         } = this.props;
+        const {buyButtonPressed} = this.state;
 
         const content = children ?
             children
@@ -124,10 +132,11 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                                         onClick={() => {
                                             toggleShowProductsForAllProductRanges();
                                         }}>
-                                    {expandAllProductRanges? 'Ascunde detalii pachete':'Detalii pachete'}
+                                    {expandAllProductRanges ? 'Ascunde detalii pachete' : 'Detalii pachete'}
                                 </button>
                             </div>,
-                            <div id={`optional-products`} key={`optional-products`} className={'optional-products col-12 px-1'}>
+                            <div id={`optional-products`} key={`optional-products`}
+                                 className={'optional-products col-12 px-1'}>
                                 {
                                     optionalProducts.length ?
                                         [
@@ -178,12 +187,26 @@ export class ProductList extends React.Component<ProductListProps, ProductListSt
                                                                 nostru vei putea finaliza comanda.
                                                             </strong>
                                                         </p>
-                                                        <a href={productToCartLink} target="_blank"
+                                                        <a href={productToCartLink}
+                                                           target="_blank"
                                                            rel="noopener noreferrer"
-                                                           className="buy-action mb-xl social-btn btn btn-primary text-light d-flex">
+                                                           className={`buy-action wide-btn btn btn-primary text-light ` + (selectedProductRange ? 'd-flex' : 'd-none')}>
                                                             Adaugă în coș
                                                         </a>
-                                                        <p className={`notify-description`}>
+                                                        <button
+                                                            onClick={() => {
+                                                                this.setState({buyButtonPressed: true})
+                                                            }}
+                                                            className={`buy-action mb-sm wide-btn btn btn-primary text-light ` + (!selectedProductRange ? 'd-flex' : 'd-none')}>
+                                                            Adaugă în coș
+                                                        </button>
+                                                        {(buyButtonPressed && !selectedProductRange) ?
+                                                            <p className={`mb-0 pb-0 text-danger`}>
+                                                                <small>Selecteza un pachet de produse!</small>
+                                                            </p> : null
+                                                        }
+
+                                                        <p className={`notify-description mt-xl `}>
                                                             <strong>
                                                                 Vrei să primești un email cu lista de produse la
                                                                 adresa {user.email} ?
@@ -244,7 +267,8 @@ function mapStateToProps(state: AppState, ownProps: ProductListProps, ownState: 
         isVisible: state.userContext.showProducts,
         optionalProducts: state.tutorial.optionalProducts,
         productToCartLink: getProductsToCartLink(state),
-        expandAllProductRanges : state.userContext.expandAllProductRanges
+        expandAllProductRanges: state.userContext.expandAllProductRanges,
+        selectedProductRange: state.userContext.selectedProductRange
     };
 }
 
