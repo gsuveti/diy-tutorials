@@ -61,7 +61,7 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
     const {productRangePrices, commonProductsTotalPrice} = props;
     const {headline, imageUrl, description, uuid} = attributes;
 
-    const total = productRangePrices[uuid] + commonProductsTotalPrice;
+    const total = productRangePrices ? (productRangePrices[uuid] + commonProductsTotalPrice) : undefined;
 
 
     const commonProductsContent = commonProducts.map((attributes: any) => {
@@ -82,10 +82,12 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
                 isRenderedInEditor ? null :
                     <div>
                         <h4 className={`product-range-headline text-center`}>{headline}</h4>
-                        <div
-                            className={`product-range-image`}
-                            style={{['--background' as any]: 'url(' + imageUrl + ') '}}>
-                        </div>
+                        {imageUrl ?
+                            <div className={`product-range-image`}
+                                 style={{['--background' as any]: 'url(' + imageUrl + ') '}}>
+                            </div>
+                            : null
+                        }
 
                         <div className={`product-range-details mx-nsm p-sm`}>
                             <p className={`product-range-description pt-md`}>{description}</p>
@@ -106,7 +108,8 @@ export const ProductRange = (props: ProductRangeProps, state: ProductRangeState)
                                                         onClick={() => {
                                                             selectProductRange(uuid);
                                                         }}>
-                                                    <i className={'material-icons mr-xs'}>add_shopping_cart</i>Selectează pachet
+                                                    <i className={'material-icons mr-xs'}>add_shopping_cart</i>Selectează
+                                                    pachet
                                                 </button>
                                             </div>
                                         </div>
