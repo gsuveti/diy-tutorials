@@ -45,6 +45,7 @@ interface StateProps {
 export interface TutorialState {
     displayedSections: number[];
     showBanner: boolean;
+    focused: boolean;
 }
 
 type TutorialProps = StateProps & DispatchProps & OwnProps;
@@ -64,9 +65,13 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
         this.state = {
             displayedSections: [0],
             showBanner: false,
+            focused: false
         };
         this.emailInput = React.createRef();
         this.sendEmail = this.sendEmail.bind(this);
+        this.onFocus = this.onFocus.bind(this);
+        this.onBlur = this.onBlur.bind(this);
+        this.onMouseOut = this.onMouseOut.bind(this);
 
         this.showBanner$.pipe(
             distinctUntilChanged(),
@@ -84,18 +89,40 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
         this.destroy$.next()
     }
 
+    onBlur() {
+        // console.log("onBlur");
+        this.setState({focused: false})
+    }
+
+    onFocus() {
+        // console.log("onFocus");
+        this.setState({focused: true})
+    }
+
+
+    onMouseOut() {
+        // console.log("onMouseOut");
+        this.setState({focused: false});
+        this.emailInput.current.blur();
+    }
+
     componentDidMount(): void {
         const {stickyBannerDebounceTime} = this.props;
 
         const scroll$ = fromEvent(window, 'scroll');
+
         scroll$
             .pipe(
                 tap((event) => {
-                    this.showBanner$.next(false);
+                    if (!this.state.focused) {
+                        this.showBanner$.next(false);
+                    }
                 }),
                 debounceTime(stickyBannerDebounceTime || 10000),
                 tap((event) => {
-                    if (Tutorial.isAfterRootWaypoint(ROOT_ID) && !this.props.instructionsEmailSent) {
+                    if (Tutorial.isAfterRootWaypoint(ROOT_ID)
+                        && !this.props.instructionsEmailSent
+                    ) {
                         this.showBanner$.next(true);
                     }
                 }),
@@ -133,7 +160,7 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
 
     componentDidCatch(error, errorInfo) {
         // You can also log the error to an error reporting service
-        console.log(error, errorInfo);
+        // console.log(error, errorInfo);
     }
 
     render(): React.ReactNode {
@@ -157,10 +184,15 @@ export class Tutorial extends React.Component<TutorialProps, TutorialState> {
                                     <small>E-mailul a fost trims!</small>
                                 </p> :
                                 <form className="input-group input-group -sm mb-xs" onSubmit={this.sendEmail}>
-                                    <input type="text" className="form-control pl-sm"
+                                    <input type="text"
+                                           id={'sticky-email-input'}
+                                           className="form-control pl-sm"
                                            placeholder="Introdu adresa ta de e-mail"
                                            aria-label="Introdu adresa ta de e-mail"
                                            aria-describedby="save-btn"
+                                           onFocus={this.onFocus}
+                                           onBlur={this.onBlur}
+                                           onMouseOut={this.onMouseOut}
                                            ref={this.emailInput}/>
                                     <div className="input-group-append">
                                         <button className="btn btn-primary btn-sm" type="submit"
