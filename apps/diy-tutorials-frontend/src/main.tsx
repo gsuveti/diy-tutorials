@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux'
 import {
     configureStore,
+    ConnectedTutorial,
     deserializeAttributes,
     EnvironmentModel,
     getInnerBlocks,
@@ -11,7 +12,6 @@ import {
     initialUserState,
     ROOT_ID,
     setAuthPersistence,
-    Tutorial,
     watchAuthState
 } from '@diy-tutorials/diy-tutorials-common';
 import * as firebase from 'firebase/app';
@@ -46,10 +46,11 @@ if (rootElement) {
 
     ReactDOM.render(
         <Provider store={store}>
-            <Tutorial
+            <ConnectedTutorial
+                stickyBannerDebounceTime={Number.parseInt(environment.stickyBannerDebounceTime)}
                 attributes={attributes}
                 innerBlocks={innerBlocks}>
-            </Tutorial>
+            </ConnectedTutorial>
         </Provider>,
         rootElement
     );

@@ -90,10 +90,34 @@ body {
   --background-black: black;
   --accent: #{$secondary};
   --center-sections-width: 320px;
+  --header-height: 54px;
 
   .wide-btn {
     width: 200px;
     justify-content: center;
+  }
+
+  .sticky-banner {
+    z-index: 1;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: -80px;
+    transition: top .5s;
+
+    display: flex;
+    justify-content: center;
+
+    &.show {
+      top: 0;
+      @media screen and (min-width: 981px) {
+        top: var(--header-height);
+      }
+    }
+
+    .sticky-banner-content {
+      width: 320px;
+    }
   }
 
   .instances-question {

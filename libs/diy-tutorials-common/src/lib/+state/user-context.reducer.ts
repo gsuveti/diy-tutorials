@@ -41,6 +41,7 @@ export interface UserContextState {
     selectedProductRange: string,
     emailMessage: {},
     instructionsEmailMessage: {},
+    instructionsEmailSent?: boolean,
     expandedProductRanges: { [uuid: string]: boolean },
     expandAllProductRanges: boolean
 }
@@ -63,6 +64,7 @@ export const initialUserContextState: UserContextState = {
     commonProductsTotalPrice: null,
     emailMessage: null,
     instructionsEmailMessage: null,
+    instructionsEmailSent: false,
     expandedProductRanges: {},
     expandAllProductRanges: false
 };
@@ -190,6 +192,7 @@ export const userContextReducer = createReducer(initialUserContextState, {
         return state;
     },
     [TutorialActionTypes.InstructionsEmailSent]: (state: UserContextState, action: AnyAction) => {
+        state.instructionsEmailSent = true;
         state.instructionsEmailMessage = {severity: 'success', text: 'Email-ul a fost trimis',};
         return state;
     },
