@@ -153,7 +153,7 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
 
     render(): React.ReactNode {
         const {children, attributes, isRenderedInEditor} = this.props;
-        const {text, type} = attributes;
+        const {text, type, uuid} = attributes;
 
 
         return (
@@ -163,7 +163,7 @@ export class Question extends React.Component<QuestionProps, QuestionState> {
 
                 {isRenderedInEditor ?
                     null :
-                    <div className={"question py-lg"}>
+                    <div className={"question py-lg"} id={uuid}>
                         {text ?
                             <div className="d-flex">
                                 {type === 'text' ?
